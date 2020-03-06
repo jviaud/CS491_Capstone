@@ -22,14 +22,12 @@ import java.util.List;
 
 public class UsageFragment extends Fragment {
 
-    View view;
     private int indicatorWidth;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_usage, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_usage, container, false);
     }
 
 
@@ -89,7 +87,7 @@ public class UsageFragment extends Fragment {
     }
 
     ///ADAPTER CLASSS FOR TABBED LAYOUT
-    public class ViewPageAdapter extends FragmentStatePagerAdapter {
+    public static class ViewPageAdapter extends FragmentStatePagerAdapter {
         private List<Fragment> fragmentList = new ArrayList<>();
         private List<String> titles = new ArrayList<>();
 

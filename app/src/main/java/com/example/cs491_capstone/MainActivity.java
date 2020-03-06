@@ -31,86 +31,38 @@ import static com.example.cs491_capstone.App.APP_LIST;
 import static com.example.cs491_capstone.App.localDatabase;
 
 public class MainActivity extends AppCompatActivity {
-    SharedPreferences prefs = null;
     public static ArrayList<UserUsageInfo> usageInfo;
+    SharedPreferences prefs = null;
+    /**
+     * on click listener for bottom nav
+     */
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
 
+                    switch (item.getItemId()) {
+                        case R.id.nav_home:
+                            selectedFragment = new HomeFragment();
+                            break;
+                        case R.id.nav_parental:
+                            selectedFragment = new ParentalFragment();
+                            break;
+                        case R.id.nav_usage:
+                            selectedFragment = new UsageFragment();
+                            break;
+                        case R.id.nav_settings:
+                            selectedFragment = new SettingsFragment();
+                            break;
+                    }
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment).commit();
+                    return true;
+                }
+            };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        prefs = getSharedPreferences(App.PACKAGE_NAME, MODE_PRIVATE);
-        if (prefs.getBoolean("firstrun", true)) {
-            Intent intent = new Intent(this, IntroManager.class);
-            prefs.edit().putBoolean("firstrun", false).apply();
-            startActivity(intent);
-            finish();
-        } else {
-            // retrieveUsageStats();
-        }
-
-        //CREATE BOTTOM NAVIGATION
-        BottomNavigationView bottomNaV = findViewById(R.id.bottom_navigation);
-        //PASS BOTTOM NAVIGATION OBJECT TO CLICK HANDLER
-        bottomNaV.setOnNavigationItemSelectedListener(navListener);
-        //SET HOME FRAGMENT TO BE SELECTED BY DEFAULT
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new HomeFragment()).commit();
-        ///END CREATE BOTTOM NAVIGATION
-
-
-        //START BACKGROUND MONITOR SERVICE
-        Intent serviceIntent = new Intent(this, BackgroundMonitor.class);//Wifi Listener Intent
-        startService(serviceIntent);
-
-
-        /// END CREATE NOTIFICATION CHANNELS
-
-
-        ///RETRIEVE TODAY'S USAGE STATS
-        ///THIS IS ALL OF TODAY BROKEN INTO HOURS
-        usageInfo = getTodaysUsage();
-
-        //Log.i("DB",""+App.localDatabase.getAllData());
-
-//        @SuppressLint("RestrictedApi") PeriodicWorkRequest synclocal = new PeriodicWorkRequest.Builder(SyncFireDBWorker.class, 1, TimeUnit.HOURS)
-//                .setPeriodStartTime(App.START_OF_DAY, TimeUnit.MILLISECONDS)
-//                .build();
-//        WorkManager.getInstance(this).enqueue(synclocal);
-//
-//        @SuppressLint("RestrictedApi") PeriodicWorkRequest synclocal = new PeriodicWorkRequest.Builder(SyncLocalDBWorker.class, 1, TimeUnit.HOURS)
-//                .setPeriodStartTime(App.START_OF_DAY, TimeUnit.MILLISECONDS)
-//                .build();
-//        WorkManager.getInstance(this).enqueue(synclocal);
-
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //CHECK IF THIS IS THE FIRST TIME THE APP IS BEING RUN, IF IT IS THEN START THE INITIALIZER ACTIVITY TO SET THE REQUIRED PERMISSIONS
-        if (prefs.getBoolean("firstrun", true)) {
-            Intent intent = new Intent(this, IntroManager.class);
-            prefs.edit().putBoolean("firstrun", false).apply();
-            intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(intent);
-
-            finish();
-        } else {
-            usageInfo = getTodaysUsage();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        usageInfo.clear();
-
-    }
-
-    public static ArrayList<UserUsageInfo> getTodaysUsage() {
+    public static ArrayList<UserUsageInfo> getUsageToday() {
         //FOR EVERY APP IN APP LIST
         //WE USE THIS LIST BECAUSE IT IS ALREADY FILTERED
         //WE DON'T HAVE TO FILTER IT AGAIN
@@ -144,34 +96,78 @@ public class MainActivity extends AppCompatActivity {
         return usageInfo;
     }
 
-    //CLICK HANDLER FOR BOTTOM NAVIGATION
-    /**
-     * on click listener for bottom nav
-     */
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment = null;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-                    switch (item.getItemId()) {
-                        case R.id.nav_home:
-                            selectedFragment = new HomeFragment();
-                            break;
-                        case R.id.nav_parental:
-                            selectedFragment = new ParentalFragment();
-                            break;
-                        case R.id.nav_usage:
-                            selectedFragment = new UsageFragment();
-                            break;
-                        case R.id.nav_settings:
-                            selectedFragment = new SettingsFragment();
-                            break;
-                    }
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
-                    return true;
-                }
-            };
+        prefs = getSharedPreferences(App.PACKAGE_NAME, MODE_PRIVATE);
+
+        //CREATE BOTTOM NAVIGATION
+        BottomNavigationView bottomNaV = findViewById(R.id.bottom_navigation);
+        //PASS BOTTOM NAVIGATION OBJECT TO CLICK HANDLER
+        bottomNaV.setOnNavigationItemSelectedListener(navListener);
+        //SET HOME FRAGMENT TO BE SELECTED BY DEFAULT
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new HomeFragment()).commit();
+        ///END CREATE BOTTOM NAVIGATION
+
+
+        //START BACKGROUND MONITOR SERVICE
+        Intent serviceIntent = new Intent(this, BackgroundMonitor.class);//Wifi Listener Intent
+        startService(serviceIntent);
+
+
+        /// END CREATE NOTIFICATION CHANNELS
+
+
+        ///RETRIEVE TODAY'S USAGE STATS
+        ///THIS IS ALL OF TODAY BROKEN INTO HOURS
+        usageInfo = getUsageToday();
+
+        //Log.i("DB",""+App.localDatabase.getAllData());
+
+//        @SuppressLint("RestrictedApi") PeriodicWorkRequest synclocal = new PeriodicWorkRequest.Builder(SyncFireDBWorker.class, 1, TimeUnit.HOURS)
+//                .setPeriodStartTime(App.START_OF_DAY, TimeUnit.MILLISECONDS)
+//                .build();
+//        WorkManager.getInstance(this).enqueue(synclocal);
+//
+//        @SuppressLint("RestrictedApi") PeriodicWorkRequest synclocal = new PeriodicWorkRequest.Builder(SyncLocalDBWorker.class, 1, TimeUnit.HOURS)
+//                .setPeriodStartTime(App.START_OF_DAY, TimeUnit.MILLISECONDS)
+//                .build();
+//        WorkManager.getInstance(this).enqueue(synclocal);
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = new Intent(this, IntroManager.class);
+        prefs.edit().putBoolean("firstrun", false).apply();
+        intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intent);
+
+        finish();
+
+        //CHECK IF THIS IS THE FIRST TIME THE APP IS BEING RUN, IF IT IS THEN START THE INITIALIZER ACTIVITY TO SET THE REQUIRED PERMISSIONS
+//        if (prefs.getBoolean("firstrun", true)) {
+//            Intent intent = new Intent(this, IntroManager.class);
+//            prefs.edit().putBoolean("firstrun", false).apply();
+//            intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_REORDER_TO_FRONT);
+//            startActivity(intent);
+//
+//            finish();
+//        } else {
+//            usageInfo = getUsageToday();
+//        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        usageInfo.clear();
+
+    }
     //
 }

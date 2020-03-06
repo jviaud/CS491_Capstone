@@ -85,7 +85,7 @@ public class UsagePermissionFragment extends Fragment {
         boolean usage_permission = quick_usage.get("com.example.intro") != null;
         ///END PERMISSION CHECK AND PAGE CHANGE
 
-        if (usage_permission) {
+        if (usage_permission & buttonClicked) {
             //GREY OUT THE BUTTON SO IT DOESN'T GET PRESSED AGAIN
             grantPermission_btn.setEnabled(false);
 

@@ -61,11 +61,11 @@ public class IntroManager extends AppCompatActivity {
                 .with(animationView)
                 .withSteps(
                         new SpritzStep.Builder()
-                                .withAutoPlayDuration(2550, TimeUnit.MILLISECONDS)
+                                .withAutoPlayDuration(4000, TimeUnit.MILLISECONDS)
                                 .withSwipeDuration(500, TimeUnit.MILLISECONDS)
                                 .build(),
                         new SpritzStep.Builder()
-                                .withAutoPlayDuration(3550, TimeUnit.MILLISECONDS)
+                                .withAutoPlayDuration(4000, TimeUnit.MILLISECONDS)
                                 .withSwipeDuration(500, TimeUnit.MILLISECONDS)
                                 .build(),
                         new SpritzStep.Builder()
