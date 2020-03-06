@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/intro_background"
+    android:orientation="vertical">
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_gravity="top"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/drink" />
+
+
+    <view
+        android:id="@+id/intro_pager"
+        class="com.example.cs491_capstone.ui.intro.IntroManager$LockableViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.pixelcan.inkpageindicator.InkPageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="20dp"
+        app:ipi_animationDuration="320"
+        app:ipi_currentPageIndicatorColor="@android:color/black"
+        app:ipi_dotDiameter="8dp"
+        app:ipi_dotGap="8dp"
+        app:ipi_pageIndicatorColor="@android:color/darker_gray" />
+</FrameLayout>

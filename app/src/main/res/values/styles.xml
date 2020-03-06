@@ -1,0 +1,55 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="backgroundcolor">#BFCDE0</item>
+        <item name="cardbackground">#EEF2FA</item>
+        <item name="textcolor">#eef1f1</item>
+        <item name="textcolor_alt">#224770</item>
+        <item name="tintcolor">#000000</item>
+        <item name="buttoncolor_transparent">#A29E9E</item>
+        <item name="buttoncolor">#A29E9E</item>
+        <item name="iconcolor">#FFFFFF</item>
+        <item name="toolbarcolor">#1F1F1F</item>
+        <item name="fabcolor">#225e5e</item>
+        <item name="android:textColorHint">#E8E8E8</item>
+        <item name="devidercolor">#D6D6D6</item>
+    </style>
+
+    <!--    STYLE FOR TRANSPARENT ACTIVITY-->
+    <style name="Theme.Transparent" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+    <!--    STYLE FOR TRANSPARENT ACTIVITY-->
+
+
+    <!--    STYLING FO INTRO FRAGMENTS-->
+    <style name="AppTheme.Intro" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <!--    END STYLING FOR INTRO FRAGMENTS-->
+
+
+    <!-- -->
+    <style name="BottomNavigation">
+        <item name="android:background">?attr/backgroundcolor</item>
+        <item name="android:backgroundTint">?attr/backgroundcolor</item>
+        <item name="itemTextColor">?attr/colorPrimary</item>
+    </style>
+    <!-- -->
+
+</resources>

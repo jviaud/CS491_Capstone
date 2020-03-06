@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#224770</color>
+    <color name="colorPrimaryDark">#475259</color>
+    <color name="colorAccent">#BFCDE0</color>
+    <color name="black">#000</color>
+    <color name="silver">#C0C0C0</color>
+
+    <!--    COLORS FOR INTRO SCREEN -->
+    <!--       BACKGROUND COLOR-->
+    <color name="intro_background_one">#A2CFEF</color>
+    <color name="intro_background_two">#00A5B9</color>
+    <!--        INDICATOR COLOR -->
+    <color name="intro_active_indicator">#FFFFFF</color>
+    <color name="intro_inactive_indicator">#CCCCCC</color>
+    <color name="backgroundcolor">?attr/backgroundcolor</color>
+    <!--    END COLORS FOR INTRO SCREEN-->
+</resources>

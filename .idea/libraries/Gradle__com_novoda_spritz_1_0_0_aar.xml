@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: com.novoda:spritz:1.0.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7584dab2bb71c5c669a8a9622e83ba9e/jetified-spritz-1.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7584dab2bb71c5c669a8a9622e83ba9e/jetified-spritz-1.0.0/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.novoda/spritz/1.0.0/120243903351aad9244ec948c06b8dd4e8761dd/spritz-1.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.novoda/spritz/1.0.0/3ef9888c13bc5c9a5c33e11aaab5660e384b63d4/spritz-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
