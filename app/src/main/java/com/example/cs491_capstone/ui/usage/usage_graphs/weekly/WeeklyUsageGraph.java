@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
-import com.example.cs491_capstone.ui.usage.UsageWeeklyFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,8 @@ import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
+
+import static com.example.cs491_capstone.App.week;
 
 public class WeeklyUsageGraph extends Fragment {
     private ColumnChartView barChart;
@@ -99,7 +100,7 @@ public class WeeklyUsageGraph extends Fragment {
             }
             //THIS IS WHERE WE LABEL THE X-AXIS
             //WE SET THE CURRENT COLUMNS X-AXIS LABEL EQUAL TO THE CORRESPONDING TIME ON THE CLOCK
-            xAxisValues.add(new AxisValue(i).setLabel(UsageWeeklyFragment.week[i]));
+            xAxisValues.add(new AxisValue(i).setLabel(week[i]));
 
             //WE CREATE A COLUMN WE THE VALUES WE JUST RECEIVED FROM THE TABLE/DATABASE
             Column column = new Column(values)

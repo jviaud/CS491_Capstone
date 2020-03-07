@@ -28,7 +28,7 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
-import static com.example.cs491_capstone.ui.home.HomeFragment.clock;
+import static com.example.cs491_capstone.App.clock;
 
 public class HomeUnlocksGraphFragment extends Fragment {
     private ColumnChartView barChart;

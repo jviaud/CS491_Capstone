@@ -56,6 +56,16 @@ public class App extends Application {
      */
     public static final long START_TIME_IN_MILLIS = 60000;
     /**
+     *
+     */
+    public final static String[] week = new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    /**
+     * List of values on a clock from 12AM to 11PM used to label the X-Axis on the graphs
+     */
+    public final static String[] clock = new String[]{"12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM",
+            "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM",
+            "8PM", "9PM", "10PM", "11PM"};
+    /**
      * string containing the package name of this app
      */
     public static String PACKAGE_NAME;
@@ -84,6 +94,8 @@ public class App extends Application {
      */
     public static String HOME_LAUNCHER_NAME;
 
+
+    //TODO TRANSFER THIS DATA INTO A TABLE
     /**
      * this boolean is used to mark the start of a new week. A new week is defined as the first Sunday
      */
@@ -93,9 +105,6 @@ public class App extends Application {
      * The sub list inside this list is ordered from start of week to end. So, 0 is the start of the week, Sun, and 7 is the end of the week, Sat.
      */
     public static ArrayList<ArrayList<String>> currentPeriod = getCurrentPeriod();
-
-
-    //TODO TRANSFER THIS DATA INTO A TABLE
     /**
      * list of all apps to be excluded from system apps filter
      */
@@ -104,7 +113,6 @@ public class App extends Application {
             "com.google.android.gm", "com.google.android.videos", "com.google.android.music", "com.google.android.vending", "com.google.android.apps.maps",
             "com.google.android.apps.messaging", "com.android.phone", "com.google.android.apps.photos", "com.android.storagemanager",
             "com.google.android.apps.wallpaper", "com.google.android.youtube");
-
     public static List<InstalledAppInfo> APP_LIST;
 
     //TODO ADD OPTION TO SET TIMER TO CUSTOM TIME

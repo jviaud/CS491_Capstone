@@ -48,12 +48,6 @@ import static com.example.cs491_capstone.MainActivity.usageInfo;
 
 public class HomeFragment extends Fragment {
     /**
-     * List of values on a clock from 12AM to 11PM used to label the X-Axis on the graphs
-     */
-    public final static String[] clock = new String[]{"12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM",
-            "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM",
-            "8PM", "9PM", "10PM", "11PM"};
-    /**
      * This is the maximum number of apps we want to show total usage time for, because we will allow the user to set the maximum number themselves we have a variable for it here
      */
     private static int maximumOnDisplay = 5;

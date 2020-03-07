@@ -6,8 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="backgroundcolor">#BFCDE0</item>
-        <item name="cardbackground">#EEF2FA</item>
+        <item name="backgroundcolor">#DDE3EC</item>
+        <item name="cardbackground">#FFFFFF</item>
         <item name="textcolor">#eef1f1</item>
         <item name="textcolor_alt">#224770</item>
         <item name="tintcolor">#000000</item>
@@ -44,12 +44,16 @@
     <!--    END STYLING FOR INTRO FRAGMENTS-->
 
 
-    <!-- -->
+    <!--STYLING FOR BOTTOM NAV -->
     <style name="BottomNavigation">
         <item name="android:background">?attr/backgroundcolor</item>
         <item name="android:backgroundTint">?attr/backgroundcolor</item>
         <item name="itemTextColor">?attr/colorPrimary</item>
     </style>
     <!-- -->
+
+
+<!--STYLING FOR TAB LAYOUT -->
+<!--    -->
 
 </resources>

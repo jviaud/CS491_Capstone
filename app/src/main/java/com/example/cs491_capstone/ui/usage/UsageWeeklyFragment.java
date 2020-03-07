@@ -18,7 +18,7 @@ import com.example.cs491_capstone.ui.usage.usage_graphs.weekly.WeeklyUsageGraph;
 import com.google.android.material.tabs.TabLayout;
 
 public class UsageWeeklyFragment extends Fragment {
-    public final static String[] week = new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
 
     @Nullable
     @Override

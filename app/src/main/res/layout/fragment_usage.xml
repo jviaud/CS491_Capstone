@@ -30,23 +30,18 @@
             app:tabIndicatorColor="@null"
             app:tabMode="fixed"
             app:tabRippleColor="@null"
-            app:tabSelectedTextColor="#ffffff" />
+            app:tabSelectedTextColor="?attr/textcolor" />
 
     </FrameLayout>
 
 
-    <androidx.viewpager.widget.ViewPager
+    <view class="com.example.cs491_capstone.ui.intro.IntroManager$LockableViewPager"
         android:layout_marginTop="10dp"
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button" />
-    </androidx.viewpager.widget.ViewPager>
+    </view>
 
 
 </LinearLayout>

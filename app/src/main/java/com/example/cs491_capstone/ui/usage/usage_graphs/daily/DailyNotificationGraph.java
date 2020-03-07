@@ -26,7 +26,7 @@ import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
-import static com.example.cs491_capstone.ui.home.HomeFragment.clock;
+import static com.example.cs491_capstone.App.clock;
 
 public class DailyNotificationGraph extends Fragment {
     private ColumnChartView barChart;

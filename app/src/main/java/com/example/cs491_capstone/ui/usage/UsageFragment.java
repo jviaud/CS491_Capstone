@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.intro.IntroManager;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ import java.util.List;
 
 public class UsageFragment extends Fragment {
 
-    private int indicatorWidth;
 
+    private int indicatorWidth;
 
     @Nullable
     @Override
@@ -38,7 +39,8 @@ public class UsageFragment extends Fragment {
         //CREATE TABBED LAYOUT FOR WEEK/DAY CONTENT
         final View indicator = view.findViewById(R.id.indicator);
         final TabLayout tabLayout = view.findViewById(R.id.tabbed_layout);
-        ViewPager viewPager = view.findViewById(R.id.viewPager);
+        IntroManager.LockableViewPager viewPager = view.findViewById(R.id.viewPager);
+        viewPager.setSwipeable(false);
         ViewPageAdapter adapter = new ViewPageAdapter(getFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
         viewPager.setAdapter(adapter);
@@ -85,8 +87,6 @@ public class UsageFragment extends Fragment {
 
             }
         });
-
-
 
 
     }

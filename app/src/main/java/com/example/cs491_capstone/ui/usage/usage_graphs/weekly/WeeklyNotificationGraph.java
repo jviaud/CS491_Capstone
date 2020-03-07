@@ -33,5 +33,7 @@ public class WeeklyNotificationGraph extends Fragment {
         super.onResume();
         //createUsageChart();
     }
+
+
 }
 

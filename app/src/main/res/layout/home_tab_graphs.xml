@@ -6,7 +6,9 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/graph_choice">
+    app:layout_constraintTop_toBottomOf="@+id/graph_choice"
+    app:cardBackgroundColor="?attr/cardbackground"
+    android:elevation="6dp">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
