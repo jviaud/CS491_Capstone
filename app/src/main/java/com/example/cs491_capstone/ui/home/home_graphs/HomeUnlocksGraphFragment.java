@@ -73,11 +73,11 @@ public class HomeUnlocksGraphFragment extends Fragment {
         int numSubColumns = 1;
         //THE NUMBER OF COLUMNS IS THE CURRENT HOUR, THIS IS DONE FOR STYLING PURPOSES
         //THERE IS NO REASON TO SHOW THE COLUMNS AFTER THE CURRENT HOUR BECAUSE WE KNOW THEY WILL BE 0
-        int numColumns = clock.length - 1;
+        int numColumns = clock.length ;
 
         float maxValue = 0;
         //FOR EVERY COLUMN
-        for (int i = 0; i <= numColumns; ++i) {
+        for (int i = 0; i < numColumns; ++i) {
             //WE CREATE A LIST OF VALUES, THIS WILL COME IN HANDY WHEN WE SPLIT BY CATEGORY AND HAVE A STACKED BAR GRAPH BUT FOR NOW IT WILL ONLY HOLD ONE VALUE
             values = new ArrayList<>();
             for (int j = 0; j < numSubColumns; ++j) {

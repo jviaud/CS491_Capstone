@@ -24,6 +24,7 @@ public class UsageFragment extends Fragment {
 
     private int indicatorWidth;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -84,6 +85,10 @@ public class UsageFragment extends Fragment {
 
             }
         });
+
+
+
+
     }
 
     ///ADAPTER CLASSS FOR TABBED LAYOUT

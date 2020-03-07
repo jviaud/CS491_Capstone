@@ -72,7 +72,7 @@ public class DetailedUsageGraphFragment extends Fragment {
         int numSubcolumns = 1;
         //THIS TIME THE DAYS OF THE WEEK IS THE RANGE FOR THE BAR GRAPH MON-SUN
         //
-        int numColumns = days.length - 1; //WE COULD USE App.currentPeriod.size() HERE BUT days.length WILL BE THE SAME SIZE
+        int numColumns = days.length ; //WE COULD USE App.currentPeriod.size() HERE BUT days.length WILL BE THE SAME SIZE
 
         float maxValue = 0;
 

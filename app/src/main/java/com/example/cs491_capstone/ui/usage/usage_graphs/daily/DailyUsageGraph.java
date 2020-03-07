@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.home.home_graphs;
+package com.example.cs491_capstone.ui.usage.usage_graphs.daily;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,30 +27,27 @@ import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
-import static com.example.cs491_capstone.ui.home.HomeFragment.clock;
+import static com.example.cs491_capstone.ui.home.DetailedAppActivity.clock;
 
-public class HomeUsageGraphFragment extends Fragment {
+public class DailyUsageGraph extends Fragment {
     private ColumnChartView barChart;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.home_tab_graphs, container, false);
+        return inflater.inflate(R.layout.tabbed_usage_graphs, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        //INITIALIZE CHARTS
-        barChart = view.findViewById(R.id.home_charts);
+        barChart = view.findViewById(R.id.daily_chart);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         createUsageChart();
-
     }
 
     private void createUsageChart() {
@@ -75,7 +72,7 @@ public class HomeUsageGraphFragment extends Fragment {
         int numSubColumns = 1;
         //THE NUMBER OF COLUMNS IS THE CURRENT HOUR, THIS IS DONE FOR STYLING PURPOSES
         //THERE IS NO REASON TO SHOW THE COLUMNS AFTER THE CURRENT HOUR BECAUSE WE KNOW THEY WILL BE 0
-        int numColumns = clock.length ;
+        int numColumns = clock.length;
 
         //FOR EVERY COLUMN
         for (int i = 0; i < numColumns; ++i) {
@@ -144,7 +141,7 @@ public class HomeUsageGraphFragment extends Fragment {
         if (maxValue < 10) {
             Log.i("MAXVAL", "<10");
             Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = 15;
+            v.top = 11;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);

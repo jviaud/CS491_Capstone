@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.example.cs491_capstone.App.setListViewHeightBasedOnChildren;
 import static com.example.cs491_capstone.MainActivity.usageInfo;
 
 
@@ -188,11 +189,6 @@ public class HomeFragment extends Fragment {
         setPercentDelta();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-    }
 
     private void setPercentDelta() {
         int todayIndex = App.currentPeriod.indexOf(App.DATE);
@@ -261,28 +257,6 @@ public class HomeFragment extends Fragment {
 
             }
         }
-
-    }
-
-
-    private void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-
-        int totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            if (listItem instanceof ViewGroup)
-                listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
 
     }
 

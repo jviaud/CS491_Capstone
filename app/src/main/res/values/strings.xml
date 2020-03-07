@@ -15,10 +15,4 @@
     <string name="date">Date</string>
     <string name="get_started">Get Started</string>
 
-
-    <string-array name="graphs">
-        <item>USAGE</item>
-        <item>NOTIFICATIONS</item>
-        <item>UNLOCKS</item>
-    </string-array>
 </resources>

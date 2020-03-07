@@ -12,6 +12,10 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -343,6 +347,34 @@ public class App extends Application {
         return "UNDEFINED";
     }
 
+    /**
+     * Modifies a list view's height so that it will be the summation of its children.
+     * Because I can not use a secondary scrolling view inside a nested scrollview I have to give the list view a hard value
+     * but because the list view's contents may vary I will not know the proper height until after it has been created
+     *
+     * @param listView the list view who's height will be modified
+     */
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+
+        int totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            if (listItem instanceof ViewGroup)
+                listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -433,7 +465,5 @@ public class App extends Application {
 
         }
     }
-
-
 }
 

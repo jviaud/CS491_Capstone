@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.home.home_graphs;
+package com.example.cs491_capstone.ui.usage.usage_graphs.weekly;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.usage.UsageWeeklyFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,30 +28,25 @@ import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
-import static com.example.cs491_capstone.ui.home.HomeFragment.clock;
-
-public class HomeUsageGraphFragment extends Fragment {
+public class WeeklyUsageGraph extends Fragment {
     private ColumnChartView barChart;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.home_tab_graphs, container, false);
+        return inflater.inflate(R.layout.tabbed_usage_graphs, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        //INITIALIZE CHARTS
-        barChart = view.findViewById(R.id.home_charts);
+        barChart = view.findViewById(R.id.daily_chart);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        createUsageChart();
-
+        //createUsageChart();
     }
 
     private void createUsageChart() {
@@ -75,10 +71,10 @@ public class HomeUsageGraphFragment extends Fragment {
         int numSubColumns = 1;
         //THE NUMBER OF COLUMNS IS THE CURRENT HOUR, THIS IS DONE FOR STYLING PURPOSES
         //THERE IS NO REASON TO SHOW THE COLUMNS AFTER THE CURRENT HOUR BECAUSE WE KNOW THEY WILL BE 0
-        int numColumns = clock.length ;
+        int numColumns = Integer.parseInt(App.HOUR);
 
         //FOR EVERY COLUMN
-        for (int i = 0; i < numColumns; ++i) {
+        for (int i = 0; i <= numColumns; ++i) {
             //WE CREATE A LIST OF VALUES, THIS WILL COME IN HANDY WHEN WE SPLIT BY CATEGORY AND HAVE A STACKED BAR GRAPH BUT FOR NOW IT WILL ONLY HOLD ONE VALUE
             values = new ArrayList<>();
             for (int j = 0; j < numSubColumns; ++j) {
@@ -103,7 +99,7 @@ public class HomeUsageGraphFragment extends Fragment {
             }
             //THIS IS WHERE WE LABEL THE X-AXIS
             //WE SET THE CURRENT COLUMNS X-AXIS LABEL EQUAL TO THE CORRESPONDING TIME ON THE CLOCK
-            xAxisValues.add(new AxisValue(i).setLabel(clock[i]));
+            xAxisValues.add(new AxisValue(i).setLabel(UsageWeeklyFragment.week[i]));
 
             //WE CREATE A COLUMN WE THE VALUES WE JUST RECEIVED FROM THE TABLE/DATABASE
             Column column = new Column(values)
@@ -144,7 +140,7 @@ public class HomeUsageGraphFragment extends Fragment {
         if (maxValue < 10) {
             Log.i("MAXVAL", "<10");
             Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = 15;
+            v.top = 11;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);
