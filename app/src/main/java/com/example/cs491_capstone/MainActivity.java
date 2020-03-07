@@ -1,11 +1,9 @@
 package com.example.cs491_capstone;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -22,7 +20,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -72,26 +69,11 @@ public class MainActivity extends AppCompatActivity {
             String packageName = APP_LIST.get(i).getPackageName();
             String appName = APP_LIST.get(i).getSimpleName();
             Drawable icon = APP_LIST.get(i).getIcon();
-            Log.i("TRACK", "PACKAGENAME:" + packageName);
-            //THIS IS THE LAST RECORD WE HAVE FOR THIS PARTICULAR PACKAGE
-            //WE WANT TO GO BACK AND SEE IF WE ARE MISSING ANY DATA FROM BEFORE
-            //THIS WILL RETURN 0 IF EMPTY/NULL, IF IT IS 0 THEN WE WILL JUST SKIP IT
-            int lastEntry = localDatabase.getLastEntry(App.DATE, APP_LIST.get(i).getPackageName());
-            Log.i("TRACK", "LAST ENTRY:" + lastEntry);
-            @SuppressLint("UseSparseArrays") HashMap<Integer, Long> time = new HashMap<>();
-            for (int j = 0; j <= Integer.parseInt(App.HOUR); j++) {
-                Log.i("TRACK", "ENTRY:" + j);
-                //WE GET THE TOTAL TIME USED FOR THE HOUR INTERVAL
-                //THIS WILL RETURN 0 IF EMPTY/NULL SO WE DON'T NEED TO WORRY ABOUT PARSE EXCEPTION
-                long timeUsed = Long.parseLong(localDatabase.get(DatabaseHelper.USAGE_TIME, packageName, App.DATE, String.valueOf(j)));
-                Log.i("TRACK", "TIMEUSED:" + timeUsed);
-                //STORE IT IN THE MAP
-                // J IS THE HOUR INTERVAL AND TIME USED IS THE THAT THE APP WAS USED DURING THIS INTERVAL
-                time.put(j, timeUsed);
-            }
-            Log.i("TRACK", "TIME:" + time);
+            Long time = Long.parseLong(localDatabase.getSumAppUsageTime(packageName));
+
             usageInfo.add(new UserUsageInfo(packageName, appName, icon, time));
         }
+
         Collections.sort(usageInfo);
         return usageInfo;
     }
@@ -118,11 +100,7 @@ public class MainActivity extends AppCompatActivity {
         startService(serviceIntent);
 
 
-        /// END CREATE NOTIFICATION CHANNELS
-
-
         ///RETRIEVE TODAY'S USAGE STATS
-        ///THIS IS ALL OF TODAY BROKEN INTO HOURS
         usageInfo = getUsageToday();
 
         //Log.i("DB",""+App.localDatabase.getAllData());
@@ -131,12 +109,6 @@ public class MainActivity extends AppCompatActivity {
 //                .setPeriodStartTime(App.START_OF_DAY, TimeUnit.MILLISECONDS)
 //                .build();
 //        WorkManager.getInstance(this).enqueue(synclocal);
-//
-//        @SuppressLint("RestrictedApi") PeriodicWorkRequest synclocal = new PeriodicWorkRequest.Builder(SyncLocalDBWorker.class, 1, TimeUnit.HOURS)
-//                .setPeriodStartTime(App.START_OF_DAY, TimeUnit.MILLISECONDS)
-//                .build();
-//        WorkManager.getInstance(this).enqueue(synclocal);
-
 
     }
 

@@ -58,7 +58,7 @@ public class App extends Application {
     /**
      *
      */
-    public final static String[] week = new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    public final static String[] week = new String[]{"Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"};
     /**
      * List of values on a clock from 12AM to 11PM used to label the X-Axis on the graphs
      */

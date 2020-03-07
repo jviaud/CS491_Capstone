@@ -22,20 +22,10 @@ import com.example.cs491_capstone.ui.home.detailed_graphs.DetailedUsageGraphFrag
 import com.google.android.material.tabs.TabLayout;
 
 public class DetailedAppActivity extends AppCompatActivity {
-    public final static String[] days = new String[]{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
-    /**
-     * List of values on a clock from 12AM to 11PM used to label the X-Axis on the graphs
-     */
-
-
-
-
-
-    private ImageView appIcon;
-    private TextView appName, appCategory, usage_val, notification_val, unlocks_val;
-
-    private UserUsageInfo appInfo;
+    private TextView usage_val;
+    private TextView notification_val;
+    private TextView unlocks_val;
 
     public static String packageName;
 
@@ -47,9 +37,9 @@ public class DetailedAppActivity extends AppCompatActivity {
 
 
         //INITIALISE ALL OF THE VIEWS
-        appIcon = findViewById(R.id.app_icon);
-        appName = findViewById(R.id.app_name);
-        appCategory = findViewById(R.id.app_category);
+        ImageView appIcon = findViewById(R.id.app_icon);
+        TextView appName = findViewById(R.id.app_name);
+        TextView appCategory = findViewById(R.id.app_category);
 
         usage_val = findViewById(R.id.usage_val);
         notification_val = findViewById(R.id.notification_value);
@@ -57,7 +47,7 @@ public class DetailedAppActivity extends AppCompatActivity {
 
         //INITIALISE THE APP OBJECT
         Intent intent = getIntent();
-        appInfo = intent.getParcelableExtra("APP");
+        UserUsageInfo appInfo = intent.getParcelableExtra("APP");
 
         //SET APP INFO TEXT VIEWS
         appName.setText(appInfo.getSimpleName());

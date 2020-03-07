@@ -18,6 +18,7 @@
         <item name="fabcolor">#225e5e</item>
         <item name="android:textColorHint">#E8E8E8</item>
         <item name="devidercolor">#D6D6D6</item>
+        <item name="launcher_background">#23DBDC</item>
     </style>
 
     <!--    STYLE FOR TRANSPARENT ACTIVITY-->

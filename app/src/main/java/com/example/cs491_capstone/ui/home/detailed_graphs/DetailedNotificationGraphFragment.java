@@ -29,7 +29,7 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 import static com.example.cs491_capstone.App.clock;
-import static com.example.cs491_capstone.ui.home.DetailedAppActivity.days;
+import static com.example.cs491_capstone.App.week;
 
 public class DetailedNotificationGraphFragment extends Fragment {
     private ColumnChartView barChartTop;
@@ -66,7 +66,7 @@ public class DetailedNotificationGraphFragment extends Fragment {
         int numSubcolumns = 1;
         //THIS TIME THE DAYS OF THE WEEK IS THE RANGE FOR THE BAR GRAPH MON-SUN
         //
-        int numColumns = days.length; //WE COULD USE App.currentPeriod.size() HERE BUT days.length WILL BE THE SAME SIZE
+        int numColumns = week.length; //WE COULD USE App.currentPeriod.size() HERE BUT days.length WILL BE THE SAME SIZE
 
         int maxValue = 0;
 
@@ -93,7 +93,7 @@ public class DetailedNotificationGraphFragment extends Fragment {
                 }
             }
 
-            axisValues.add(new AxisValue(i).setLabel(days[i]));//SET THE X-AXIS VALUES WITH THE CORRESPONDING DAYS OF THE WEEK
+            axisValues.add(new AxisValue(i).setLabel(week[i]));//SET THE X-AXIS VALUES WITH THE CORRESPONDING DAYS OF THE WEEK
 
             columns.add(new Column(values).setHasLabelsOnlyForSelected(true)); //CREATE VALUES FOR THE COLUMNS
         }

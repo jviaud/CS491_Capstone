@@ -30,7 +30,7 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 import static com.example.cs491_capstone.App.clock;
-import static com.example.cs491_capstone.ui.home.DetailedAppActivity.days;
+import static com.example.cs491_capstone.App.week;
 
 public class DetailedUsageGraphFragment extends Fragment {
     private ColumnChartView barChartTop;
@@ -72,7 +72,7 @@ public class DetailedUsageGraphFragment extends Fragment {
         int numSubcolumns = 1;
         //THIS TIME THE DAYS OF THE WEEK IS THE RANGE FOR THE BAR GRAPH MON-SUN
         //
-        int numColumns = days.length ; //WE COULD USE App.currentPeriod.size() HERE BUT days.length WILL BE THE SAME SIZE
+        int numColumns = week.length; //WE COULD USE App.currentPeriod.size() HERE BUT days.length WILL BE THE SAME SIZE
 
         float maxValue = 0;
 
@@ -100,7 +100,7 @@ public class DetailedUsageGraphFragment extends Fragment {
                 }
             }
 
-            axisValues.add(new AxisValue(i).setLabel(days[i]));//SET THE X-AXIS VALUES WITH THE CORRESPONDING DAYS OF THE WEEK
+            axisValues.add(new AxisValue(i).setLabel(week[i]));//SET THE X-AXIS VALUES WITH THE CORRESPONDING DAYS OF THE WEEK
 
             columns.add(new Column(values).setHasLabelsOnlyForSelected(true)); //CREATE VALUES FOR THE COLUMNS
         }
@@ -148,15 +148,24 @@ public class DetailedUsageGraphFragment extends Fragment {
                 for (Column column : columns) {
                     for (SubcolumnValue subcolumnValue : column.getValues()) {
                         subcolumnValue.setValue(subcolumnValue.getValue() / 60);
+                        subcolumnValue.setLabel(String.format("%.2f",subcolumnValue.getValue()));
                     }
                 }
+                Viewport v = new Viewport(barChartTop.getMaximumViewport());
+                v.top = 10;
+                barChartTop.setMaximumViewport(v);
+                barChartTop.setCurrentViewport(v);
+                barChartTop.setViewportCalculationEnabled(false);
 
+
+            } else {
+                //LESS THAN 60 BUT GREATER THAN 10
+                Viewport v = new Viewport(barChartTop.getMaximumViewport());
+                v.top = maxValue + 5;
+                barChartTop.setMaximumViewport(v);
+                barChartTop.setCurrentViewport(v);
+                barChartTop.setViewportCalculationEnabled(false);
             }
-            Viewport v = new Viewport(barChartTop.getMaximumViewport());
-            v.top = maxValue + 5;
-            barChartTop.setMaximumViewport(v);
-            barChartTop.setCurrentViewport(v);
-            barChartTop.setViewportCalculationEnabled(false);
         }
 
 

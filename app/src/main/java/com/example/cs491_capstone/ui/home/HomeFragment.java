@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -50,10 +49,10 @@ public class HomeFragment extends Fragment {
     /**
      * This is the maximum number of apps we want to show total usage time for, because we will allow the user to set the maximum number themselves we have a variable for it here
      */
-    private static int maximumOnDisplay = 5;
+    private int maximumOnDisplay = 5;
+    private ArrayList<UserUsageInfo> topItems = new ArrayList<>();
     private ListView mostUsedListView;
     private MostUsedAppsListAdapter listAdapter;
-    private ArrayList<UserUsageInfo> topItems = new ArrayList<>();
     //TIMER
     private Long timeLeft = 0L;
     private TextView hour_timer;
@@ -80,7 +79,7 @@ public class HomeFragment extends Fragment {
         //HEADER
         totalUsage = view.findViewById(R.id.total_usage);
         percentDelta = view.findViewById(R.id.percent_delta);
-        setPercentDelta();
+
 
         String time = App.timeFormatter(Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)));
         totalUsage.setText(time);
@@ -102,17 +101,19 @@ public class HomeFragment extends Fragment {
 
         //SORT THE LIST OF APP USAGE INFO, THIS IS SORTED BY TOTAL TIME USED FOR THE DAY
 
+
         /*
         EVEN THOUGH WE WANT TO DISPLAY UP TO X AMOUNT OF APPS ON THE HOME PAGE, THERE IS NO REASON TO DISPLAY USAGE FOR APPS WITH 0 USAGE TIME
         SO WE LOOK AT THE TOP X AMOUNT OF APPS AND IF THEY DON'T HAVE A TIME GREATER THAN 0 WE DON'T INCLUDE IT IN THE DISPLAY
          */
-
         for (int i = 0; i <= maximumOnDisplay; i++) {
-            if (usageInfo.get(i).getDailyUsage() > 0) {
+            if (usageInfo.get(i).getUsage() > 0) {
                 topItems.add(usageInfo.get(i));
             } else
                 break;
         }
+
+
         //NOW WE FORM A SUBLIST OF THE TOP X APPS AND PASS IT TO THE ADAPTER
         listAdapter = new MostUsedAppsListAdapter(getContext(), topItems);
         mostUsedListView.setAdapter(listAdapter);
@@ -121,7 +122,7 @@ public class HomeFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.graph_choice);
         ViewPager viewPager = view.findViewById(R.id.graph_container);
-        ViewPageAdapter adapter = new ViewPageAdapter(getFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        ViewPageAdapter adapter = new ViewPageAdapter(getFragmentManager(), FragmentPagerAdapter.POSITION_UNCHANGED);
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -155,27 +156,15 @@ public class HomeFragment extends Fragment {
         //WE MUST REFRESH THE ADAPTER CONTAINING THE LIST VIEW
         //AND RECREATE THE LIST
         topItems.clear();
+
         for (int i = 0; i <= maximumOnDisplay; i++) {
-            if (usageInfo.get(i).getDailyUsage() > 0) {
+            if (usageInfo.get(i).getUsage() > 0) {
                 topItems.add(usageInfo.get(i));
             } else
                 break;
         }
         listAdapter.notifyDataSetChanged();
 
-//        switch (selectedGraph) {
-//            case "USAGE":
-//                createUsageChart();
-//                break;
-//            case "NOTIFICATIONS":
-//                createNotificationChart();
-//                break;
-//            case "UNLOCKS":
-//                createUnlocksChart();
-//                break;
-//            default:
-//                break;
-//        }
 
         String time = App.timeFormatter(Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)));
         totalUsage.setText(time);
@@ -350,7 +339,7 @@ public class HomeFragment extends Fragment {
 
             //String packageName = installedAppInfoList.get(position).getPackageName();
 
-            String time = installedAppInfoList.get(position).formatTime(installedAppInfoList.get(position).getDailyUsage());
+            String time = installedAppInfoList.get(position).formatTime(installedAppInfoList.get(position).getUsage());
             //long time = installedAppInfoList.get(position).getDailyUsage();
             Log.i("TRACK", "" + time);
             listHolder.time.setText(String.valueOf(time));

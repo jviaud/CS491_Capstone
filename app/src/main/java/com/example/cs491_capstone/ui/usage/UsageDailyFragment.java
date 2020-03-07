@@ -34,7 +34,7 @@ public class UsageDailyFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.graph_choice);
         ViewPager viewPager = view.findViewById(R.id.graph_container);
-        UsageFragment.ViewPageAdapter adapter = new UsageFragment.ViewPageAdapter(getFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        UsageFragment.ViewPageAdapter adapter = new UsageFragment.ViewPageAdapter(getFragmentManager(), FragmentPagerAdapter.POSITION_UNCHANGED);
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

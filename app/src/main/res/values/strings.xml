@@ -14,5 +14,6 @@
     <string name="date_placeholder">Wed, January 01 2020</string>
     <string name="date">Date</string>
     <string name="get_started">Get Started</string>
+    <string name="launcher_icon">launcher icon</string>
 
 </resources>

@@ -12,5 +12,6 @@
         <attr name="fabcolor" format="color"/>
         <attr name="devidercolor" format="color"/>
         <attr name="buttoncolor_transparent" format="color"/>
+        <attr name="launcher_background" format="color"/>
     </declare-styleable>
 </resources>
