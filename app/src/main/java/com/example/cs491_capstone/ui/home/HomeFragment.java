@@ -174,70 +174,49 @@ public class HomeFragment extends Fragment {
 
 
     private void setPercentDelta() {
-        int todayIndex = App.currentPeriod.indexOf(App.DATE);
+        int todayIndex = App.currentPeriod.get(0).indexOf(App.DATE);
 
-        try {
+
+        if (todayIndex != 0) {
             String yesterdayDate = App.currentPeriod.get(0).get(todayIndex - 1);
 
-            double todayUsage = Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)) / 60000;
-            double yesterdayUsage = Long.parseLong(App.localDatabase.getSumTotalStat(yesterdayDate, DatabaseHelper.USAGE_TIME)) / 60000;
+            double todayUsage = (double) Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)) / 60000;
+            double yesterdayUsage = (double) Long.parseLong(App.localDatabase.getSumTotalStat(yesterdayDate, DatabaseHelper.USAGE_TIME)) / 60000;
 
             String text;
-
-            if (todayUsage == 0) {
-                text = "+" + 0 + "%";
-                percentDelta.setText(text);
-            } else if (yesterdayUsage == 0) {
+            if (yesterdayUsage == 0) {
                 text = "+" + 100 + "%";
                 percentDelta.setText(text);
             } else {
-
                 double delta = ((todayUsage - yesterdayUsage) / yesterdayUsage) * 100;
-                // Log.i("DELTA", "" + todayUsage + ":" + yesterdayUsage + ":" + ":" + delta);
-
                 if (delta > 0) {
                     text = String.format(Locale.ENGLISH, "%s%.2f%s", "+", delta, "%");
-                    // "+" + delta + "%";
                     percentDelta.setText(text);
-
                 } else {
                     text = String.format(Locale.ENGLISH, "%.2f%s", delta, "%");
                     percentDelta.setText(text);
                 }
-
             }
 
-        } catch (IndexOutOfBoundsException OoBE) {
+        } else {
+            String yesterdayDate = App.currentPeriod.get(1).get(6);
 
-            String yesterdayDate = App.currentPeriod.get(1).get(App.currentPeriod.get(1).size() - 1);
-
-            double todayUsage = Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)) / 60000;
-            double yesterdayUsage = Long.parseLong(App.localDatabase.getSumTotalStat(yesterdayDate, DatabaseHelper.USAGE_TIME)) / 60000;
+            double todayUsage = (double) Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)) / 60000;
+            double yesterdayUsage = (double) Long.parseLong(App.localDatabase.getSumTotalStat(yesterdayDate, DatabaseHelper.USAGE_TIME)) / 60000;
 
             String text;
-
-            //Log.i("DELTA", "today: " + todayUsage + "   yesterday:" + yesterdayUsage);
-            if (todayUsage == 0) {
-                text = "+" + 0 + "%";
-                percentDelta.setText(text);
-            } else if (yesterdayUsage == 0) {
+            if (yesterdayUsage == 0) {
                 text = "+" + 100 + "%";
                 percentDelta.setText(text);
             } else {
-
                 double delta = ((todayUsage - yesterdayUsage) / yesterdayUsage) * 100;
-                // Log.i("DELTA", "" + todayUsage + ":" + yesterdayUsage + ":" + ":" + delta);
-
                 if (delta > 0) {
                     text = String.format(Locale.ENGLISH, "%s%.2f%s", "+", delta, "%");
-                    // "+" + delta + "%";
                     percentDelta.setText(text);
-
                 } else {
                     text = String.format(Locale.ENGLISH, "%.2f%s", delta, "%");
                     percentDelta.setText(text);
                 }
-
             }
         }
 
