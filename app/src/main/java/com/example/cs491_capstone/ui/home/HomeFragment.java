@@ -2,7 +2,6 @@ package com.example.cs491_capstone.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -10,24 +9,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.UserUsageInfo;
 import com.example.cs491_capstone.services.BackgroundMonitor;
+import com.example.cs491_capstone.ui.home.home_graphs.HomeNotificationGraphFragment;
+import com.example.cs491_capstone.ui.home.home_graphs.HomeUnlocksGraphFragment;
+import com.example.cs491_capstone.ui.home.home_graphs.HomeUsageGraphFragment;
+import com.google.android.material.tabs.TabLayout;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -38,24 +42,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import lecho.lib.hellocharts.gesture.ContainerScrollType;
-import lecho.lib.hellocharts.model.Axis;
-import lecho.lib.hellocharts.model.AxisValue;
-import lecho.lib.hellocharts.model.Column;
-import lecho.lib.hellocharts.model.ColumnChartData;
-import lecho.lib.hellocharts.model.SubcolumnValue;
-import lecho.lib.hellocharts.model.Viewport;
-import lecho.lib.hellocharts.util.ChartUtils;
-import lecho.lib.hellocharts.view.ColumnChartView;
-
 import static com.example.cs491_capstone.MainActivity.usageInfo;
 
 
-public class HomeFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class HomeFragment extends Fragment {
     /**
      * List of values on a clock from 12AM to 11PM used to label the X-Axis on the graphs
      */
-    private final static String[] clock = new String[]{"12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM",
+    public final static String[] clock = new String[]{"12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM",
             "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM",
             "8PM", "9PM", "10PM", "11PM"};
     /**
@@ -70,9 +64,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     private TextView hour_timer;
     private TextView minutes_timer;
     private TextView seconds_timer;
-    private ColumnChartView barChart;
 
-    private String selectedGraph = "";
 
     private TextView totalUsage, percentDelta;
 
@@ -106,9 +98,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         DateTimeFormatter dtf = DateTimeFormat.forPattern("EEEE, MMMM dd, yyyy");
         date.setText(dtf.print(now));
 
-        //INITIALIZE CHARTS
-        barChart = view.findViewById(R.id.home_charts);
-
 
         ///TIMER
         hour_timer = view.findViewById(R.id.timer_hours);
@@ -135,14 +124,19 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         setListViewHeightBasedOnChildren(mostUsedListView);
 
 
-        //GRAPHS
-        //graphContainer = view.findViewById(R.id.graph_container);
-        //GRAPHS
-        Spinner graphChoiceSpinner = view.findViewById(R.id.graph_choice);
-        ArrayAdapter<CharSequence> spinner_options_adapter = ArrayAdapter.createFromResource(getContext(), R.array.graphs, R.layout.spinner_item_alt);
-        spinner_options_adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        graphChoiceSpinner.setAdapter(spinner_options_adapter);
-        graphChoiceSpinner.setOnItemSelectedListener(this);
+        TabLayout tabLayout = view.findViewById(R.id.graph_choice);
+        ViewPager viewPager = view.findViewById(R.id.graph_container);
+        ViewPageAdapter adapter = new ViewPageAdapter(getFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+
+        adapter.addFragment(new HomeUsageGraphFragment(), "Usage");
+        adapter.addFragment(new HomeNotificationGraphFragment(), "Notifications");
+        adapter.addFragment(new HomeUnlocksGraphFragment(), "Unlocks");
+
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
 
 
         updateTimer();
@@ -151,7 +145,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 UserUsageInfo item = (UserUsageInfo) parent.getItemAtPosition(position);
-                Toast.makeText(getContext(), "CLICKED:  " + item.getPackageName(), Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(getContext(), DetailedAppActivity.class);
                 intent.putExtra("APP", item);
@@ -175,19 +168,19 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         }
         listAdapter.notifyDataSetChanged();
 
-        switch (selectedGraph) {
-            case "USAGE":
-                createUsageChart();
-                break;
-            case "NOTIFICATIONS":
-                createNotificationChart();
-                break;
-            case "UNLOCKS":
-                createUnlocksChart();
-                break;
-            default:
-                break;
-        }
+//        switch (selectedGraph) {
+//            case "USAGE":
+//                createUsageChart();
+//                break;
+//            case "NOTIFICATIONS":
+//                createNotificationChart();
+//                break;
+//            case "UNLOCKS":
+//                createUnlocksChart();
+//                break;
+//            default:
+//                break;
+//        }
 
         String time = App.timeFormatter(Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)));
         totalUsage.setText(time);
@@ -212,13 +205,16 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
 
             String text;
 
-            if (todayUsage == 0 || yesterdayUsage == 0) {
+            if (todayUsage == 0) {
                 text = "+" + 0 + "%";
+                percentDelta.setText(text);
+            } else if (yesterdayUsage == 0) {
+                text = "+" + 100 + "%";
                 percentDelta.setText(text);
             } else {
 
                 double delta = ((todayUsage - yesterdayUsage) / yesterdayUsage) * 100;
-                Log.i("DELTA", "" + todayUsage + ":" + yesterdayUsage + ":" + ":" + delta);
+                // Log.i("DELTA", "" + todayUsage + ":" + yesterdayUsage + ":" + ":" + delta);
 
                 if (delta > 0) {
                     text = String.format(Locale.ENGLISH, "%s%.2f%s", "+", delta, "%");
@@ -233,8 +229,37 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
             }
 
         } catch (IndexOutOfBoundsException OoBE) {
-            String text = "+" + 0 + "%";
-            percentDelta.setText(text);
+
+            String yesterdayDate = App.currentPeriod.get(1).get(App.currentPeriod.get(1).size() - 1);
+
+            double todayUsage = Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)) / 60000;
+            double yesterdayUsage = Long.parseLong(App.localDatabase.getSumTotalStat(yesterdayDate, DatabaseHelper.USAGE_TIME)) / 60000;
+
+            String text;
+
+            //Log.i("DELTA", "today: " + todayUsage + "   yesterday:" + yesterdayUsage);
+            if (todayUsage == 0) {
+                text = "+" + 0 + "%";
+                percentDelta.setText(text);
+            } else if (yesterdayUsage == 0) {
+                text = "+" + 100 + "%";
+                percentDelta.setText(text);
+            } else {
+
+                double delta = ((todayUsage - yesterdayUsage) / yesterdayUsage) * 100;
+                // Log.i("DELTA", "" + todayUsage + ":" + yesterdayUsage + ":" + ":" + delta);
+
+                if (delta > 0) {
+                    text = String.format(Locale.ENGLISH, "%s%.2f%s", "+", delta, "%");
+                    // "+" + delta + "%";
+                    percentDelta.setText(text);
+
+                } else {
+                    text = String.format(Locale.ENGLISH, "%.2f%s", delta, "%");
+                    percentDelta.setText(text);
+                }
+
+            }
         }
 
     }
@@ -263,7 +288,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
 
 
     private void updateTimer() {
-        //Toast.makeText(getContext(), "NO MORE TIME", Toast.LENGTH_SHORT).show();
         ///TIMER
         CountDownTimer timer = new CountDownTimer(App.START_TIME_IN_MILLIS, 1000) {
             @Override
@@ -299,309 +323,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         }.start();
     }
 
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        selectedGraph = parent.getItemAtPosition(position).toString();
-
-
-        switch (selectedGraph) {
-            case "USAGE":
-                //TODO ADD METHOD TO CREATE AND POPULATE GRAPHS WITH DATA, HERE
-                //graphContainer.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                createUsageChart();
-                break;
-            case "NOTIFICATIONS":
-                //TODO
-                //graphContainer.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                createNotificationChart();
-                break;
-            case "UNLOCKS":
-                //TODO
-                //graphContainer.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                createUnlocksChart();
-                break;
-        }
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-
-    private void createUsageChart() {
-
-        //STYLING FOR GRAPHS
-        barChart.setZoomEnabled(false);
-        barChart.setInteractive(true);
-        barChart.setContainerScrollEnabled(true, ContainerScrollType.VERTICAL);
-        boolean lessThanTen = true;
-        float maxValue = 0;
-        //
-
-
-        //THE LIST OF VALUES FOR THEE X-AXIS
-        List<AxisValue> xAxisValues = new ArrayList<>();
-        //A LIST OF COLUMNS TO APPEAR ON THE GRAPH
-        List<Column> columns = new ArrayList<>();
-        //EACH COLUMN CAN HAVE A SUB-COLUMN / I AM NOT SURE IF IT IS ALLOWED TO BE 0
-        List<SubcolumnValue> values;
-
-        //FOR NOW WE ONLY NEED ONE SUB COLUMN
-        int numSubColumns = 1;
-        //THE NUMBER OF COLUMNS IS THE CURRENT HOUR, THIS IS DONE FOR STYLING PURPOSES
-        //THERE IS NO REASON TO SHOW THE COLUMNS AFTER THE CURRENT HOUR BECAUSE WE KNOW THEY WILL BE 0
-        int numColumns = Integer.parseInt(App.HOUR);
-
-        //FOR EVERY COLUMN
-        for (int i = 0; i <= numColumns; ++i) {
-            //WE CREATE A LIST OF VALUES, THIS WILL COME IN HANDY WHEN WE SPLIT BY CATEGORY AND HAVE A STACKED BAR GRAPH BUT FOR NOW IT WILL ONLY HOLD ONE VALUE
-            values = new ArrayList<>();
-            for (int j = 0; j < numSubColumns; ++j) {
-
-                //WE DO NOT NEED TO CATCH ANY EXCEPTIONS HERE BECAUSE THE getSumTotalStat() METHOD WILL RETURN 0 IF NULL AND ALL DATA IS CLEAN WHEN INSERTED INTO THE GRAPH
-                long value = Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, i + "", DatabaseHelper.USAGE_TIME)) / 60000;
-
-                Log.i("GRAPH", "Hour:" + i + " ::Time:" + value);
-                //WE DIVIDE THE TOTAL TIME IN MILLI BY 60000 TO GET THE NUMBER OF MINUTES
-
-                if (value == 0) {
-                    values.add(new SubcolumnValue(value, Color.TRANSPARENT));
-                    break;
-                } else {
-                    values.add(new SubcolumnValue(value, Color.DKGRAY));
-                }
-
-
-                if (maxValue < value) {
-                    maxValue = value;
-                }
-            }
-            //THIS IS WHERE WE LABEL THE X-AXIS
-            //WE SET THE CURRENT COLUMNS X-AXIS LABEL EQUAL TO THE CORRESPONDING TIME ON THE CLOCK
-            xAxisValues.add(new AxisValue(i).setLabel(clock[i]));
-
-            //WE CREATE A COLUMN WE THE VALUES WE JUST RECEIVED FROM THE TABLE/DATABASE
-            Column column = new Column(values)
-                    .setHasLabelsOnlyForSelected(true);
-
-
-            //ADD THE CURRENT COLUMN TO THE LIST OF COLUMNS
-            columns.add(column);
-        }//END OUTER FOR LOOP
-
-        //PASS THE LIST OF COLUMNS TO THE GRAPH
-        ColumnChartData data = new ColumnChartData(columns);
-
-
-        //PASS THE LIST OF X-AXIS LABELS TO THE X-AXIS
-        Axis axisX = new Axis(xAxisValues)
-                .setName("Hour of Day") //NAME OF X-AXIS
-                .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
-                .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
-                ;
-
-
-        Axis axisY = new Axis()
-                .setName("Time Used (minutes)")//NAME OF Y-AXIS
-                .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
-                ;
-
-
-        //SET AXIS TO GRAPH
-        data.setAxisXBottom(axisX);
-        data.setAxisYLeft(axisY);
-
-        //SET COLUMNS TO GRAPH
-        barChart.setColumnChartData(data);
-
-        if (maxValue < 10) {
-            Log.i("MAXVAL","<10");
-            Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = 11;
-            barChart.setMaximumViewport(v);
-            barChart.setCurrentViewport(v);
-            barChart.setViewportCalculationEnabled(false);
-        } else {
-            if (maxValue >= 60) {
-                axisY.setName("Time Used (hours)");//NAME OF Y-AXIS
-                for (Column column : columns) {
-                    for (SubcolumnValue subcolumnValue : column.getValues()) {
-                        subcolumnValue.setValue(subcolumnValue.getValue() / 60);
-                    }
-                }
-
-            }
-
-            Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = maxValue + 5;
-            barChart.setMaximumViewport(v);
-            barChart.setCurrentViewport(v);
-            barChart.setViewportCalculationEnabled(false);
-        }
-
-        //ANIMATE GRAPH / NOT ACTUALLY NECESSARY
-        barChart.animate();
-
-    }
-
-    private void createNotificationChart() {
-
-        //STYLING FOR GRAPHS
-        barChart.setZoomEnabled(false);
-        barChart.setInteractive(true);
-        barChart.setContainerScrollEnabled(true, ContainerScrollType.VERTICAL);
-        //
-
-        //THE LIST OF VALUES FOR THEE X-AXIS
-        List<AxisValue> xAxisValues = new ArrayList<>();
-        //A LIST OF COLUMNS TO APPEAR ON THE GRAPH
-        List<Column> columns = new ArrayList<>();
-        //EACH COLUMN CAN HAVE A SUB-COLUMN / I AM NOT SURE IF IT IS ALLOWED TO BE 0
-        List<SubcolumnValue> values;
-
-        //FOR NOW WE ONLY NEED ONE SUB COLUMN
-        int numSubColumns = 1;
-        //THE NUMBER OF COLUMNS IS THE CURRENT HOUR, THIS IS DONE FOR STYLING PURPOSES
-        //THERE IS NO REASON TO SHOW THE COLUMNS AFTER THE CURRENT HOUR BECAUSE WE KNOW THEY WILL BE 0
-        int numColumns = Integer.parseInt(App.HOUR);
-
-        //FOR EVERY COLUMN
-        for (int i = 0; i <= numColumns; ++i) {
-            //WE CREATE A LIST OF VALUES, THIS WILL COME IN HANDY WHEN WE SPLIT BY CATEGORY AND HAVE A STACKED BAR GRAPH BUT FOR NOW IT WILL ONLY HOLD ONE VALUE
-            values = new ArrayList<>();
-            for (int j = 0; j < numSubColumns; ++j) {
-
-                //WE DO NOT NEED TO CATCH ANY EXCEPTIONS HERE BECAUSE THE getSumTotalStat() METHOD WILL RETURN 0 IF NULL AND ALL DATA IS CLEAN WHEN INSERTED INTO THE GRAPH
-                String val = App.localDatabase.getSumTotalStat(App.DATE, i + "", DatabaseHelper.NOTIFICATIONS_COUNT);
-                Log.i("GRAPH", "Hour:" + i + " ::VALUE:" + val);
-                //WE DIVIDE THE TOTAL TIME IN MILLI BY 60000 TO GET THE NUMBER OF MINUTES
-                values.add(new SubcolumnValue(Long.parseLong(val), ChartUtils.COLOR_RED));
-            }
-            //THIS IS WHERE WE LABEL THE X-AXIS
-            //WE SET THE CURRENT COLUMNS X-AXIS LABEL EQUAL TO THE CORRESPONDING TIME ON THE CLOCK
-            xAxisValues.add(new AxisValue(i).setLabel(clock[i]));
-
-            //WE CREATE A COLUMN WE THE VALUES WE JUST RECEIVED FROM THE TABLE/DATABASE
-            Column column = new Column(values);
-
-            //THIS IS JUST STYLING
-            column.setHasLabels(true);
-            column.setHasLabelsOnlyForSelected(true);
-
-            //ADD THE CURRENT COLUMN TO THE LIST OF COLUMNS
-            columns.add(column);
-        }
-
-        //PASS THE LIST OF COLUMNS TO THE GRAPH
-        ColumnChartData data = new ColumnChartData(columns);
-
-        //PASS THE LIST OF X-AXIS LABELS TO THE X-AXIS
-        Axis axisX = new Axis(xAxisValues)
-                .setName("Hour of Day") //NAME OF X-AXIS
-                .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
-                .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
-                ;
-
-
-        Axis axisY = new Axis()
-                .setName("Notifications Received")//NAME OF Y-AXIS
-                .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
-                ;
-
-        //SET AXIS TO GRAPH
-        data.setAxisXBottom(axisX);
-        data.setAxisYLeft(axisY);
-
-        //SET COLUMNS TO GRAPH
-        barChart.setColumnChartData(data);
-
-        //ANIMATE GRAPH / NOT ACTUALLY NECESSARY
-        barChart.animate();
-    }
-
-    private void createUnlocksChart() {
-
-        //STYLING FOR GRAPHS
-        barChart.setZoomEnabled(false);
-        barChart.setInteractive(true);
-        barChart.setContainerScrollEnabled(true, ContainerScrollType.VERTICAL);
-        //
-
-        //THE LIST OF VALUES FOR THEE X-AXIS
-        List<AxisValue> xAxisValues = new ArrayList<>();
-        //A LIST OF COLUMNS TO APPEAR ON THE GRAPH
-        List<Column> columns = new ArrayList<>();
-        //EACH COLUMN CAN HAVE A SUB-COLUMN / I AM NOT SURE IF IT IS ALLOWED TO BE 0
-        List<SubcolumnValue> values;
-
-        //FOR NOW WE ONLY NEED ONE SUB COLUMN
-        int numSubColumns = 1;
-        //THE NUMBER OF COLUMNS IS THE CURRENT HOUR, THIS IS DONE FOR STYLING PURPOSES
-        //THERE IS NO REASON TO SHOW THE COLUMNS AFTER THE CURRENT HOUR BECAUSE WE KNOW THEY WILL BE 0
-        int numColumns = Integer.parseInt(App.HOUR);
-
-        //FOR EVERY COLUMN
-        for (int i = 0; i <= numColumns; ++i) {
-            //WE CREATE A LIST OF VALUES, THIS WILL COME IN HANDY WHEN WE SPLIT BY CATEGORY AND HAVE A STACKED BAR GRAPH BUT FOR NOW IT WILL ONLY HOLD ONE VALUE
-            values = new ArrayList<>();
-            for (int j = 0; j < numSubColumns; ++j) {
-
-                //WE DO NOT NEED TO CATCH ANY EXCEPTIONS HERE BECAUSE THE getSumTotalStat() METHOD WILL RETURN 0 IF NULL AND ALL DATA IS CLEAN WHEN INSERTED INTO THE GRAPH
-                String val = App.localDatabase.getSumTotalStat(App.DATE, i + "", DatabaseHelper.UNLOCKS_COUNT);
-                Log.i("GRAPH", "Hour:" + i + " ::VALUE:" + val);
-                //WE DIVIDE THE TOTAL TIME IN MILLI BY 60000 TO GET THE NUMBER OF MINUTES
-                values.add(new SubcolumnValue(Long.parseLong(val), ChartUtils.COLOR_RED));
-            }
-            //THIS IS WHERE WE LABEL THE X-AXIS
-            //WE SET THE CURRENT COLUMNS X-AXIS LABEL EQUAL TO THE CORRESPONDING TIME ON THE CLOCK
-            xAxisValues.add(new AxisValue(i).setLabel(clock[i]));
-
-            //WE CREATE A COLUMN WE THE VALUES WE JUST RECEIVED FROM THE TABLE/DATABASE
-            Column column = new Column(values);
-
-            //THIS IS JUST STYLING
-            column.setHasLabels(true);
-            column.setHasLabelsOnlyForSelected(true);
-
-            //ADD THE CURRENT COLUMN TO THE LIST OF COLUMNS
-            columns.add(column);
-        }
-
-        //PASS THE LIST OF COLUMNS TO THE GRAPH
-        ColumnChartData data = new ColumnChartData(columns);
-
-        //PASS THE LIST OF X-AXIS LABELS TO THE X-AXIS
-        Axis axisX = new Axis(xAxisValues)
-                .setName("Hour of Day") //NAME OF X-AXIS
-                .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
-                .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
-                ;
-
-
-        Axis axisY = new Axis()
-                .setName("Unlocks")//NAME OF Y-AXIS
-                .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
-                ;
-
-        //SET AXIS TO GRAPH
-        data.setAxisXBottom(axisX);
-        data.setAxisYLeft(axisY);
-
-        //SET COLUMNS TO GRAPH
-        barChart.setColumnChartData(data);
-
-        //ANIMATE GRAPH / NOT ACTUALLY NECESSARY
-        barChart.animate();
-    }
 
     static class MostUsedAppsViewHolder {
         TextView name;
@@ -671,6 +392,39 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         }
 
 
+    }
+
+    ///ADAPTER CLASSS FOR TABBED LAYOUT
+    public static class ViewPageAdapter extends FragmentStatePagerAdapter {
+        private List<Fragment> fragmentList = new ArrayList<>();
+        private List<String> titles = new ArrayList<>();
+
+        ViewPageAdapter(@NonNull FragmentManager fm, int behavior) {
+            super(fm, behavior);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return fragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+
+            return titles.size();
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles.get(position);
+        }
+
+        void addFragment(Fragment fragment, String title) {
+            fragmentList.add(fragment);
+            titles.add(title);
+        }
     }
 
 

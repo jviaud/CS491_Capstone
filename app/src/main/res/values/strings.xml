@@ -9,10 +9,11 @@
     <string name="hours">HOURS</string>
     <string name="minutes">MINUTES</string>
     <string name="seconds">SECONDS</string>
-    <string name="most_used">Most Used</string>
+    <string name="most_used">Most Used Apps</string>
     <string name="total_usage">Total Usage</string>
     <string name="date_placeholder">Wed, January 01 2020</string>
     <string name="date">Date</string>
+    <string name="get_started">Get Started</string>
 
 
     <string-array name="graphs">

@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.R;
 
 import java.util.Map;
@@ -82,7 +83,7 @@ public class UsagePermissionFragment extends Fragment {
         //App.PACKAGE_NAME REFERS TO THIS APP SO THIS IS ESSENTIALLY A SELF CHECK
         //App.PACKAGE_NAME
 
-        boolean usage_permission = quick_usage.get("com.example.intro") != null;
+        boolean usage_permission = quick_usage.get(App.PACKAGE_NAME) != null;
         ///END PERMISSION CHECK AND PAGE CHANGE
 
         if (usage_permission & buttonClicked) {

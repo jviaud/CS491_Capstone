@@ -38,6 +38,7 @@ public class GetStartedFragment extends Fragment {
         descriptionView.setText(descriptionText);
 
         Button button = view.findViewById(R.id.button);
+        button.setText(R.string.get_started);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
