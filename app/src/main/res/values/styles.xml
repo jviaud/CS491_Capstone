@@ -9,7 +9,7 @@
         <item name="backgroundcolor">#DDE3EC</item>
         <item name="cardbackground">#FFFFFF</item>
         <item name="textcolor">#eef1f1</item>
-        <item name="textcolor_alt">#224770</item>
+        <item name="textcolor_alt">#000000</item>
         <item name="tintcolor">#000000</item>
         <item name="buttoncolor_transparent">#A29E9E</item>
         <item name="buttoncolor">#A29E9E</item>
@@ -53,6 +53,14 @@
     </style>
     <!-- -->
 
+
+<!--TOOL TIP APPEARANCE    -->
+    <style name="TooltipTextAppearance">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+<!--    -->
 
 <!--STYLING FOR TAB LAYOUT -->
 <!--    -->

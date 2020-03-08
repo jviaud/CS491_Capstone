@@ -2,8 +2,10 @@ package com.example.cs491_capstone.ui.home;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,14 +23,14 @@ import com.example.cs491_capstone.ui.home.detailed_graphs.DetailedUnlocksGraphFr
 import com.example.cs491_capstone.ui.home.detailed_graphs.DetailedUsageGraphFragment;
 import com.google.android.material.tabs.TabLayout;
 
+import static com.example.cs491_capstone.App.DATE;
+
 public class DetailedAppActivity extends AppCompatActivity {
 
+    public static String packageName;
     private TextView usage_val;
     private TextView notification_val;
     private TextView unlocks_val;
-
-    public static String packageName;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,7 +69,6 @@ public class DetailedAppActivity extends AppCompatActivity {
         }
 
 
-
         setBanner();
 
 
@@ -95,7 +96,7 @@ public class DetailedAppActivity extends AppCompatActivity {
 
     private void setBanner() {
 
-        long usageTime = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.DATE, DatabaseHelper.USAGE_TIME, packageName)) / 60000;
+        long usageTime = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(DATE, DatabaseHelper.USAGE_TIME, packageName)) / 60000;
         String usage = "";
         if (usageTime < 60) {
             usage = usageTime + " min(s)";
@@ -105,25 +106,45 @@ public class DetailedAppActivity extends AppCompatActivity {
         }
         usage_val.setText(usage);
 
-        notification_val.setText(App.localDatabase.getSumTotalStatByPackage(App.DATE, DatabaseHelper.NOTIFICATIONS_COUNT, packageName));
-        unlocks_val.setText(App.localDatabase.getSumTotalStatByPackage(App.DATE, DatabaseHelper.UNLOCKS_COUNT, packageName));
+        notification_val.setText(App.localDatabase.getSumTotalStatByPackage(DATE, DatabaseHelper.NOTIFICATIONS_COUNT, packageName));
+        unlocks_val.setText(App.localDatabase.getSumTotalStatByPackage(DATE, DatabaseHelper.UNLOCKS_COUNT, packageName));
+
+        TypedArray usage_awards = getResources().obtainTypedArray(R.array.usage_awards);
+        TypedArray notification_awards = getResources().obtainTypedArray(R.array.notification_awards);
+        TypedArray unlocks_awards = getResources().obtainTypedArray(R.array.unlocks_awards);
+
+        ImageView award_one = findViewById(R.id.award_one);
+        ImageView award_two = findViewById(R.id.award_two);
+        ImageView award_three = findViewById(R.id.award_three);
+
+
+        int index;
+        //AWARDS
+        if (App.localDatabase.getTopThreeRankings(DATE, DatabaseHelper.USAGE_TIME).contains(packageName)) {
+
+            index = App.localDatabase.getTopThreeRankings(DATE, DatabaseHelper.USAGE_TIME).indexOf(packageName);
+            award_one.setImageDrawable(usage_awards.getDrawable(index));
+            award_one.setVisibility(View.VISIBLE);
+        }
+//
+//
+        if (App.localDatabase.getTopThreeRankings(DATE, DatabaseHelper.NOTIFICATIONS_COUNT).contains(packageName)) {
+            index = App.localDatabase.getTopThreeRankings(DATE, DatabaseHelper.NOTIFICATIONS_COUNT).indexOf(packageName);
+            award_two.setImageDrawable(notification_awards.getDrawable(index));
+            award_two.setVisibility(View.VISIBLE);
+        }
+//
+//
+        if (App.localDatabase.getTopThreeRankings(DATE, DatabaseHelper.UNLOCKS_COUNT).contains(packageName)) {
+            index = App.localDatabase.getTopThreeRankings(DATE, DatabaseHelper.UNLOCKS_COUNT).indexOf(packageName);
+            award_three.setImageDrawable(unlocks_awards.getDrawable(index));
+            award_three.setVisibility(View.VISIBLE);
+        }
+
+        usage_awards.recycle();
+        notification_awards.recycle();
+        unlocks_awards.recycle();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

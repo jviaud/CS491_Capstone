@@ -15,4 +15,6 @@
     <color name="intro_inactive_indicator">#CCCCCC</color>
     <color name="backgroundcolor">?attr/backgroundcolor</color>
     <!--    END COLORS FOR INTRO SCREEN-->
+
+    <color name="transparent">#FFDA92</color>
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -45,15 +46,52 @@
             app:srcCompat="@mipmap/ic_launcher_round" />
 
 
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="195dp"
+            android:layout_height="2dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toTopOf="@+id/award_two"
+            app:layout_constraintEnd_toEndOf="@+id/award_three"
+            app:layout_constraintStart_toStartOf="@+id/award_one" />
+
+        <ImageView
+            android:id="@+id/award_one"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="4dp"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="@+id/app_category"
+            app:layout_constraintTop_toBottomOf="@+id/app_category"
+            app:srcCompat="@drawable/ic_bronze_medal_bell" />
+
+        <ImageView
+            android:id="@+id/award_two"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@+id/award_one"
+            app:layout_constraintTop_toTopOf="@+id/award_one"
+            app:srcCompat="@drawable/ic_bronze_medal_clock" />
+
+        <ImageView
+            android:id="@+id/award_three"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@+id/award_two"
+            app:layout_constraintTop_toTopOf="@+id/award_one"
+            app:srcCompat="@drawable/ic_bronze_medal_lock" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/icon_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="38dp"
             android:layout_marginEnd="16dp"
-            app:cardBackgroundColor="?attr/cardbackground"
             android:elevation="6dp"
+            app:cardBackgroundColor="?attr/cardbackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/app_icon">
@@ -66,7 +104,7 @@
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:text="TOODAY'S STATS"
                     android:textColor="?attr/textcolor_alt"
                     android:textSize="21sp"

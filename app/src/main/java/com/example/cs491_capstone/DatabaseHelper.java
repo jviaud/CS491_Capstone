@@ -10,6 +10,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 /**
  * Database helper to create firebaseDatabase and store usage statistics
  */
@@ -274,33 +276,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public int getLastEntry(String date, String packageName) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        //SELECT * FROM tablename ORDER BY column DESC LIMIT 1;
-        Cursor res = db.rawQuery("SELECT " + HOUR_OF_DAY + " FROM " + TABLE_NAME +
-                " WHERE " + DATE + " = \"" + date + "\"" + " AND " + PACKAGE_NAME + " = \"" + packageName + "\""
-                + " ORDER BY " + HOUR_OF_DAY
-                + " DESC LIMIT 1", null);
-        StringBuilder buffer = new StringBuilder();
-
-        //READ LINES FROM CURSOR INTO BUFFER
-        while (res.moveToNext()) {
-            buffer.append(res.getString(0));
-        }
-
-        res.close();
-
-
-        //RETURN STRING CONTAINING RESULT
-        Log.i("GET_SQL", "" + buffer.toString());
-        // return buffer.toString();
-        String lastEntry = buffer.toString();
-        if (lastEntry.equals("")) {
-            return 0;
-        } else
-            return Integer.parseInt(lastEntry);
-    }
-
     /**
      * @param packageName the package name of the app
      * @return A String representing the total time this app has been used today
@@ -344,7 +319,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         //
 
-        Cursor res = db.rawQuery("SELECT ROUND(SUM(" + USAGE_TIME + "),0) " +
+        Cursor res = db.rawQuery("SELECT ROUND(SUM(" + col + "),0) " +
                 "FROM " + TABLE_NAME + " " +
                 "WHERE " + DATE + "= \"" + date + "\"", null);
 
@@ -407,20 +382,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else {
             return buffer.toString();
         }
-    }
-
-    public void remove(String date) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        //
-        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE " + DATE + "= \"" + date + "\"");
-    }
-
-    public void emptyWeek(String date) {
-        //DELETE FROM USAGE_STAT_TABLE WHERE USAGE_DATE <= date("2020-02-28")
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        //
-        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE " + DATE + "< date(\"" + date + "\")");
     }
 
     public String getSumTotalStatByPackage(String date, String col, String packageName) {
@@ -490,6 +451,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public ArrayList<String> getTopThreeRankings(String date, String col) {
+        ArrayList<String> top = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + " FROM " + TABLE_NAME +
+                " GROUP BY " + PACKAGE_NAME +
+                " HAVING " + DATE + " =\"" + date + "\"" +
+                " ORDER BY SUM(" + col + ") DESC LIMIT 3", null);
+
+        //READ LINES FROM CURSOR INTO BUFFER
+
+        while (res.moveToNext()) {
+            top.add(res.getString(0));
+        }
+
+        Log.i("TOP",""+top);
+        res.close();
+        return top;
+    }
+
     /**
      * returns all data from table
      *
@@ -498,5 +479,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+    }
+
+    void emptyWeek(String date) {
+        //DELETE FROM USAGE_STAT_TABLE WHERE USAGE_DATE <= date("2020-02-28")
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        //
+        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE " + DATE + "< date(\"" + date + "\")");
     }
 }

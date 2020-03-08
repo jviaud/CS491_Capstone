@@ -391,6 +391,7 @@ public class App extends Application {
         //CREATE INSTANCE OF THE SQL LITE DATABASE
         localDatabase = new DatabaseHelper(this);
 
+        //Log.i("TOP", "" + localDatabase.getTopThreeRankings(DATE, DatabaseHelper.USAGE_TIME));
         /*
         1. SINCE currentPeriod IS SET BEFORE WE REACH THIS METHOD WE DON'T NEED TOO WORRY ABOUT IT BEING NULL
         2. WE ALSO CAN ASSURE THAT THE BOOLEAN isNewWeek IS SET TO THE CORRECT VALUE BECAUSE IT IS FALSE BY DEFAULT AND ONLY CHANGED WHEN currentPeriod IS BEING INITIALIZED

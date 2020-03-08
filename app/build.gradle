@@ -41,6 +41,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.2.1' //FIREBASE
     implementation 'joda-time:joda-time:2.10.5' // JODA-TIME
     implementation "androidx.work:work-runtime:2.3.3" //WORKER MANAGER
+    implementation 'com.tomergoldst.android:tooltips:1.0.10'//TOOL TIP
     //
     //ANIMATION
     implementation 'com.airbnb.android:lottie:3.4.0' // LOTTIE
