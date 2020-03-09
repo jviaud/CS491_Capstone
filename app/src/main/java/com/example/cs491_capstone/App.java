@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
@@ -86,16 +87,9 @@ public class App extends Application {
      */
     public static String HOUR = getCurrentHourInterval();
     /**
-     * Reference to specific table in Database holding list of system apps to exclude from filter
-     */
-    public static DatabaseReference exclusionDatabase;
-    /**
      * The name of the default home launcher app on the phone
      */
     public static String HOME_LAUNCHER_NAME;
-
-
-    //TODO TRANSFER THIS DATA INTO A TABLE
     /**
      * this boolean is used to mark the start of a new week. A new week is defined as the first Sunday
      */
@@ -115,11 +109,84 @@ public class App extends Application {
             "com.google.android.apps.wallpaper", "com.google.android.youtube");
     public static List<InstalledAppInfo> APP_LIST;
 
+    private static Context context;
     //TODO ADD OPTION TO SET TIMER TO CUSTOM TIME
     /**
      * Reference to FireBase Database
      */
     FirebaseDatabase firebaseDatabase;
+
+    public static Context getContext(){
+        return App.context;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        this.context = this;
+
+
+        //CREATE AWARDS DATABASE IN A BACKGROUND THREAD
+        AwardDataBaseHelper preloadDatabase = new AwardDataBaseHelper(this);
+        preloadDatabase.initializeDataBase();
+
+
+        //Log.i("DATE","ONCREATE");
+
+        //CREATE INSTANCE OF THE SQL LITE DATABASE
+        localDatabase = new DatabaseHelper(this);
+
+        /*
+        1. SINCE currentPeriod IS SET BEFORE WE REACH THIS METHOD WE DON'T NEED TOO WORRY ABOUT IT BEING NULL
+        2. WE ALSO CAN ASSURE THAT THE BOOLEAN isNewWeek IS SET TO THE CORRECT VALUE BECAUSE IT IS FALSE BY DEFAULT AND ONLY CHANGED WHEN currentPeriod IS BEING INITIALIZED
+        3. WE CAN REFERENCE THE INDEXES IN currentPeriod DIRECTLY BECAUSE WE ALWAYS KNOW THE SIZE OF THE LIST(4) AND THE SUB LIST(7) (THE INDEXES WILL BE ONE LESS SINCE THEY START AT 0
+        SO, WE GET THE LAST INDEX OF THE LIST AND THE LAST INDEX OF THE SUB LIST AND REMOVE ANY DATE FROM THE DATABASE LESS THAN IT
+         */
+        if (isNewWeek) {
+            localDatabase.emptyWeek(currentPeriod.get(3).get(6));
+        }
+
+
+        ///INITIALIZE DATABASE AND TABLES
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        //CACHES RECENTLY USED TABLES TO DISK -> MAY BE REMOVED LATER
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        usageDatabase = firebaseDatabase.getReference().child("UsageTable");
+        /// END INITIALIZE DATABASE AND TABLES
+
+        //usageDatabase.child("02-01-2020").child("21").child("com-cap").child("NOTIFICATION").setValue(3);
+
+
+        ///GET THE NAME OF THE HOME LAUNCHER
+        //THIS MAY VARY DEPENDING ON THE MODEL OF THE PHONE OR IF A CUSTOM LAUNCHER IS BEING USED
+        PackageManager localPackageManager = getPackageManager();
+        Intent intent = new Intent("android.intent.action.MAIN");
+        intent.addCategory("android.intent.category.HOME");
+        HOME_LAUNCHER_NAME = localPackageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY).activityInfo.packageName;
+        ///
+
+        //THIS IS A SELF CHECK FOR PACKAGE NAME
+        //WHEN CHECKING FOR USAGE_TIME PERMISSION, A PACKAGE NAME IS NEEDED
+        //MAKES SENSE TO CHECK FOR SELF BECAUSE I CAN ALWAYS GUARANTEE THIS APP EXIST WHEN CHECK OCCURS
+        //THIS IS DONE DYNAMICALLY IN CASE PACKAGE NAME CHANGES
+        PACKAGE_NAME = getApplicationContext().getPackageName();
+
+        ///GENERATE LIST OF INSTALLED APPS' PACKAGE NAMES
+        APP_LIST = getInstalledApps(this);
+        ///
+
+        ////START SHARED PREFERENCES
+        //CREATE SHARED PREFERENCE AND VALUES INSIDE SHARED PREFERENCES
+        SharedPreferences sharedPreferences = getSharedPreferences(PACKAGE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor = sharedPreferences.edit();
+        ////END SHARED PREFERENCES
+
+
+        ///CREATE NOTIFICATION CHANNELS
+        createNotificationChannel();
+
+    }
 
     public static ArrayList<InstalledAppInfo> getInstalledApps(Context context) {
         ArrayList<InstalledAppInfo> installedApps = new ArrayList<>();
@@ -380,68 +447,6 @@ public class App extends Application {
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
-
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        //Log.i("DATE","ONCREATE");
-
-        //CREATE INSTANCE OF THE SQL LITE DATABASE
-        localDatabase = new DatabaseHelper(this);
-
-        //Log.i("TOP", "" + localDatabase.getTopThreeRankings(DATE, DatabaseHelper.USAGE_TIME));
-        /*
-        1. SINCE currentPeriod IS SET BEFORE WE REACH THIS METHOD WE DON'T NEED TOO WORRY ABOUT IT BEING NULL
-        2. WE ALSO CAN ASSURE THAT THE BOOLEAN isNewWeek IS SET TO THE CORRECT VALUE BECAUSE IT IS FALSE BY DEFAULT AND ONLY CHANGED WHEN currentPeriod IS BEING INITIALIZED
-        3. WE CAN REFERENCE THE INDEXES IN currentPeriod DIRECTLY BECAUSE WE ALWAYS KNOW THE SIZE OF THE LIST(4) AND THE SUB LIST(7) (THE INDEXES WILL BE ONE LESS SINCE THEY START AT 0
-        SO, WE GET THE LAST INDEX OF THE LIST AND THE LAST INDEX OF THE SUB LIST AND REMOVE ANY DATE FROM THE DATABASE LESS THAN IT
-         */
-        if (isNewWeek) {
-            localDatabase.emptyWeek(currentPeriod.get(3).get(6));
-        }
-
-
-        ///INITIALIZE DATABASE AND TABLES
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        //CACHES RECENTLY USED TABLES TO DISK -> MAY BE REMOVED LATER
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
-        usageDatabase = firebaseDatabase.getReference().child("UsageTable");
-        exclusionDatabase = firebaseDatabase.getReference().child("ExclusionsTable");
-        /// END INITIALIZE DATABASE AND TABLES
-
-        //usageDatabase.child("02-01-2020").child("21").child("com-cap").child("NOTIFICATION").setValue(3);
-
-
-        ///GET THE NAME OF THE HOME LAUNCHER
-        //THIS MAY VARY DEPENDING ON THE MODEL OF THE PHONE OR IF A CUSTOM LAUNCHER IS BEING USED
-        PackageManager localPackageManager = getPackageManager();
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.addCategory("android.intent.category.HOME");
-        HOME_LAUNCHER_NAME = localPackageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY).activityInfo.packageName;
-        ///
-
-        //THIS IS A SELF CHECK FOR PACKAGE NAME
-        //WHEN CHECKING FOR USAGE_TIME PERMISSION, A PACKAGE NAME IS NEEDED
-        //MAKES SENSE TO CHECK FOR SELF BECAUSE I CAN ALWAYS GUARANTEE THIS APP EXIST WHEN CHECK OCCURS
-        //THIS IS DONE DYNAMICALLY IN CASE PACKAGE NAME CHANGES
-        PACKAGE_NAME = getApplicationContext().getPackageName();
-
-        ///GENERATE LIST OF INSTALLED APPS' PACKAGE NAMES
-        APP_LIST = getInstalledApps(this);
-        ///
-
-        ////START SHARED PREFERENCES
-        //CREATE SHARED PREFERENCE AND VALUES INSIDE SHARED PREFERENCES
-        SharedPreferences sharedPreferences = getSharedPreferences(PACKAGE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor prefEditor = sharedPreferences.edit();
-        ////END SHARED PREFERENCES
-
-
-        ///CREATE NOTIFICATION CHANNELS
-        createNotificationChannel();
 
     }
 
