@@ -147,8 +147,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_lock" />
-                            <entry key="sourceFile" value="F:\Users\John\Desktop\vectors\awards\award_streak_6hr.svg" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="ic_tree_stage4" />
+                            <entry key="sourceFile" value="F:\Users\John\Desktop\vectors\tree\tree_stage4.svg" />
                           </map>
                         </option>
                       </PersistentState>
