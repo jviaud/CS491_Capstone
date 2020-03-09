@@ -17,11 +17,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /**
      * The UsageTable will give detailed usage statistics for a specific app
      */
-    public static final String TABLE_NAME = "USAGE_STAT_TABLE";
+    private static final String TABLE_NAME = "USAGE_STAT_TABLE";
     /**
      * The Auto-generated Primary key present in both tables. There is no relation between the keys between the two tables other than sharing the name "Entry_ID"
      */
-    public static final String ENTRY_ID = "ENTRY_ID";
+    private static final String ENTRY_ID = "ENTRY_ID";
     /**
      * The date of the usage statistics
      */

@@ -1,4 +1,5 @@
 <resources>
+    <item name="databaseVersion" format="integer" type="string">1</item>
     <string name="app_name">CS491_Capstone</string>
     <string name="hello_world">Hello World</string>
     <string name="_00_00_00">00:00:00</string>
