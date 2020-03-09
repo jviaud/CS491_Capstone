@@ -2,6 +2,7 @@ package com.example.cs491_capstone.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -93,6 +94,9 @@ public class HomeFragment extends Fragment {
         //TREE IMAGE VIEW
         final FrameLayout treeContainer = view.findViewById(R.id.tree_container);
         tree = view.findViewById(R.id.tree);
+        if (App.HOUR.equals("0")) {
+            tree.setImageResource(R.drawable.tree_stage1);
+        }
 
         treeContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,43 +203,18 @@ public class HomeFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        //WE MUST REFRESH THE ADAPTER CONTAINING THE LIST VIEW
-        //AND RECREATE THE LIST
-        topItems.clear();
-
-        for (int i = 0; i <= maximumOnDisplay; i++) {
-            if (usageInfo.get(i).getUsage() > 0) {
-                topItems.add(usageInfo.get(i));
-            } else
-                break;
-        }
-        listAdapter.notifyDataSetChanged();
-
-
-        String time = App.timeFormatter(Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)));
-        totalUsage.setText(time);
-
-        //CHANGES BACKGROUND FOR BANNER
-        changeBannerImage();
-        //GROWS TREE BASED ON USAGE
-        growTree();
-
-
-        setPercentDelta();
-    }
-
     private void growTree() {
         long totalUsage = Long.parseLong(localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME));
         int hourOfDay = Integer.parseInt(App.HOUR);
+
+        TypedArray tree_stages = getResources().obtainTypedArray(R.array.tree_stages);
+
+
 
         ///1 hour = 60 minutes = 60 × 60 seconds = 3600 seconds = 3600 × 1000 milliseconds = 3,600,000 ms
         if (hourOfDay >= 0 & hourOfDay < 6) {
             if (totalUsage <= (1000 * 60 * 60)) {
                 tree.setVisibility(View.VISIBLE);
-                //tree.setImageResource(R.drawable.tree_stage1);
             }
 
 
@@ -262,6 +241,36 @@ public class HomeFragment extends Fragment {
             }
         }
 
+        tree_stages.recycle();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //WE MUST REFRESH THE ADAPTER CONTAINING THE LIST VIEW
+        //AND RECREATE THE LIST
+        topItems.clear();
+
+        for (int i = 0; i <= maximumOnDisplay; i++) {
+            if (usageInfo.get(i).getUsage() > 0) {
+                topItems.add(usageInfo.get(i));
+            } else
+                break;
+        }
+        listAdapter.notifyDataSetChanged();
+
+
+        String time = App.timeFormatter(Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)));
+        totalUsage.setText(time);
+
+        //CHANGES BACKGROUND FOR BANNER
+        changeBannerImage();
+        //GROWS TREE BASED ON USAGE
+        growTree();
+
+
+        setPercentDelta();
     }
 
 

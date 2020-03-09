@@ -21,4 +21,12 @@
         <item>@drawable/ic_bronze_medal_lock</item>
     </integer-array>
 
+    <integer-array name="tree_stages">
+        <item>@drawable/tree_stage1</item>
+        <item>@drawable/tree_stage2</item>
+        <item>@drawable/tree_stage3</item>
+        <item>@drawable/tree_stage4</item>
+    </integer-array>
+
+
 </resources>

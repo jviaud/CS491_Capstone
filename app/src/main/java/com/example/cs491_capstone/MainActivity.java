@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.cs491_capstone.services.BackgroundMonitor;
 import com.example.cs491_capstone.ui.home.HomeFragment;
 import com.example.cs491_capstone.ui.intro.IntroManager;
-import com.example.cs491_capstone.ui.parental.ParentalFragment;
+import com.example.cs491_capstone.ui.award.AwardFragment;
 import com.example.cs491_capstone.ui.settings.SettingsFragment;
 import com.example.cs491_capstone.ui.usage.UsageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                             selectedFragment = new HomeFragment();
                             break;
                         case R.id.nav_parental:
-                            selectedFragment = new ParentalFragment();
+                            selectedFragment = new AwardFragment();
                             break;
                         case R.id.nav_usage:
                             selectedFragment = new UsageFragment();
