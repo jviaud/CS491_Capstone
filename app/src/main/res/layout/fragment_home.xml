@@ -20,6 +20,7 @@
             android:elevation="6dp"
             android:maxWidth="200dp"
             android:maxHeight="200dp"
+            app:cardCornerRadius="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">

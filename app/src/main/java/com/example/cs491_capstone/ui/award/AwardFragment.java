@@ -1,6 +1,7 @@
 package com.example.cs491_capstone.ui.award;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -101,7 +102,10 @@ public class AwardFragment extends Fragment {
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "" + awards.get(position).name, Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(context, "" + awards.get(position).name, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context,DetailedAward.class);
+                    intent.putExtra("award", awards.get(position));
+                    context.startActivity(intent);
                 }
             });
         }

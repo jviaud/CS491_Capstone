@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         //STATUS BAR COLOR
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getResources().getColor(R.color.transparent, this.getTheme()));
+        window.setStatusBarColor(getResources().getColor(R.color.colorAccent, this.getTheme()));
         //
 
         prefs = getSharedPreferences(App.PACKAGE_NAME, MODE_PRIVATE);

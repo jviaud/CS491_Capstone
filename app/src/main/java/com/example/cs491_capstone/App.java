@@ -9,9 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -387,23 +385,6 @@ public class App extends Application {
         //CREATE INSTANCE OF THE SQL LITE DATABASE
         awardDataBase = new AwardDataBaseHelper(this);
         localDatabase = new DatabaseHelper(this);
-
-//        AsyncTask.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                //TODO your background code
-//                AwardDataBaseHelper preloadDatabase = new AwardDataBaseHelper(getApplicationContext());
-//
-//                Cursor cursor = preloadDatabase.getAllData();
-//                final int nameIndex = cursor.getColumnIndex(AwardDataBaseHelper.ACHIEVEMENT_NAME);
-//                final int statusIndex = cursor.getColumnIndex(AwardDataBaseHelper.STATUS);
-//                while (cursor.moveToNext()) {
-//                    final String name = cursor.getString(nameIndex);
-//                    final String status = cursor.getString(statusIndex);
-//                    Log.i("DB", "NAME:" + name + "/STATUS:" + status + "/n");
-//                }
-//            }
-//        });
 
 
         /*
