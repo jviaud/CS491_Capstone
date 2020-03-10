@@ -115,7 +115,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         //UPDATE TABLE_NAME SET COL = VALUE WHERE DATE = CURRENT_DATE AND HOUR_OF_DAY = CURRENT_HOUR
         //UPDATE THE CURRENT COL TO A NEW VALUE
-        //TODO MUST ENSURE THAT COL HOUR_OF_DAY AND HOUR ARE NOT NULL
         db.execSQL("UPDATE " + TABLE_NAME +
                 " SET " + col_one + "=" + value_one +
                 " WHERE " + DATE + "= \"" + App.DATE + "\"" + " AND " + HOUR_OF_DAY + "= " + App.HOUR + " AND " + PACKAGE_NAME + "= \"" + packageName + "\"");
@@ -134,7 +133,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.i("RESULT", "VALUE" + value_one);
         //UPDATE TABLE_NAME SET COL = VALUE WHERE DATE = CURRENT_DATE AND HOUR_OF_DAY = CURRENT_HOUR
         //UPDATE THE CURRENT COL TO A NEW VALUE
-        //TODO MUST ENSURE THAT COL HOUR_OF_DAY AND HOUR ARE NOT NULL
         db.execSQL("UPDATE " + TABLE_NAME +
                 " SET " + col_one + "=" + value_one +
                 " WHERE " + DATE + " = \"" + App.DATE + "\"" + " AND " + HOUR_OF_DAY + " = " + App.HOUR + " AND " + PACKAGE_NAME + " = \"" + packageName + "\"");
@@ -314,8 +312,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return A string representing to total time the phone has been used for a specific date
      */
     public String getSumTotalStat(String date, String col) {
-
-        //TODO ADD DATE FORMAT TO TAKE ANY DATE AND CHANGE IT TO MM-DD-YYYY
         SQLiteDatabase db = this.getWritableDatabase();
         //
 
@@ -350,8 +346,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return A string representing to total time the phone has been used for a specific date
      */
     public String getSumTotalStat(String date, String hour, String col) {
-
-        //TODO ADD DATE FORMAT TO TAKE ANY DATE AND CHANGE IT TO MM-DD-YYYY
         SQLiteDatabase db = this.getWritableDatabase();
         //
 
@@ -385,8 +379,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public String getSumTotalStatByPackage(String date, String col, String packageName) {
-
-        //TODO ADD DATE FORMAT TO TAKE ANY DATE AND CHANGE IT TO MM-DD-YYYY
         SQLiteDatabase db = this.getWritableDatabase();
         //
 
@@ -417,8 +409,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public String getSumTotalStatByPackage(String date, String hour, String col, String packageName) {
-
-        //TODO ADD DATE FORMAT TO TAKE ANY DATE AND CHANGE IT TO MM-DD-YYYY
         SQLiteDatabase db = this.getWritableDatabase();
         //
 

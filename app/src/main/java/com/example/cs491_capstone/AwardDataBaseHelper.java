@@ -1,243 +1,121 @@
 package com.example.cs491_capstone;
 
-import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.example.cs491_capstone.R.string;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 public class AwardDataBaseHelper extends SQLiteOpenHelper {
 
     /**
-     * THE NAME OF THIS DATABASE
-     */
-    private static final String DATABASE_NAME = "Award.db";
-    /**
-     * THE NAME OF THE TABLE
-     */
-    public static final String TABLE_NAME = "AWARDS_TABLE";
-    /**
      * THE NAME OF THE DRAWABLE AS IT APPEARS IN THE  RES/DRAWABLES FOLDER e.g R.DRAWABLES.##
      */
+    public static final String DRAWABLE_NAME = "DRAWABLE_NAME";
     public static final String ACHIEVEMENT_NAME = "ACHIEVEMENT_NAME";
-    /**
-     * THE ID OF THE DRAWABLE, THIS CAN NOT BE THE PRIMARY KEY BECAUSE DRAWABLE IDS ARE GENERATED DYNAMICALLY AND ARE SUBJECT TO CHANGE
-     */
-    public static final String ID = "ID";
     /**
      * AN INT VALUE REPRESENTING THE STATUS OF THE AWARD, 0=LOCKED 1=UNLOCKED
      */
     public static final String STATUS = "STATUS";
-
-    private static String DB_DIR = "/data/data/android.example/databases/";
-    private static String DB_PATH = DB_DIR + DATABASE_NAME;
-    private static String OLD_DB_PATH = DB_DIR + "old_" + DATABASE_NAME;
-
-    private final Context context;
-
-    private boolean createDatabase = false;
-    private boolean upgradeDatabase = false;
-
-
     /**
-     * Constructor Takes and keeps a reference of the passed context in order to
-     * access to the application assets and resources.
-     *
-     * @param context
+     * The description of the achievement
      */
-    @SuppressLint("ResourceType")
+    public static final String DESCRIPTION = "DESCRIPTION";
+    /**
+     * THE NAME OF THE TABLE
+     */
+    private static final String TABLE_NAME = "AWARDS_TABLE";
+    /**
+     * AN AUTO INCREMENT VARIABLE THAT IS THE PK
+     */
+    private static final String ENTRY_ID = "ENTRY_ID";
+    /**
+     * THE NAME OF THIS DATABASE
+     */
+    private static final String DATABASE_NAME = "Award.db";
+
+
     public AwardDataBaseHelper(@Nullable Context context) {
-        super(context, DATABASE_NAME, null, context.getResources().getInteger(string.databaseVersion));
-        this.context = context;
-        DB_DIR = context.getDatabasePath(DATABASE_NAME).getAbsolutePath();
+        super(context, DATABASE_NAME, null, 1);
+//        SQLiteDatabase db = this.getWritableDatabase();
     }
 
-    public void initializeDataBase() {/*
-     * Creates or updates the database in internal storage if it is needed
-     * before opening the database. In all cases opening the database copies
-     * the database in internal storage to the cache.
-     */
-        getWritableDatabase();
-        if (createDatabase) {
-            /*
-             * If the database is created by the copy method, then the creation
-             * code needs to go here. This method consists of copying the new
-             * database from assets into internal storage and then caching it.
-             */
-            try {
-                /*
-                 * Write over the empty data that was created in internal
-                 * storage with the one in assets and then cache it.
-                 */
-                copyDataBase();
-            } catch (IOException e) {
-                throw new Error("Error copying database");
-            }
-        } else if (upgradeDatabase) {
-            /*
-             * If the database is upgraded by the copy and reload method, then
-             * the upgrade code needs to go here. This method consists of
-             * renaming the old database in internal storage, create an empty
-             * new database in internal storage, copying the database from
-             * assets to the new database in internal storage, caching the new
-             * database from internal storage, loading the data from the old
-             * database into the new database in the cache and then deleting the
-             * old database from internal storage.
-             */
-            try {
-                FileHelper.copyFile(DB_PATH, OLD_DB_PATH);
-                copyDataBase();
-                SQLiteDatabase old_db = SQLiteDatabase.openDatabase(OLD_DB_PATH, null, SQLiteDatabase.OPEN_READWRITE);
-                SQLiteDatabase new_db = SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.OPEN_READWRITE);
-                /*
-                 * Add code to load data into the new database from the old
-                 * database and then delete the old database from internal
-                 * storage after all data has been transferred.
-                 */
-            } catch (IOException e) {
-                throw new Error("Error copying database");
-            }
-        }
-    }
-
-    /**
-     * Copies your database from your local assets-folder to the just created
-     * empty database in the system folder, from where it can be accessed and
-     * handled. This is done by transfering bytestream.
-     */
-    private void copyDataBase() throws IOException {
-        /*
-         * Close SQLiteOpenHelper so it will commit the created empty database
-         * to internal storage.
-         */
-        close();
-
-        /*
-         * Open the database in the assets folder as the input stream.
-         */
-        InputStream myInput = context.getAssets().open(DATABASE_NAME);
-
-        /*
-         * Open the empty db in interal storage as the output stream.
-         */
-        OutputStream myOutput = new FileOutputStream(DB_PATH);
-
-        /*
-         * Copy over the empty db in internal storage with the database in the
-         * assets folder.
-         */
-        FileHelper.copyFile(myInput, myOutput);
-
-        /*
-         * Access the copied database so SQLiteHelper will cache it and mark it
-         * as created.
-         */
-        getWritableDatabase().close();
-    }
-
-    /*
-     * This is where the creation of tables and the initial population of the
-     * tables should happen, if a database is being created from scratch instead
-     * of being copied from the application package assets. Copying a database
-     * from the application package assets to internal storage inside this
-     * method will result in a corrupted database.
-     * <P>
-     * NOTE: This method is normally only called when a database has not already
-     * been created. When the database has been copied, then this method is
-     * called the first time a reference to the database is retrieved after the
-     * database is copied since the database last cached by SQLiteOpenHelper is
-     * different than the database in internal storage.
-     */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        /*
-         * Signal that a new database needs to be copied. The copy process must
-         * be performed after the database in the cache has been closed causing
-         * it to be committed to internal storage. Otherwise the database in
-         * internal storage will not have the same creation timestamp as the one
-         * in the cache causing the database in internal storage to be marked as
-         * corrupted.
-         */
-        createDatabase = true;
-
-        /*
-         * This will create by reading a sql file and executing the commands in
-         * it.
-         */
-        // try {
-        // InputStream is = myContext.getResources().getAssets().open(
-        // "create_database.sql");
-        //
-        // String[] statements = FileHelper.parseSqlFile(is);
-        //
-        // for (String statement : statements) {
-        // db.execSQL(statement);
-        // }
-        // } catch (Exception ex) {
-        // ex.printStackTrace();
-        // }
+        db.execSQL("create table " + TABLE_NAME + " (" + ENTRY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + DRAWABLE_NAME + " TEXT," + STATUS + " INTEGER, " + DESCRIPTION + " TEXT," + ACHIEVEMENT_NAME + " TEXT )");
     }
 
-    /**
-     * Called only if version number was changed and the database has already
-     * been created. Copying a database from the application package assets to
-     * the internal data system inside this method will result in a corrupted
-     * database in the internal data system.
-     */
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        /*
-         * Signal that the database needs to be upgraded for the copy method of
-         * creation. The copy process must be performed after the database has
-         * been opened or the database will be corrupted.
-         */
-        upgradeDatabase = true;
-
-        /*
-         * Code to update the database via execution of sql statements goes
-         * here.
-         */
-
-        /*
-         * This will upgrade by reading a sql file and executing the commands in
-         * it.
-         */
-        // try {
-        // InputStream is = myContext.getResources().getAssets().open(
-        // "upgrade_database.sql");
-        //
-        // String[] statements = FileHelper.parseSqlFile(is);
-        //
-        // for (String statement : statements) {
-        // db.execSQL(statement);
-        // }
-        // } catch (Exception ex) {
-        // ex.printStackTrace();
-        // }
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        //MAY NEED TO BE REMOVED
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(db);
     }
 
-    /**
-     * Called everytime the database is opened by getReadableDatabase or
-     * getWritableDatabase. This is called after onCreate or onUpgrade is
-     * called.
-     */
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
+    public void insert(String drawable, String name, String description, int status) throws SQLException {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DRAWABLE_NAME, drawable);
+        contentValues.put(ACHIEVEMENT_NAME, name);
+        contentValues.put(DESCRIPTION, description);
+        contentValues.put(STATUS, status);
+
+        db.insertOrThrow(TABLE_NAME, null, contentValues);
     }
 
-    /*
-     * Add your public helper methods to access and get content from the
-     * database. You could return cursors by doing
-     * "return myDataBase.query(....)" so it'd be easy to you to create adapters
-     * for your views.
-     */
+    public void set(String name, int value) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        //UPDATE TABLE_NAME SET COL = VALUE WHERE DATE = CURRENT_DATE AND HOUR_OF_DAY = CURRENT_HOUR
+        //UPDATE THE CURRENT COL TO A NEW VALUE
+        db.execSQL("UPDATE " + TABLE_NAME +
+                " SET " + STATUS + "=" + value +
+                " WHERE " + name + "= \"" + ACHIEVEMENT_NAME + "\"");
+    }
+
+    public boolean getStatus(String name) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor res = db.rawQuery("SELECT " + STATUS + " FROM " + TABLE_NAME +
+                " WHERE " + DRAWABLE_NAME + " = \"" + name + "\"", null);
+
+        //RES WILL ONLY EVERY CONTAIN A SINGULAR VALUE BECAUSE ALL NAMES ARE UNIQUE BECAUSE THEY ARE DRAWABLE NAMES
+        //
+
+        StringBuilder buffer = new StringBuilder();
+        //RES WILL ONLY EVERY CONTAIN A SINGULAR VALUE BECAUSE ALL NAMES ARE UNIQUE BECAUSE THEY ARE DRAWABLE NAMES
+        while (res.moveToNext()) {
+            buffer.append(res.getString(0));
+        }
+        res.close();
+
+        int result = Integer.parseInt(buffer.toString());
+        return result == 0;
+    }
+
+    public String get(String name, String col) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor res = db.rawQuery("SELECT " + col + " FROM " + TABLE_NAME +
+                " WHERE " + DRAWABLE_NAME + " = \"" + name + "\"", null);
+        StringBuilder buffer = new StringBuilder();
+        //RES WILL ONLY EVERY CONTAIN A SINGULAR VALUE BECAUSE ALL NAMES ARE UNIQUE BECAUSE THEY ARE DRAWABLE NAMES
+        while (res.moveToNext()) {
+            buffer.append(res.getString(0));
+        }
+        res.close();
+
+        return buffer.toString();
+    }
+
+
+    public Cursor getAllData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+    }
 }

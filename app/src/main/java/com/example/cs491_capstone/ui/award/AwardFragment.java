@@ -1,6 +1,8 @@
 package com.example.cs491_capstone.ui.award;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +18,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cs491_capstone.AwardDataBaseHelper;
 import com.example.cs491_capstone.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.cs491_capstone.App.awardDataBase;
 
 public class AwardFragment extends Fragment {
     ArrayList<Award> awards;
@@ -46,14 +51,21 @@ public class AwardFragment extends Fragment {
     }
 
     public void generateData() {
-        int[] icons = {R.drawable.award_streak_1hr, R.drawable.award_streak_2hr, R.drawable.award_streak_6hr, R.drawable.award_streak_12hr, R.drawable.award_streak_18hr, R.drawable.award_streak_24hr};
-        String[] descriptions = {"Stay off for 1 hr", "Stay off for 2 hr", "Stay off for 6 hr", "Stay off for 12 hr", "Stay off for 18 hr", "Stay off for 24 hr"};
-        String[] names = {"1hr Streak", "2hr Streak", "6hr Streak", "12hr Streak", "18hr Streak", "24hr Streak"};
+//        int[] icons = {R.drawable.award_streak_1hr, R.drawable.award_streak_2hr, R.drawable.award_streak_6hr, R.drawable.award_streak_12hr, R.drawable.award_streak_18hr, R.drawable.award_streak_24hr};
+//        String[] descriptions = {"Stay off for 1 hr", "Stay off for 2 hr", "Stay off for 6 hr", "Stay off for 12 hr", "Stay off for 18 hr", "Stay off for 24 hr"};
+//        String[] names = {"1hr Streak", "2hr Streak", "6hr Streak", "12hr Streak", "18hr Streak", "24hr Streak"};
+        TypedArray drawables = getResources().obtainTypedArray(R.array.achievements_drawables);
 
+
+        Resources resources = getResources();
         awards = new ArrayList<>();
-
-        for (int i = 0; i < icons.length; i++) {
-            awards.add(new Award(names[i], descriptions[i], icons[i], true));
+        for (int i = 0; i < drawables.length(); i++) {
+            int resID = drawables.getResourceId(i, 0);
+            String drawableName = resources.getResourceEntryName(resID);
+            String name = awardDataBase.get(drawableName, AwardDataBaseHelper.ACHIEVEMENT_NAME);
+            String description = awardDataBase.get(drawableName, AwardDataBaseHelper.DESCRIPTION);
+            boolean status = awardDataBase.getStatus(drawableName);
+            awards.add(new Award(name, description, resID, status));
         }
 
     }

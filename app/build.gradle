@@ -47,7 +47,8 @@ dependencies {
     implementation 'com.novoda:spritz:1.0.0' //SPRITZ
     //
     //CHARTS
-    implementation 'com.github.lecho:hellocharts-android:v1.5.8' //HELLO CHARTS
+    implementation 'com.github.lecho:hellocharts-android:v1.5.8'
+    implementation 'androidx.palette:palette:1.0.0'//HELLO CHARTS
 
 
 }

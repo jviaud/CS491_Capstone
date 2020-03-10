@@ -2,7 +2,6 @@ package com.example.cs491_capstone.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -200,21 +199,18 @@ public class HomeFragment extends Fragment {
             background.setBackgroundResource(R.drawable.banner_night);
         }
 
-
     }
 
     private void growTree() {
         long totalUsage = Long.parseLong(localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME));
         int hourOfDay = Integer.parseInt(App.HOUR);
 
-        TypedArray tree_stages = getResources().obtainTypedArray(R.array.tree_stages);
-
-
 
         ///1 hour = 60 minutes = 60 × 60 seconds = 3600 seconds = 3600 × 1000 milliseconds = 3,600,000 ms
         if (hourOfDay >= 0 & hourOfDay < 6) {
             if (totalUsage <= (1000 * 60 * 60)) {
                 tree.setVisibility(View.VISIBLE);
+
             }
 
 
@@ -222,6 +218,7 @@ public class HomeFragment extends Fragment {
             if (totalUsage <= (2 * 1000 * 60 * 60)) {
                 tree.setVisibility(View.VISIBLE);
                 tree.setImageResource(R.drawable.tree_stage2);
+
             }
 
 
@@ -229,6 +226,7 @@ public class HomeFragment extends Fragment {
             if (totalUsage <= (3 * 1000 * 60 * 60)) {
                 tree.setVisibility(View.VISIBLE);
                 tree.setImageResource(R.drawable.tree_stage3);
+
             }
 
 
@@ -241,7 +239,6 @@ public class HomeFragment extends Fragment {
             }
         }
 
-        tree_stages.recycle();
 
     }
 
@@ -266,6 +263,8 @@ public class HomeFragment extends Fragment {
 
         //CHANGES BACKGROUND FOR BANNER
         changeBannerImage();
+
+
         //GROWS TREE BASED ON USAGE
         growTree();
 

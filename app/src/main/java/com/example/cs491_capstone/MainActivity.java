@@ -2,8 +2,12 @@ package com.example.cs491_capstone;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,9 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.cs491_capstone.services.BackgroundMonitor;
+import com.example.cs491_capstone.ui.award.AwardFragment;
 import com.example.cs491_capstone.ui.home.HomeFragment;
 import com.example.cs491_capstone.ui.intro.IntroManager;
-import com.example.cs491_capstone.ui.award.AwardFragment;
 import com.example.cs491_capstone.ui.settings.SettingsFragment;
 import com.example.cs491_capstone.ui.usage.UsageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -130,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
             prefs.edit().putBoolean("firstrun", false).apply();
             intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
-
             finish();
         } else {
             usageInfo = getUsageToday();
