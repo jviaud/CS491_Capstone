@@ -37,6 +37,7 @@ public class DetailedNotificationGraphFragment extends Fragment {
 
     private ColumnChartData barDataTop;
     private ColumnChartData barDataBottom;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class DetailedNotificationGraphFragment extends Fragment {
         super.onResume();
         generateColumnDataTopAsNotification();
     }
+
     private void generateColumnDataTopAsNotification() {
         barChartTop.setZoomEnabled(false);
         barChartTop.setInteractive(true);
@@ -142,6 +144,7 @@ public class DetailedNotificationGraphFragment extends Fragment {
             barChartTop.setViewportCalculationEnabled(false);
         }
     }
+
     private void generateColumnDataBottomAsNotifications(int columnIndex, int color) {
         // Cancel last animation if not finished.
         barChartBottom.cancelDataAnimation();
@@ -204,6 +207,7 @@ public class DetailedNotificationGraphFragment extends Fragment {
 
         barChartBottom.startDataAnimation(500);
     }
+
     private void generateInitialBarDataBottom() {
         barChartBottom.setZoomEnabled(false);
         barChartBottom.setInteractive(true);
@@ -251,11 +255,15 @@ public class DetailedNotificationGraphFragment extends Fragment {
 
         barChartBottom.setColumnChartData(barDataBottom); //PASS THE BAR DATA TO THE COLUMNS
 
+        // Set selection mode to keep selected month column highlighted.
+        barChartBottom.setValueSelectionEnabled(true);
+
 
         // For build-up animation you have to disable viewport recalculation.
         barChartBottom.setViewportCalculationEnabled(false);
 
     }
+
     private class ValueTouchListener implements ColumnChartOnValueSelectListener {
 
         @Override

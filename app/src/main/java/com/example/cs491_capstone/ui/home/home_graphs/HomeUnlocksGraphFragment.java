@@ -163,6 +163,10 @@ public class HomeUnlocksGraphFragment extends Fragment {
             barChart.setViewportCalculationEnabled(false);
         }
 
+        // Set selection mode to keep selected month column highlighted.
+        barChart.setValueSelectionEnabled(true);
+
+
         //ANIMATE GRAPH / NOT ACTUALLY NECESSARY
         barChart.animate();
     }

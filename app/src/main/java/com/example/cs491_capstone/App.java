@@ -328,24 +328,27 @@ public class App extends Application {
      * @return a string representing the category, return undefined if package is not found or if category is not set
      */
     public static String getAppCategoryName(String packageName, Context context) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            try {
+                //WE USE PACKAGE MANAGER TO GET APPLICATION INFO
+                //FROM APPLICATION INFO WE CAN GET A GLOBAL int REPRESENTING THE APP'S CATEGORY
+                int categoryVal = 0;
 
-        try {
-            //WE USE PACKAGE MANAGER TO GET APPLICATION INFO
-            //FROM APPLICATION INFO WE CAN GET A GLOBAL int REPRESENTING THE APP'S CATEGORY
-            int categoryVal = context.getPackageManager().getApplicationInfo(packageName, 0).category;
+                categoryVal = context.getPackageManager().getApplicationInfo(packageName, 0).category;
 
-            //THE INT WILL BE -1 IF THE APP'S CATEGORY HAS NOT BEEN DEFINED IN ITS MANIFEST
-            if (categoryVal == -1) {
-                return "UNDEFINED";
-            } else {
-                //ONCE WE HAVE THE CORRECT CATEGORY AWE MUST CONVERT IT TO A STRING BECAUSE IT IS RETURNED AS A CHARACTER ARRAY
-                //WE MUST ALSO REMOVE THE UNDERSCORE
-                return ApplicationInfo.getCategoryTitle(context, categoryVal).toString().replace("_", " ");
+
+                //THE INT WILL BE -1 IF THE APP'S CATEGORY HAS NOT BEEN DEFINED IN ITS MANIFEST
+                if (categoryVal == -1) {
+                    return "UNDEFINED";
+                } else {
+                    //ONCE WE HAVE THE CORRECT CATEGORY AWE MUST CONVERT IT TO A STRING BECAUSE IT IS RETURNED AS A CHARACTER ARRAY
+                    //WE MUST ALSO REMOVE THE UNDERSCORE
+                    return ApplicationInfo.getCategoryTitle(context, categoryVal).toString().replace("_", " ");
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
         }
-
         return "UNDEFINED";
     }
 

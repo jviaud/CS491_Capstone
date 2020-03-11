@@ -259,6 +259,9 @@ public class DetailedUnlocksGraphFragment extends Fragment {
         barChartBottom.setColumnChartData(barDataBottom); //PASS THE BAR DATA TO THE COLUMNS
 
 
+        // Set selection mode to keep selected month column highlighted.
+        barChartBottom.setValueSelectionEnabled(true);
+
         // For build-up animation you have to disable viewport recalculation.
         barChartBottom.setViewportCalculationEnabled(false);
 
