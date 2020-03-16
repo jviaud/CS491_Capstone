@@ -10,14 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -43,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static com.example.cs491_capstone.App.localDatabase;
 import static com.example.cs491_capstone.App.setListViewHeightBasedOnChildren;
 import static com.example.cs491_capstone.MainActivity.usageInfo;
 
@@ -65,8 +62,6 @@ public class HomeFragment extends Fragment {
 
     private TextView totalUsage, percentDelta;
 
-    private ConstraintLayout background;
-    private ImageView tree;
 
     @Nullable
     @Override
@@ -89,24 +84,6 @@ public class HomeFragment extends Fragment {
 
         String time = App.timeFormatter(Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)));
         totalUsage.setText(time);
-
-        //TREE IMAGE VIEW
-        final FrameLayout treeContainer = view.findViewById(R.id.tree_container);
-        tree = view.findViewById(R.id.tree);
-        if (App.HOUR.equals("0")) {
-            tree.setImageResource(R.drawable.tree_stage1);
-        }
-
-        treeContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-            }
-        });
-
-        //CHECK TIME OF DAY
-        background = view.findViewById(R.id.header_card_background);
 
 
         ///VIEWS
@@ -174,73 +151,6 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void changeBannerImage() {
-        int hour = Integer.parseInt(App.HOUR);
-
-        if (hour >= 4 & hour <= 7) {
-            //SUNRISE
-            background.setBackgroundResource(R.drawable.banner_sunrise);
-
-        } else if (hour >= 8 & hour <= 11) {
-            //MORNING
-            background.setBackgroundResource(R.drawable.banner_morning);
-
-
-        } else if (hour >= 12 & hour <= 17) {
-            //MIDDAY
-            background.setBackgroundResource(R.drawable.banner_midday);
-
-        } else if (hour >= 18 & hour <= 20) {
-            //SUNSET
-            background.setBackgroundResource(R.drawable.banner_sunset);
-
-        } else if (hour == 0 || (hour >= 21 & hour <= 23)) {
-            //NIGHT
-            background.setBackgroundResource(R.drawable.banner_night);
-        }
-
-    }
-
-    private void growTree() {
-        long totalUsage = Long.parseLong(localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME));
-        int hourOfDay = Integer.parseInt(App.HOUR);
-
-
-        ///1 hour = 60 minutes = 60 × 60 seconds = 3600 seconds = 3600 × 1000 milliseconds = 3,600,000 ms
-        if (hourOfDay >= 0 & hourOfDay < 6) {
-            if (totalUsage <= (1000 * 60 * 60)) {
-                tree.setVisibility(View.VISIBLE);
-
-            }
-
-
-        } else if (hourOfDay >= 6 & hourOfDay < 12) {
-            if (totalUsage <= (2 * 1000 * 60 * 60)) {
-                tree.setVisibility(View.VISIBLE);
-                tree.setImageResource(R.drawable.tree_stage2);
-
-            }
-
-
-        } else if (hourOfDay >= 12 & hourOfDay < 18) {
-            if (totalUsage <= (3 * 1000 * 60 * 60)) {
-                tree.setVisibility(View.VISIBLE);
-                tree.setImageResource(R.drawable.tree_stage3);
-
-            }
-
-
-        } else {
-            //18 to 23
-            if (totalUsage <= (4 * 1000 * 60 * 60)) {
-                tree.setVisibility(View.VISIBLE);
-                tree.setImageResource(R.drawable.tree_stage4);
-
-            }
-        }
-
-
-    }
 
     @Override
     public void onResume() {
@@ -260,14 +170,6 @@ public class HomeFragment extends Fragment {
 
         String time = App.timeFormatter(Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)));
         totalUsage.setText(time);
-
-        //CHANGES BACKGROUND FOR BANNER
-        changeBannerImage();
-
-
-        //GROWS TREE BASED ON USAGE
-        growTree();
-
 
         setPercentDelta();
     }

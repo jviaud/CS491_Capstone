@@ -28,28 +28,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/header_card_background"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/banner_sunrise">
+                android:layout_height="match_parent">
 
-                <FrameLayout
-                    android:id="@+id/tree_container"
-                    android:layout_width="200dp"
-                    android:layout_height="150dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="2dp"
-                    android:clickable="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/date_actual"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:id="@+id/tree"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/tree_stage1"
-                        android:visibility="gone" />
-                </FrameLayout>
 
                 <TextView
                     android:id="@+id/date_title"

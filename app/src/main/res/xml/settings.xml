@@ -1,9 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="Permissions"
-        android:icon="@drawable/bn_icon_home">
+    <PreferenceCategory android:title="General">
 
+        <Preference
+            android:key="exclusion_list"
+            android:title="Applications"
+            app:summary="Specify which applications to track" />
+
+        <SwitchPreference
+            android:key="dark_mode"
+            android:title="Dark Mode"
+            app:defaultValue="false"
+            app:summary="Toggle dark mode ON/OFF" />
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        android:title="Parental"
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="true">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="parental_controls"
+            android:summary="Enable parental control options"
+            android:title="Parental Controls" />
+
+        <Preference
+            android:dependency="parental_controls"
+            android:key="phone_limit"
+            android:title="Phone Limit"
+            app:summary="Specify usage limit for phone" />
+
+
+        <Preference
+            android:dependency="parental_controls"
+            android:key="app_limit"
+            android:title="App Limits"
+            app:summary="Specify usage limit for an app" />
+
+        <SwitchPreference
+            android:dependency="parental_controls"
+            android:key="toggle_wifi"
+            android:title="Wifi"
+            app:defaultValue="false"
+            app:summary="Toggle WiFi ON/OFF" />
+
+        <SwitchPreference
+            android:dependency="parental_controls"
+            android:title="Data"
+            app:defaultValue="false"
+            app:summary="Toggle Data ON/OFF" />
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Advanced">
+        <Preference
+            android:key="export_cvs"
+            android:summary="Produce a usage report based on specified parameters"
+            android:title="Export to csv" />
+        <Preference
+            android:key="import_csv"
+            android:summary=""
+            android:title="Import from csv"
+            app:summary="Produce visuals based on imported data" />
     </PreferenceCategory>
 </PreferenceScreen>
