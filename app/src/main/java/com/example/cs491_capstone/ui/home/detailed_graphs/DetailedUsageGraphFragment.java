@@ -18,6 +18,7 @@ import com.example.cs491_capstone.ui.home.DetailedAppActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import lecho.lib.hellocharts.gesture.ContainerScrollType;
 import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
@@ -87,11 +88,24 @@ public class DetailedUsageGraphFragment extends Fragment {
                 Log.i("STATS", "" + App.currentPeriod.get(0) + "  " + App.currentPeriod.get(0).size());
                 long val = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(0).get(i), DatabaseHelper.USAGE_TIME, DetailedAppActivity.packageName)) / 60000;
 
+
                 if (val == 0) {
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
                 } else {
-                    values.add(new SubcolumnValue(val, Color.DKGRAY));
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(val, Color.DKGRAY);
+
+                    int hours = (int) (val / (60) % 24);
+                    int minutes = (int) (val % 60);
+
+
+                    if (hours == 0) {
+                        subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s", minutes, "m"));
+                    } else {
+                        subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m"));
+                    }
+
+                    values.add(subcolumnValue);
                 }
 
 
@@ -143,29 +157,11 @@ public class DetailedUsageGraphFragment extends Fragment {
             barChartTop.setCurrentViewport(v);
             barChartTop.setViewportCalculationEnabled(false);
         } else {
-            if (maxValue >= 60) {
-                axisY.setName("Time Used (hours)");//NAME OF Y-AXIS
-                for (Column column : columns) {
-                    for (SubcolumnValue subcolumnValue : column.getValues()) {
-                        subcolumnValue.setValue(subcolumnValue.getValue() / 60);
-                        subcolumnValue.setLabel(String.format("%.2f",subcolumnValue.getValue()));
-                    }
-                }
-                Viewport v = new Viewport(barChartTop.getMaximumViewport());
-                v.top = 10;
-                barChartTop.setMaximumViewport(v);
-                barChartTop.setCurrentViewport(v);
-                barChartTop.setViewportCalculationEnabled(false);
-
-
-            } else {
-                //LESS THAN 60 BUT GREATER THAN 10
-                Viewport v = new Viewport(barChartTop.getMaximumViewport());
-                v.top = maxValue + 5;
-                barChartTop.setMaximumViewport(v);
-                barChartTop.setCurrentViewport(v);
-                barChartTop.setViewportCalculationEnabled(false);
-            }
+            Viewport v = new Viewport(barChartTop.getMaximumViewport());
+            v.top = maxValue + 20;
+            barChartTop.setMaximumViewport(v);
+            barChartTop.setCurrentViewport(v);
+            barChartTop.setViewportCalculationEnabled(false);
         }
 
 
@@ -256,8 +252,18 @@ public class DetailedUsageGraphFragment extends Fragment {
 
                 subcolumnValue.setTarget(value);
 
+                int hours = (int) (value / (60) % 24);
+                int minutes = (int) (value % 60);
+
+
+                if (hours == 0) {
+                    subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s", minutes, "m"));
+                } else {
+                    subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m"));
+                }
+
                 if (value == 0) {
-                    subcolumnValue.setColor(Color.TRANSPARENT);
+                    subcolumnValue.setColor(Color.WHITE);
                 }
 
                 if (maxValue < value) {
@@ -266,13 +272,16 @@ public class DetailedUsageGraphFragment extends Fragment {
             }
 
 
-            //NOW WE CAN SET THIS TOO BE TRUE TO MAKE THE BARS DISPLAY A VALUE WHEN CLICKED
+            //NOW WE CAN SET THIS TO BE TRUE TO MAKE THE BARS DISPLAY A VALUE WHEN CLICKED
             column.setHasLabelsOnlyForSelected(true);
         }
 
         //THIS IS FOR STYLING,
         //IF THE LARGEST VALUE IS TEN THEN WE SET THE VIEWPORT HEIGHT OF THE GRAPH TO BE EQUAL TO 10: THIS KEEPS GRAPH Y-AXIS VALUES FROM TURNING INTO DECIMALS
         //OTHERWISE WE SET IS EQUAL TO THE MAXIMUM VALUE + 5: THIS ALLOWS A LITTLE EXTRA ROOM AT THE TOP OF THE GRAPH SO THE LARGEST VALUE INST HUGGING THE TOP MARGIN
+
+        // maxValue = maxValue / 60000;
+
         if (maxValue < 10) {
             Viewport v = new Viewport(barChartBottom.getMaximumViewport());
             v.top = 10;
@@ -280,17 +289,8 @@ public class DetailedUsageGraphFragment extends Fragment {
             barChartBottom.setCurrentViewport(v);
             barChartBottom.setViewportCalculationEnabled(false);
         } else {
-            if (maxValue >= 60) {
-                barDataBottom.getAxisYLeft().setName("Time Used (hours)");//NAME OF Y-AXIS
-                for (Column column : barDataBottom.getColumns()) {
-                    for (SubcolumnValue subcolumnValue : column.getValues()) {
-                        subcolumnValue.setValue(subcolumnValue.getValue() / 60);
-                    }
-                }
-
-            }
             Viewport v = new Viewport(barChartBottom.getMaximumViewport());
-            v.top = maxValue + 5;
+            v.top = maxValue + 20;
             barChartBottom.setMaximumViewport(v);
             barChartBottom.setCurrentViewport(v);
             barChartBottom.setViewportCalculationEnabled(false);
@@ -312,7 +312,8 @@ public class DetailedUsageGraphFragment extends Fragment {
 
         @Override
         public void onValueDeselected() {
-
+            // barChartBottom.;
+            generateInitialBarDataBottom();
         }
     }
 }

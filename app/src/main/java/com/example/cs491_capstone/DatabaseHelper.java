@@ -17,14 +17,6 @@ import java.util.ArrayList;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
     /**
-     * The UsageTable will give detailed usage statistics for a specific app
-     */
-    private static final String TABLE_NAME = "USAGE_STAT_TABLE";
-    /**
-     * The Auto-generated Primary key present in both tables. There is no relation between the keys between the two tables other than sharing the name "Entry_ID"
-     */
-    private static final String ENTRY_ID = "ENTRY_ID";
-    /**
      * The date of the usage statistics
      */
     public static final String DATE = "USAGE_DATE";
@@ -49,6 +41,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * the total amount of time an app was used for
      */
     public static final String USAGE_TIME = "USAGE_TIME";
+    /**
+     * The UsageTable will give detailed usage statistics for a specific app
+     */
+    private static final String TABLE_NAME = "USAGE_STAT_TABLE";
+    /**
+     * The Auto-generated Primary key present in both tables. There is no relation between the keys between the two tables other than sharing the name "Entry_ID"
+     */
+    private static final String ENTRY_ID = "ENTRY_ID";
     /**
      * Name of the firebaseDatabase
      */
@@ -95,6 +95,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(ENTRY_ID, packageName + "-" + App.DATE + "-" + App.HOUR);
 
         //THESE VALUES WILL BE MANUALLY PASSED
+        contentValues.put(PACKAGE_NAME, packageName);
+        contentValues.put(UNLOCKS_COUNT, unlocks);
+        contentValues.put(NOTIFICATIONS_COUNT, notifications);
+        contentValues.put(USAGE_TIME, usage);
+
+        db.insertOrThrow(TABLE_NAME, null, contentValues);
+    }
+
+    /**
+     * @param id
+     * @param date
+     * @param hour
+     * @param packageName   The package name of the app
+     * @param unlocks       the number of time the app was used first after an unlock event on a specific date during 1 hour intervals
+     * @param notifications the number of notifications the app has sent on a specific date during 1 hour intervals
+     * @param usage         the total time the app has been used on a specific date during 1 hour intervals
+     * @throws SQLException Not a valid Query
+     */
+    public void insert(String id, String date, String hour, String packageName, String unlocks, String notifications, String usage) throws SQLException {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        //THESE VALUES WILL BE MANUALLY PASSED
+
+        contentValues.put(DATE, date);
+        contentValues.put(HOUR_OF_DAY, hour);
+
+        contentValues.put(ENTRY_ID, packageName + "-" + date + "-" + hour);
+
         contentValues.put(PACKAGE_NAME, packageName);
         contentValues.put(UNLOCKS_COUNT, unlocks);
         contentValues.put(NOTIFICATIONS_COUNT, notifications);
@@ -456,7 +485,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             top.add(res.getString(0));
         }
 
-        Log.i("TOP",""+top);
+        Log.i("TOP", "" + top);
         res.close();
         return top;
     }

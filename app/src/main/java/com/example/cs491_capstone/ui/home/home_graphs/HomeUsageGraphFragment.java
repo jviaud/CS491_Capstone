@@ -17,6 +17,7 @@ import com.example.cs491_capstone.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import lecho.lib.hellocharts.gesture.ContainerScrollType;
 import lecho.lib.hellocharts.model.Axis;
@@ -75,7 +76,7 @@ public class HomeUsageGraphFragment extends Fragment {
         int numSubColumns = 1;
         //THE NUMBER OF COLUMNS IS THE CURRENT HOUR, THIS IS DONE FOR STYLING PURPOSES
         //THERE IS NO REASON TO SHOW THE COLUMNS AFTER THE CURRENT HOUR BECAUSE WE KNOW THEY WILL BE 0
-        int numColumns = clock.length ;
+        int numColumns = clock.length;
 
         //FOR EVERY COLUMN
         for (int i = 0; i < numColumns; ++i) {
@@ -93,7 +94,19 @@ public class HomeUsageGraphFragment extends Fragment {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     break;
                 } else {
-                    values.add(new SubcolumnValue(value, Color.DKGRAY));
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.DKGRAY);
+
+                    int hours = (int) (value / (60) % 24);
+                    int minutes = (int) (value % 60);
+
+
+                    if (hours == 0) {
+                        subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s", minutes, "m"));
+                    } else {
+                        subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m"));
+                    }
+
+                    values.add(subcolumnValue);
                 }
 
 
@@ -142,25 +155,14 @@ public class HomeUsageGraphFragment extends Fragment {
         barChart.setColumnChartData(data);
 
         if (maxValue < 10) {
-            Log.i("MAXVAL", "<10");
             Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = 15;
+            v.top = 10;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);
         } else {
-            if (maxValue >= 60) {
-                axisY.setName("Time Used (hours)");//NAME OF Y-AXIS
-                for (Column column : columns) {
-                    for (SubcolumnValue subcolumnValue : column.getValues()) {
-                        subcolumnValue.setValue(subcolumnValue.getValue() / 60);
-                    }
-                }
-
-            }
-
             Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = maxValue + 5;
+            v.top = maxValue + 20;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);

@@ -54,7 +54,7 @@ public class App extends Application {
     /**
      * countdown timer
      */
-    public static final long START_TIME_IN_MILLIS = 60000;
+    public static final long START_TIME_IN_MILLIS = 6000000;
     /**
      *
      */
