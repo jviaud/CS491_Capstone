@@ -5,7 +5,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -22,7 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -44,19 +42,7 @@ public class App extends Application {
      */
     public static final String CHANNEL_2_ID_ALERTS = "Alerts";
     /**
-     * long representing start of year
-     */
-    public static final long START_OF_YEAR = getStartOfYear();
-    /**
-     * long representing start of day
-     */
-    public static final long START_OF_DAY = getStartOfDay();
-    /**
-     * countdown timer
-     */
-    public static final long START_TIME_IN_MILLIS = 6000000;
-    /**
-     *
+     * The days of the week
      */
     public final static String[] week = new String[]{"Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"};
     /**
@@ -77,6 +63,9 @@ public class App extends Application {
      * The SQL Lite database
      */
     public static DatabaseHelper localDatabase;
+    /**
+     * The SQL Lite database for Awards
+     */
     public static AwardDataBaseHelper awardDataBase;
     /**
      * The current date in yyyy-MM-dd format. This is used for the firebaseDatabase and must be "-" separated because "/" is a special character is firebase
@@ -108,8 +97,6 @@ public class App extends Application {
             "com.google.android.apps.messaging", "com.android.phone", "com.google.android.apps.photos", "com.android.storagemanager",
             "com.google.android.apps.wallpaper", "com.google.android.youtube");
     public static List<InstalledAppInfo> APP_LIST;
-
-    //TODO ADD OPTION TO SET TIMER TO CUSTOM TIME
     /**
      * Reference to FireBase Database
      */
@@ -270,36 +257,6 @@ public class App extends Application {
     }
 
     /**
-     * USES JODA TIME API
-     * GETS THE STARTING DATE/TIME OF CURRENT CALENDER YEAR, e.g, JANUARY 01 2020 AT THE TIME OF WRITING THIS
-     *
-     * @return long representing start of the year
-     */
-    private static long getStartOfYear() {
-
-        DateTime date = new DateTime().dayOfYear().withMinimumValue().withTimeAtStartOfDay();
-        return date.getMillis();
-    }
-
-    /**
-     * USES JODA TIME API
-     * GET TODAY'S DATE THEN GET THE START TIME OF TODAY'S DATE AS A LONG
-     * THIS WILL ALWAYS RETURN THE BEGINNING OF THE CURRENT DAY
-     *
-     * @return The long representing the start of the day
-     */
-    private static long getStartOfDay() {
-        //
-        DateTimeZone timeZone = DateTimeZone.forID("America/Montreal");
-        DateTime now = DateTime.now(timeZone);
-        DateTime todayStart = now.withTimeAtStartOfDay();
-        DateTime tomorrowStart = now.plusDays(1).withTimeAtStartOfDay();
-        Interval today = new Interval(todayStart, tomorrowStart);
-
-        return today.getStartMillis();
-    }
-
-    /**
      * @return A string representing the hour of the day in military time 12AM in 0, 1PM is 13
      */
     public static String getCurrentHourInterval() {
@@ -380,6 +337,7 @@ public class App extends Application {
 
     }
 
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -429,13 +387,6 @@ public class App extends Application {
         ///GENERATE LIST OF INSTALLED APPS' PACKAGE NAMES
         APP_LIST = getInstalledApps(this);
         ///
-
-        ////START SHARED PREFERENCES
-        //CREATE SHARED PREFERENCE AND VALUES INSIDE SHARED PREFERENCES
-        SharedPreferences sharedPreferences = getSharedPreferences(PACKAGE_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor prefEditor = sharedPreferences.edit();
-        ////END SHARED PREFERENCES
-
 
         ///CREATE NOTIFICATION CHANNELS
         createNotificationChannel();

@@ -40,6 +40,9 @@ import java.util.concurrent.TimeUnit;
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
+import static com.example.cs491_capstone.ui.settings.SettingsFragment.dataDisabled;
+import static com.example.cs491_capstone.ui.settings.SettingsFragment.parentalControls;
+import static com.example.cs491_capstone.ui.settings.SettingsFragment.wifiDisabled;
 
 public class BackgroundMonitor extends Service {
     /**
@@ -61,15 +64,7 @@ public class BackgroundMonitor extends Service {
     /**
      * tracks the time left to use your phone
      */
-    public static long timeLeft = App.START_TIME_IN_MILLIS;
-    /**
-     * boolean representing if you have pressed the home button/ if you are on the home launcher
-     */
-    private static boolean activeHome = false;
-    /**
-     * Home key button pressed receiver
-     */
-    HomeKeyBroadCastReceiver homeKey;
+    public static long timeLeft = -1;
     /**
      * The broadcast receiver for the unlock event
      */
@@ -81,7 +76,7 @@ public class BackgroundMonitor extends Service {
     /**
      * variable used to get two scheduled task running at different intervals without interfering with each other
      */
-    private long usage_timer = 60000L;
+    private long minuteTimer = 60000L;
 
     @Override
     public void onCreate() {
@@ -96,33 +91,47 @@ public class BackgroundMonitor extends Service {
         ////
 
 
-        IntentFilter homeFiler = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        homeKey = new HomeKeyBroadCastReceiver();
-        registerReceiver(homeKey, homeFiler);
-
-
         //CREATE A TASK THAT OCCURS EVERY 1 SECOND AND RUNS IN A POOL OF 5 DESIGNATED BACKGROUND THREADS
         ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(4);
         scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
             public void run() {
-                if (!(timeLeft <= 0)) {
-                    Log.i("Timer", "" + timeLeft);
-                    timeLeft -= 1000;
-                }
-
 
                 /*
                 I CAN'T GET TWO SCHEDULED TASK WORKING AT THE SAME TIME SO INSTEAD I WILL USE ONE
                 AND HAVE THE SECOND METHOD ONLY TRIGGER ONCE EVERY MINUTE
                 */
-                usage_timer -= 1000;
-                if (usage_timer == 0) {
-                    usage_timer = 60000L;
 
-                    //CHECK LIMIT MUST OCCUR IMMEDIATELY AFTER PROCESS TRACKER SO WE CAN ENSURE THAT THE APP BEING REPORTED AS IN USE IS THE CORRECT APP
+                if (parentalControls && !(timeLeft <= 0)) {
+                    timeLeft -= 1000;
+                    Log.i("TIMELEFT", "TIMELEFT:" + timeLeft + "|");
+                } else {
+                    timeLeft = -1;
+                    Log.i("TIMELEFT", "0");
+                }
 
+                minuteTimer -= 1000;
+                if (minuteTimer == 0) {
+                    minuteTimer = 60000L;
                     processTracker();
-                    checkLimit();
+
+                    //CHECK IF PARENTAL CONTROLS IS TURNED ON
+                    if (parentalControls) {
+
+                        if (timeLeft == 0) {
+                            checkLimit();
+                        }
+
+                        if (minuteTimer == 0) {
+
+                        }
+
+                        if (wifiDisabled) {
+
+                        }
+                        if (dataDisabled) {
+
+                        }
+                    }
                 }
 
 
@@ -136,7 +145,6 @@ public class BackgroundMonitor extends Service {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(unlock);
-        unregisterReceiver(homeKey);
     }
 
     /**
@@ -278,15 +286,11 @@ public class BackgroundMonitor extends Service {
         IT ALSO BLOCKS APPS FROM DRAWING OVER OTHER APPS
          */
         //getApplicationContext() IS USED IN PLACE OF "this" for CONTEXT TOO PREVENT MEMORY LEAK
-        //Toast.makeText(getApplicationContext(), "CHECK LIMIT", Toast.LENGTH_SHORT).show();
         if (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)) {
-            //Log.i("VERSION", "Version:" + Build.VERSION.SDK_INT);
             //WE FIRST CHECK TO SEE IF THE APP BEING USED ISN'T OUR OWN APP, OR A SYSTEM APP
 
             if (timeLeft <= 0) {
                 if ((!appInUse.equals(App.PACKAGE_NAME)) & isSystemApp(appInUse)) {
-                    Log.i("APP", "NOT ME :" + appInUse);
-
                     //WE THEN CHECK TO SEE IF THE TIMER HAS RUN OUT, IF IT HAS THEN WE START THE TRANSPARENT BLOCKER ACTIVITY
 
                     Intent dialogIntent = new Intent(getApplicationContext(), BlockerActivity.class);
@@ -299,13 +303,13 @@ public class BackgroundMonitor extends Service {
 
 
         } else {
-            //Toast.makeText(getApplicationContext(), "VERSION 29", Toast.LENGTH_SHORT).show();
             if (timeLeft <= 0) {
                 //Toast.makeText(getApplicationContext(), "TIME=0", Toast.LENGTH_SHORT).show();
                 if ((!appInUse.equals(App.PACKAGE_NAME)) & isSystemApp(appInUse)) {
 
+                    //NOTIFICATION ISN'T ALWAYS SENT WHEN WE SEND IT FROM THE BACKGROUND SERVICE
+                    //SO WE CALL THE UI THREAD AND RUN IT THERE
                     Handler mainHandler = new Handler(Looper.getMainLooper());
-
                     Runnable myRunnable = new Runnable() {
                         @Override
                         public void run() {
@@ -426,52 +430,6 @@ public class BackgroundMonitor extends Service {
 
         }
 
-    }
-
-    /**
-     * Broadcast receiver that checks if the home or recent buttons has been pressed and sets the boolean activeHome to be true
-     */
-    class HomeKeyBroadCastReceiver extends BroadcastReceiver {
-        final String SYSTEM_DIALOG_REASON_KEY = "reason";
-        /**
-         * press Home button
-         */
-        final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
-        /**
-         * //press recent prevApp button
-         */
-        final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
-        /**
-         * long press home button
-         **/
-        final String SYSTEM_DIALOGS_REASON_LONG_PRESS_HOME_KEY = "globalactions";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
-                String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
-                if (reason != null) {
-                    switch (reason) {
-                        case SYSTEM_DIALOG_REASON_HOME_KEY:
-                            Log.i("APP_001", "home");
-                            activeHome = true;
-
-
-                            break;
-                        case SYSTEM_DIALOG_REASON_RECENT_APPS:
-                            Log.i("APP_001", "recent");
-                            activeHome = true;
-
-                            break;
-                        case SYSTEM_DIALOGS_REASON_LONG_PRESS_HOME_KEY:
-                            //  long press home button , do something
-                            Log.i("APP_001", "long home");
-                            break;
-                    }
-                }
-            }
-        }
     }
 
 }

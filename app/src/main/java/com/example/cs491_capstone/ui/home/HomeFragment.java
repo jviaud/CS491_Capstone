@@ -2,6 +2,7 @@ package com.example.cs491_capstone.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -16,17 +17,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.UserUsageInfo;
-import com.example.cs491_capstone.services.BackgroundMonitor;
 import com.example.cs491_capstone.ui.home.home_graphs.HomeNotificationGraphFragment;
 import com.example.cs491_capstone.ui.home.home_graphs.HomeUnlocksGraphFragment;
 import com.example.cs491_capstone.ui.home.home_graphs.HomeUsageGraphFragment;
@@ -43,6 +45,8 @@ import java.util.Locale;
 
 import static com.example.cs491_capstone.App.setListViewHeightBasedOnChildren;
 import static com.example.cs491_capstone.MainActivity.usageInfo;
+import static com.example.cs491_capstone.services.BackgroundMonitor.timeLeft;
+import static com.example.cs491_capstone.ui.settings.SettingsFragment.parentalControls;
 
 
 public class HomeFragment extends Fragment {
@@ -54,13 +58,16 @@ public class HomeFragment extends Fragment {
     private ListView mostUsedListView;
     private MostUsedAppsListAdapter listAdapter;
     //TIMER
-    private Long timeLeft = 0L;
     private TextView hour_timer;
     private TextView minutes_timer;
     private TextView seconds_timer;
 
 
     private TextView totalUsage, percentDelta;
+
+    private CardView phoneTimerCard;
+
+    private SharedPreferences preferences;
 
 
     @Nullable
@@ -81,9 +88,12 @@ public class HomeFragment extends Fragment {
         totalUsage = view.findViewById(R.id.total_usage);
         percentDelta = view.findViewById(R.id.percent_delta);
 
-
         String time = App.timeFormatter(Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)));
         totalUsage.setText(time);
+
+        //PARENTAL
+        phoneTimerCard = view.findViewById(R.id.time_card_container);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
 
         ///VIEWS
@@ -136,8 +146,6 @@ public class HomeFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
 
 
-        updateTimer();
-
         mostUsedListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -158,6 +166,7 @@ public class HomeFragment extends Fragment {
         //WE MUST REFRESH THE ADAPTER CONTAINING THE LIST VIEW
         //AND RECREATE THE LIST
         topItems.clear();
+        parentalControls = preferences.getBoolean("parental_controls", false);
 
         for (int i = 0; i <= maximumOnDisplay; i++) {
             if (usageInfo.get(i).getUsage() > 0) {
@@ -167,9 +176,18 @@ public class HomeFragment extends Fragment {
         }
         listAdapter.notifyDataSetChanged();
 
-
         String time = App.timeFormatter(Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)));
         totalUsage.setText(time);
+
+        if (parentalControls) {
+            phoneTimerCard.setVisibility(View.VISIBLE);
+            if (timeLeft > 0) {
+                updateTimer();
+            }
+
+        } else {
+            phoneTimerCard.setVisibility(View.GONE);
+        }
 
         setPercentDelta();
     }
@@ -227,11 +245,9 @@ public class HomeFragment extends Fragment {
 
     private void updateTimer() {
         ///TIMER
-        CountDownTimer timer = new CountDownTimer(App.START_TIME_IN_MILLIS, 1000) {
+        CountDownTimer timer = new CountDownTimer(timeLeft, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-
-                timeLeft = BackgroundMonitor.timeLeft;
 
                 int hours = (int) (timeLeft / (1000 * 60 * 60) % 24);
                 int minutes = (int) (timeLeft / (1000 * 60) % 60);

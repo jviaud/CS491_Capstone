@@ -73,7 +73,7 @@ public class HomeUnlocksGraphFragment extends Fragment {
         int numSubColumns = 1;
         //THE NUMBER OF COLUMNS IS THE CURRENT HOUR, THIS IS DONE FOR STYLING PURPOSES
         //THERE IS NO REASON TO SHOW THE COLUMNS AFTER THE CURRENT HOUR BECAUSE WE KNOW THEY WILL BE 0
-        int numColumns = clock.length ;
+        int numColumns = clock.length;
 
         float maxValue = 0;
         //FOR EVERY COLUMN
@@ -139,22 +139,12 @@ public class HomeUnlocksGraphFragment extends Fragment {
         barChart.setColumnChartData(data);
 
         if (maxValue < 10) {
-            Log.i("MAXVAL", "<10");
             Viewport v = new Viewport(barChart.getMaximumViewport());
             v.top = 15;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);
         } else {
-            if (maxValue >= 60) {
-                axisY.setName("Time Used (hours)");//NAME OF Y-AXIS
-                for (Column column : columns) {
-                    for (SubcolumnValue subcolumnValue : column.getValues()) {
-                        subcolumnValue.setValue(subcolumnValue.getValue() / 60);
-                    }
-                }
-
-            }
 
             Viewport v = new Viewport(barChart.getMaximumViewport());
             v.top = maxValue + 5;

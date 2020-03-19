@@ -308,7 +308,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param packageName the package name of the app
      * @return A String representing the total time this app has been used today
      */
-    public String getSumAppUsageTime(String packageName) {
+    String getSumAppUsageTime(String packageName) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         //
@@ -408,6 +408,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * @param date
+     * @param col
+     * @param packageName
+     * @return The summation of a particular column by date
+     */
     public String getSumTotalStatByPackage(String date, String col, String packageName) {
         SQLiteDatabase db = this.getWritableDatabase();
         //
@@ -438,6 +444,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else return buffer.toString();
     }
 
+    /**
+     * @param date
+     * @param hour
+     * @param col
+     * @param packageName
+     * @return The summation of a particular column by date and time
+     */
     public String getSumTotalStatByPackage(String date, String hour, String col, String packageName) {
         SQLiteDatabase db = this.getWritableDatabase();
         //
@@ -471,6 +484,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * @param date
+     * @param col
+     * @return a list of the top three rows (package names) for a specified column
+     */
     public ArrayList<String> getTopThreeRankings(String date, String col) {
         ArrayList<String> top = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -501,6 +519,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
 
+    /**
+     * @return the number of rows in the database
+     */
     public int getRowCount() {
         SQLiteDatabase db = this.getReadableDatabase();
         int count = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME);
@@ -508,6 +529,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
+    /**
+     * deletes the table any date that is older than a given date
+     *
+     * @param date
+     */
     void emptyWeek(String date) {
         //DELETE FROM USAGE_STAT_TABLE WHERE USAGE_DATE <= date("2020-02-28")
 

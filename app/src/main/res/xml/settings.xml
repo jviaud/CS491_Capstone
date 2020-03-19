@@ -51,6 +51,7 @@
 
         <SwitchPreference
             android:dependency="parental_controls"
+            android:key="toggle_data"
             android:title="Data"
             app:defaultValue="false"
             app:summary="Toggle Data ON/OFF" />
