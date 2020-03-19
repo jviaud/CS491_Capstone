@@ -114,7 +114,7 @@ public class DetailedUnlocksGraphFragment extends Fragment {
 
 
         Axis axisY = new Axis()
-                .setName("Time Used (minutes)")//NAME OF Y-AXIS
+                .setName("Unlocks")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
                 .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(3)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
@@ -246,7 +246,7 @@ public class DetailedUnlocksGraphFragment extends Fragment {
 
 
         Axis axisY = new Axis()
-                .setName("Time Used (minutes)")//NAME OF Y-AXIS
+                .setName("Unlocks")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
                 .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(3)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING

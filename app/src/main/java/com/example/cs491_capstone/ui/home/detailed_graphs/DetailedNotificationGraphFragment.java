@@ -112,7 +112,7 @@ public class DetailedNotificationGraphFragment extends Fragment {
 
 
         Axis axisY = new Axis()
-                .setName("Time Used (minutes)")//NAME OF Y-AXIS
+                .setName("Notifications Received")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
                 .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(3)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
@@ -243,7 +243,7 @@ public class DetailedNotificationGraphFragment extends Fragment {
 
 
         Axis axisY = new Axis()
-                .setName("Time Used (minutes)")//NAME OF Y-AXIS
+                .setName("Notifications Received")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
                 .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(3)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
