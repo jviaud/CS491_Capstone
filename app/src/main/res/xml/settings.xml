@@ -60,7 +60,7 @@
 
     <PreferenceCategory android:title="Advanced">
         <Preference
-            android:key="export_cvs"
+            android:key="export_csv"
             android:summary="Produce a usage report based on specified parameters"
             android:title="Export to csv" />
         <Preference

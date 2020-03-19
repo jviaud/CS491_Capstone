@@ -11,8 +11,6 @@ import androidx.work.WorkerParameters;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 
-import java.util.ArrayList;
-
 public class SyncFireDBWorker extends Worker {
     public SyncFireDBWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -35,12 +33,12 @@ public class SyncFireDBWorker extends Worker {
                 final String date = cursor.getString(dateIndex);
                 final String hour = cursor.getString(hourIndex);
                 String _packageName = cursor.getString(packageNameIndex);
-                final String packageName = _packageName.replace(".","-");
+                final String packageName = _packageName.replace(".", "-");
                 final float unlocks = cursor.getInt(unlocksIndex);
                 final float notifications = cursor.getInt(notificationsIndex);
                 final float usage = cursor.getFloat(usageIndex);
 
-                Log.i("DB",""+date+"/"+hour+"/"+packageName+"/"+unlocks+"/"+notifications+"/"+usage);
+                Log.i("DB", "" + date + "/" + hour + "/" + packageName + "/" + unlocks + "/" + notifications + "/" + usage);
                 App.usageDatabase.child(date).child(hour).child(packageName).child(DatabaseHelper.UNLOCKS_COUNT).setValue(unlocks);
                 App.usageDatabase.child(date).child(hour).child(packageName).child(DatabaseHelper.NOTIFICATIONS_COUNT).setValue(notifications);
                 App.usageDatabase.child(date).child(hour).child(packageName).child(DatabaseHelper.USAGE_TIME).setValue(usage);
