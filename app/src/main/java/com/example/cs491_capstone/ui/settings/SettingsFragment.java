@@ -29,7 +29,6 @@ import androidx.preference.SwitchPreference;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.R;
-import com.example.cs491_capstone.services.BackgroundMonitor;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.opencsv.CSVReader;
@@ -48,6 +47,7 @@ import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.cs491_capstone.App.localDatabase;
+import static com.example.cs491_capstone.services.BackgroundMonitor.timeLeft;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     /**
@@ -103,6 +103,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
+        SwitchPreference phoneLimitSwitch = findPreference("parental_controls");
+        phoneLimitSwitch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (!(boolean) newValue) {
+                    timeLeft = -1;
+                }
+
+                return true;
+            }
+        });
+
         //CLICK LISTENER FOR PHONE LIMIT
         Preference phoneLimit = findPreference("phone_limit");
         phoneLimit.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -125,7 +137,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
                                 // Toast.makeText(getContext(), "" + picker.getValue(), Toast.LENGTH_SHORT).show();
-                                BackgroundMonitor.timeLeft = picker.getValue() * 60000;
+                                timeLeft = picker.getValue() * 60000;
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

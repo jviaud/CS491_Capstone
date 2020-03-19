@@ -29,11 +29,19 @@
             android:summary="Enable parental control options"
             android:title="Parental Controls" />
 
-        <Preference
+        <SwitchPreference
+            android:defaultValue="false"
             android:dependency="parental_controls"
+            android:key="phone_limit_toggle"
+            android:summary="Enable usage limit for phone"
+            android:title="Phone Usage Limit" />
+
+        <Preference
+            android:dependency="phone_limit_toggle"
             android:key="phone_limit"
-            android:title="Phone Limit"
-            app:summary="Specify usage limit for phone" />
+            android:title="Limit Time"
+            app:allowDividerBelow="true"
+            app:summary="Specify usage limit for phone"/>
 
 
         <Preference

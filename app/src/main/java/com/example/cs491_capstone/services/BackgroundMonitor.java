@@ -101,12 +101,8 @@ public class BackgroundMonitor extends Service {
                 AND HAVE THE SECOND METHOD ONLY TRIGGER ONCE EVERY MINUTE
                 */
 
-                if (parentalControls && !(timeLeft <= 0)) {
+                if (parentalControls && !(timeLeft < 0)) {
                     timeLeft -= 1000;
-                    Log.i("TIMELEFT", "TIMELEFT:" + timeLeft + "|");
-                } else {
-                    timeLeft = -1;
-                    Log.i("TIMELEFT", "0");
                 }
 
                 minuteTimer -= 1000;
