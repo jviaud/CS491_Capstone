@@ -1,12 +1,8 @@
 package com.example.cs491_capstone.ui.intro;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -21,7 +17,6 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.example.cs491_capstone.AwardDataBaseHelper;
 import com.example.cs491_capstone.R;
 import com.novoda.spritz.Spritz;
 import com.novoda.spritz.SpritzStep;
@@ -42,30 +37,6 @@ public class IntroManager extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro_manager);
-
-
-        //POPULATE THE AWARDS TABLE,
-        //WE ONLY WANT THIS TO POPULATE THE FIRST TIME THIS APP RUNS
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                AwardDataBaseHelper db = new AwardDataBaseHelper(getApplicationContext());
-                TypedArray drawables = getResources().obtainTypedArray(R.array.achievements_drawables);
-                TypedArray names = getResources().obtainTypedArray(R.array.achievements_names);
-                TypedArray descriptions = getResources().obtainTypedArray(R.array.achievements_descriptions);
-                Resources resources = getResources();
-
-                for (int i = 0; i < drawables.length(); i++) {
-                    String drawableName = resources.getResourceEntryName(drawables.getResourceId(i, 0));
-                    //will use int resId = resources.getIdentifier(name, "drawable", "your.package.name");
-                    db.insert(drawableName, names.getString(i), descriptions.getString(i), 0);
-                    Log.i("DB", "DRAWABLE:"+drawableName+"||NAME:"+names.getString(i)+"||DESCP:"+descriptions.getString(i));
-                }
-                drawables.recycle();
-                names.recycle();
-                descriptions.recycle();
-            }
-        });
 
         InkPageIndicator pageIndicator = findViewById(R.id.indicator);
         pager = findViewById(R.id.intro_pager);

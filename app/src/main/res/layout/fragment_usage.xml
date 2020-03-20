@@ -20,17 +20,27 @@
             android:id="@+id/indicator"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/tab_gradient_bg" />
 
         <com.google.android.material.tabs.TabLayout
+            style="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:id="@+id/tabbed_layout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            app:tabGravity="fill"
-            app:tabIndicatorColor="@null"
             app:tabMode="fixed"
             app:tabRippleColor="@null"
-            app:tabSelectedTextColor="?attr/textcolor" />
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@null"
+            android:clipToPadding="false"
+            app:tabGravity="center"
+            app:tabIndicatorColor="#ffffff"
+            app:tabIndicatorHeight="0dp"
+            app:tabPaddingEnd="10dp"
+            app:tabPaddingStart="10dp"
+            app:tabSelectedTextColor="?attr/textcolor"
+
+            />
 
     </FrameLayout>
 

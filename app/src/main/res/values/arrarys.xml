@@ -21,33 +21,4 @@
         <item>@drawable/ic_bronze_medal_lock</item>
     </integer-array>
 
-    <!-- THESE THREE LIST ARE USED TO GENERATE THE AWARDS DATABASE   -->
-    <array name="achievements_drawables">
-        <item>@drawable/award_streak_1hr</item>
-        <item>@drawable/award_streak_2hr</item>
-        <item>@drawable/award_streak_6hr</item>
-        <item>@drawable/award_streak_12hr</item>
-        <item>@drawable/award_streak_18hr</item>
-        <item>@drawable/award_streak_24hr</item>
-    </array>
-    <!-- ORDER OF NAMES MUST MATCH ORDER OF DRAWABLE -->
-    <string-array name="achievements_names">
-        <item>"1HR STREAK"</item>
-        <item>"2HR STREAK"</item>
-        <item>"6HR STREAK"</item>
-        <item>"12HR STREAK"</item>
-        <item>"18HR STREAK"</item>
-        <item>"24HR STREAK"</item>
-    </string-array>
-    <!-- ORDER OF DESCRIPTION MUST MATCH ORDER OF DRAWABLE -->
-    <string-array name="achievements_descriptions">
-        <item>"DON'T USE YOUR PHONE FOR 1 HOUR"</item>
-        <item>"DON'T USE YOUR PHONE FOR 2 HOURS"</item>
-        <item>"DON'T USE YOUR PHONE FOR 6 HOURS"</item>
-        <item>"DON'T USE YOUR PHONE FOR 12 HOURS"</item>
-        <item>"DON'T USE YOUR PHONE FOR 18 HOURS"</item>
-        <item>"DON'T USE YOUR PHONE FOR 24 HOURS"</item>
-    </string-array>
-    <!--    -->
-
 </resources>

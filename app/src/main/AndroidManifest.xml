@@ -43,10 +43,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.award.DetailedAward"
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.TransparentCard" />
 
 
         <service
