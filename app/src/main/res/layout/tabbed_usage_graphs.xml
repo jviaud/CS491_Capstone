@@ -5,26 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/backarrow"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toTopOf="@+id/graph_card_container"
-        app:layout_constraintStart_toStartOf="@+id/graph_card_container"
-        app:srcCompat="@drawable/ic_back_arrow" />
-
-
-    <ImageView
-        android:id="@+id/nextarrow"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toTopOf="@+id/graph_card_container"
-        app:layout_constraintEnd_toEndOf="@+id/graph_card_container"
-        app:srcCompat="@drawable/ic_next_arrow" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/graph_card_container"
@@ -126,13 +106,17 @@
     <TextView
         android:id="@+id/show_today"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="4dp"
         android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
-        android:text="SHOW TODAY"
+        android:text="@string/show_today"
+        android:textAllCaps="true"
+        android:textStyle="bold"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/graph_card_container"
         app:layout_constraintEnd_toStartOf="@+id/nextarrow"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -143,8 +127,31 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:text="CATEGORY"
+        android:textAllCaps="true"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/graph_card_container" />
+        app:layout_constraintTop_toBottomOf="@+id/graph_card_container"
+        tools:ignore="HardcodedText" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/backarrow"
+        android:layout_width="15dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/graph_card_container"
+        app:layout_constraintStart_toStartOf="@+id/graph_card_container"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Button.Triangle.Prev" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/nextarrow"
+        android:layout_width="15dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/graph_card_container"
+        app:layout_constraintEnd_toEndOf="@+id/graph_card_container"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Button.Triangle.Next" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

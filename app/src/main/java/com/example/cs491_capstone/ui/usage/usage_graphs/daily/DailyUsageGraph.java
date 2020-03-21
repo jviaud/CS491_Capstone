@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +19,7 @@ import com.example.cs491_capstone.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import lecho.lib.hellocharts.gesture.ContainerScrollType;
 import lecho.lib.hellocharts.model.Axis;
@@ -28,12 +31,23 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 import static com.example.cs491_capstone.App.clock;
+import static com.example.cs491_capstone.App.currentPeriod;
 
 public class DailyUsageGraph extends Fragment {
+    private static boolean change = false;
+    private final String MAX_PREV = currentPeriod.get(3).get(0);
+    private final String MAX_NEXT = currentPeriod.get(0).get(6);
     private ColumnChartView barChart;
+    private TextView todayDate;
+    private Button prevButton, nextButton;
+    private Button changeGraph;
+    private String graphDate;
+    private int indexInPeriod = 0;
+    private int indexInWeek;
 
     @Nullable
     @Override
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.tabbed_usage_graphs, container, false);
     }
@@ -42,21 +56,110 @@ public class DailyUsageGraph extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         barChart = view.findViewById(R.id.daily_chart);
+        final TextView showToday = view.findViewById(R.id.show_today);
+        todayDate = view.findViewById(R.id.date);
+        prevButton = view.findViewById(R.id.backarrow);
+        nextButton = view.findViewById(R.id.nextarrow);
+        changeGraph = view.findViewById(R.id.change_graph);
+
+        indexInWeek = currentPeriod.get(indexInPeriod).indexOf(App.DATE);
+        graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
+        Log.i("GRAPHS", "DATE=" + graphDate + "|" + currentPeriod.get(0).get(6));
+        if (graphDate.equals(MAX_NEXT)) {
+            nextButton.setVisibility(View.GONE);
+        }
+
+        showToday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                graphDate = App.DATE;
+                todayDate.setText(graphDate);
+                if (graphDate.equals(MAX_NEXT)) {
+                    nextButton.setVisibility(View.GONE);
+                }
+                showToday.setVisibility(View.GONE);
+                createUsageChart(graphDate);
+
+            }
+        });
+
+
+        prevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("GRAPHS", "PREV1.INDEX IN WEEK " + indexInWeek + "| INDEX IN PERIOD " + indexInPeriod);
+                nextButton.setVisibility(View.VISIBLE);
+                indexInWeek--;
+                if (indexInWeek >= 0) {
+                    graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
+                    todayDate.setText(graphDate);
+                    createUsageChart(graphDate);
+                } else {
+                    indexInPeriod++;
+                    indexInWeek = 6;
+                    if (indexInPeriod < 4) {
+                        graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
+                        todayDate.setText(graphDate);
+                        createUsageChart(graphDate);
+                    }
+                }
+                if (graphDate.equals(MAX_PREV)) {
+                    prevButton.setVisibility(View.GONE);
+                }
+                if (!graphDate.equals(App.DATE)) {
+                    showToday.setVisibility(View.VISIBLE);
+                } else {
+                    showToday.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("GRAPHS", "NEXT1.INDEX IN WEEK " + indexInWeek + "| INDEX IN PERIOD " + indexInPeriod);
+                prevButton.setVisibility(View.VISIBLE);
+                indexInWeek++;
+                if (indexInWeek <= 6) {
+                    graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
+                    todayDate.setText(graphDate);
+                    createUsageChart(graphDate);
+                } else {
+                    indexInPeriod--;
+                    indexInWeek = 0;
+                    if (indexInPeriod > 0) {
+                        graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
+                        todayDate.setText(graphDate);
+                        createUsageChart(graphDate);
+                    }
+
+                }
+                if (graphDate.equals(MAX_NEXT)) {
+                    nextButton.setVisibility(View.GONE);
+                }
+                if (!graphDate.equals(App.DATE)) {
+                    showToday.setVisibility(View.VISIBLE);
+                } else {
+                    showToday.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        todayDate.setText(graphDate);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        createUsageChart();
+        createUsageChart(graphDate);
     }
 
-    private void createUsageChart() {
+    private void createUsageChart(String date) {
 
         //STYLING FOR GRAPHS
         barChart.setZoomEnabled(false);
         barChart.setInteractive(true);
         barChart.setContainerScrollEnabled(true, ContainerScrollType.VERTICAL);
-        boolean lessThanTen = true;
         float maxValue = 0;
         //
 
@@ -81,7 +184,7 @@ public class DailyUsageGraph extends Fragment {
             for (int j = 0; j < numSubColumns; ++j) {
 
                 //WE DO NOT NEED TO CATCH ANY EXCEPTIONS HERE BECAUSE THE getSumTotalStat() METHOD WILL RETURN 0 IF NULL AND ALL DATA IS CLEAN WHEN INSERTED INTO THE GRAPH
-                long value = Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, i + "", DatabaseHelper.USAGE_TIME)) / 60000;
+                long value = Long.parseLong(App.localDatabase.getSumTotalStat(date, i + "", DatabaseHelper.USAGE_TIME)) / 60000;
 
                 Log.i("GRAPH", "Hour:" + i + " ::Time:" + value);
                 //WE DIVIDE THE TOTAL TIME IN MILLI BY 60000 TO GET THE NUMBER OF MINUTES
@@ -90,7 +193,19 @@ public class DailyUsageGraph extends Fragment {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     break;
                 } else {
-                    values.add(new SubcolumnValue(value, Color.DKGRAY));
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.DKGRAY);
+
+                    int hours = (int) (value / (60) % 24);
+                    int minutes = (int) (value % 60);
+
+
+                    if (hours == 0) {
+                        subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s", minutes, "m"));
+                    } else {
+                        subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m"));
+                    }
+
+                    values.add(subcolumnValue);
                 }
 
 
@@ -139,32 +254,27 @@ public class DailyUsageGraph extends Fragment {
         barChart.setColumnChartData(data);
 
         if (maxValue < 10) {
-            Log.i("MAXVAL", "<10");
             Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = 11;
+            v.top = 15;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);
         } else {
-            if (maxValue >= 60) {
-                axisY.setName("Time Used (hours)");//NAME OF Y-AXIS
-                for (Column column : columns) {
-                    for (SubcolumnValue subcolumnValue : column.getValues()) {
-                        subcolumnValue.setValue(subcolumnValue.getValue() / 60);
-                    }
-                }
-
-            }
-
             Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = maxValue + 5;
+            v.top = maxValue + 20;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);
         }
 
+        // Set selection mode to keep selected month column highlighted.
+        barChart.setValueSelectionEnabled(true);
+
+
         //ANIMATE GRAPH / NOT ACTUALLY NECESSARY
         barChart.animate();
 
     }
+
+
 }
