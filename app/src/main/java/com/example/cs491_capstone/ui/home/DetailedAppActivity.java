@@ -37,7 +37,6 @@ public class DetailedAppActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_app);
 
-
         //INITIALISE ALL OF THE VIEWS
         ImageView appIcon = findViewById(R.id.app_icon);
         TextView appName = findViewById(R.id.app_name);
@@ -56,6 +55,8 @@ public class DetailedAppActivity extends AppCompatActivity {
 
 
         packageName = appInfo.getPackageName();
+
+
         //SET ICON & CATEGORY
         try {
             Drawable mIcon = getPackageManager().getApplicationIcon(packageName);
@@ -85,7 +86,6 @@ public class DetailedAppActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.cs491_capstone.ui.settings;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,11 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
@@ -28,6 +34,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreference;
 
 import com.example.cs491_capstone.App;
+import com.example.cs491_capstone.InstalledAppInfo;
 import com.example.cs491_capstone.R;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
@@ -46,6 +53,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
+import static com.example.cs491_capstone.App.ALL_APPS_LIST;
 import static com.example.cs491_capstone.App.localDatabase;
 import static com.example.cs491_capstone.services.BackgroundMonitor.timeLeft;
 
@@ -79,6 +87,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      */
     private static int dbSize;
 
+    private InstalledAppsListAdapter listAdapter;
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.settings, rootKey);
@@ -86,11 +96,42 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         //Initialise the size of the database
         dbSize = localDatabase.getRowCount();
 
+        listAdapter = new InstalledAppsListAdapter(getContext(), ALL_APPS_LIST);
 
         /*
         It would be better too implement the Onclick listener so it isn't so cluttered here but I can't get the click events to trigger the listeners that way
         So I unfortunately have to put all the click listeners here
          */
+
+        Preference appList = findPreference(("exclusion_list"));
+        appList.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                LayoutInflater inflater = requireActivity().getLayoutInflater();
+                View view = inflater.inflate(R.layout.dialog_apps_list_layout, null);
+
+                ListView listView = view.findViewById(R.id.dialog_list);
+                listView.setAdapter(listAdapter);
+
+                builder.setView(view)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Toast.makeText(getContext(), "" + picker.getValue(), Toast.LENGTH_SHORT).show();
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+
+
+                return true;
+            }
+        });
 
 
         //CLICK LISTENER FOR PARENTAL CONTROLS  SWITCH
@@ -103,6 +144,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
+        //CLICK LISTENER FOR PHONE LIMIT SWITCH
         SwitchPreference phoneLimitSwitch = findPreference("parental_controls");
         phoneLimitSwitch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -568,4 +610,84 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
 
+    static class InstalledAppsViewHolder {
+        CheckBox box;
+        ImageView icon;
+
+    }
+
+    private static class InstalledAppsListAdapter extends BaseAdapter {
+        private LayoutInflater inflater;
+        private List<InstalledAppInfo> installedAppInfoList;
+
+        //CONSTRUCTOR
+        InstalledAppsListAdapter(Context context, List<InstalledAppInfo> installedAppInfoList) {
+            inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            this.installedAppInfoList = installedAppInfoList;
+        }
+
+
+        @Override
+        public int getCount() {
+            return installedAppInfoList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return installedAppInfoList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            InstalledAppsViewHolder listHolder;
+
+            if (convertView == null) {
+                //CREATE VIEWHOLDER AND INFLATE LAYOUT
+                listHolder = new InstalledAppsViewHolder();
+                convertView = inflater.inflate(R.layout.dialog_list_layout, parent, false);
+
+                //ASSIGN VIEW HOLDER CLASS VARIABLE TO LAYOUT
+                listHolder.icon = convertView.findViewById(R.id.icon);
+                listHolder.box = convertView.findViewById(R.id.checkBox);
+
+                convertView.setTag(listHolder);
+
+            } else {
+                listHolder = (InstalledAppsViewHolder) convertView.getTag();
+            }
+
+            listHolder.icon.setImageDrawable(installedAppInfoList.get(position).getIcon());
+            listHolder.box.setText(installedAppInfoList.get(position).getSimpleName());
+
+            final boolean state = installedAppInfoList.get(position).isTracked();
+            listHolder.box.setChecked(state);
+
+            listHolder.box.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    installedAppInfoList.get(position).setTracked(!state);
+                }
+            });
+
+            if (state) {
+                Log.i("TRACKED", installedAppInfoList.get(position).getPackageName());
+            }
+
+
+
+
+
+            /*Set tag to all checkBox**/
+            listHolder.box.setTag(position);
+
+
+            return convertView;
+        }
+
+    }
 }

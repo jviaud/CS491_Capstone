@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.example.cs491_capstone.services.BackgroundMonitor;
 import com.example.cs491_capstone.ui.award.GoalsFragment;
@@ -26,7 +27,7 @@ import java.util.Collections;
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
-import static com.example.cs491_capstone.App.APP_LIST;
+import static com.example.cs491_capstone.App.ALL_APPS_LIST;
 import static com.example.cs491_capstone.App.localDatabase;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,13 +68,18 @@ public class MainActivity extends AppCompatActivity {
         //WE DON'T HAVE TO FILTER IT AGAIN
         ArrayList<UserUsageInfo> usageInfo = new ArrayList<>();
 
-        for (int i = 0; i < APP_LIST.size(); i++) {
-            String packageName = APP_LIST.get(i).getPackageName();
-            String appName = APP_LIST.get(i).getSimpleName();
-            Drawable icon = APP_LIST.get(i).getIcon();
-            Long time = Long.parseLong(localDatabase.getSumAppUsageTime(packageName));
 
-            usageInfo.add(new UserUsageInfo(packageName, appName, icon, time));
+        for (int i = 0; i < ALL_APPS_LIST.size(); i++) {
+            String packageName = ALL_APPS_LIST.get(i).getPackageName();
+
+
+            if (ALL_APPS_LIST.get(i).isTracked()) {
+                String appName = ALL_APPS_LIST.get(i).getSimpleName();
+                Drawable icon = ALL_APPS_LIST.get(i).getIcon();
+                Long time = Long.parseLong(localDatabase.getSumAppUsageTime(packageName));
+                usageInfo.add(new UserUsageInfo(packageName, appName, icon, time));
+            }
+            //Log.i("TRACKED", packageName);
         }
 
         Collections.sort(usageInfo);
@@ -91,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         window.setStatusBarColor(getResources().getColor(R.color.colorAccent, this.getTheme()));
         //
 
-        prefs = getSharedPreferences(App.PACKAGE_NAME, MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         //CREATE BOTTOM NAVIGATION
         BottomNavigationView bottomNaV = findViewById(R.id.bottom_navigation);
@@ -106,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
         //START BACKGROUND MONITOR SERVICE
         Intent serviceIntent = new Intent(this, BackgroundMonitor.class);//Wifi Listener Intent
         startService(serviceIntent);
-
 
         ///RETRIEVE TODAY'S USAGE STATS
         usageInfo = getUsageToday();
@@ -126,12 +131,17 @@ public class MainActivity extends AppCompatActivity {
 
         //CHECK IF THIS IS THE FIRST TIME THE APP IS BEING RUN, IF IT IS THEN START THE INITIALIZER ACTIVITY TO SET THE REQUIRED PERMISSIONS
         if (prefs.getBoolean("firstrun", true)) {
+
+
             Intent intent = new Intent(this, IntroManager.class);
             prefs.edit().putBoolean("firstrun", false).apply();
             intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             finish();
+
+
         } else {
+            App.SPECIAL_APPS = prefs.getStringSet("exclusion_list", null);
             usageInfo = getUsageToday();
         }
     }

@@ -10,8 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Build;
 import android.os.Handler;
@@ -40,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
+import static com.example.cs491_capstone.App.isTrackedApp;
 import static com.example.cs491_capstone.ui.settings.SettingsFragment.dataDisabled;
 import static com.example.cs491_capstone.ui.settings.SettingsFragment.parentalControls;
 import static com.example.cs491_capstone.ui.settings.SettingsFragment.wifiDisabled;
@@ -199,7 +198,7 @@ public class BackgroundMonitor extends Service {
                     //2) I ONLY NEED DATA FROM APPS THAT WERE VISIBLE DURING THE SPECIFIED TIME FRAME
 
 
-                    if (App.isSystemApp(stat, getApplicationContext()) & (lastTimeVisible >= UNLOCK_TIME & lastTimeVisible <= LOCK_TIME)) {
+                    if (isTrackedApp(stat) & (lastTimeVisible >= UNLOCK_TIME & lastTimeVisible <= LOCK_TIME)) {
                         //IF DATA MEETS REQUIREMENTS ADD IT TO THE SORTED MAP
                         mySortedMap.put(System.currentTimeMillis(), usage.get(stat));
                     }
@@ -255,23 +254,6 @@ public class BackgroundMonitor extends Service {
 
     }
 
-    /**
-     * @param packageName the package name of the app too check
-     * @return true if the app is a System app as identified by ApplicationInfo but will return false if the app is in the list of exclusions
-     */
-    public boolean isSystemApp(String packageName) {
-        ApplicationInfo ai = null;
-        try {
-            ai = this.getPackageManager().getApplicationInfo(packageName, 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        //IF THE APPLICATION INFO DOES NOT IDENTIFY THE PACKAGE AS A UPDATED_SYSTEM_APP & A FLAG_SYSTEM APP & IT IS NOT IN THE EXCLUSION LIST THEN RETURN TRUE; ELSE RETURN FALSE;
-        return !(((ai.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 0) & ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0) & !App.EXCLUDE_LIST.contains(packageName));
-
-
-    }
 
     /**
      *
@@ -286,7 +268,7 @@ public class BackgroundMonitor extends Service {
             //WE FIRST CHECK TO SEE IF THE APP BEING USED ISN'T OUR OWN APP, OR A SYSTEM APP
 
             if (timeLeft <= 0) {
-                if ((!appInUse.equals(App.PACKAGE_NAME)) & isSystemApp(appInUse)) {
+                if ((!appInUse.equals(App.PACKAGE_NAME)) & isTrackedApp(appInUse)) {
                     //WE THEN CHECK TO SEE IF THE TIMER HAS RUN OUT, IF IT HAS THEN WE START THE TRANSPARENT BLOCKER ACTIVITY
 
                     Intent dialogIntent = new Intent(getApplicationContext(), BlockerActivity.class);
@@ -301,7 +283,7 @@ public class BackgroundMonitor extends Service {
         } else {
             if (timeLeft <= 0) {
                 //Toast.makeText(getApplicationContext(), "TIME=0", Toast.LENGTH_SHORT).show();
-                if ((!appInUse.equals(App.PACKAGE_NAME)) & isSystemApp(appInUse)) {
+                if ((!appInUse.equals(App.PACKAGE_NAME)) & isTrackedApp(appInUse)) {
 
                     //NOTIFICATION ISN'T ALWAYS SENT WHEN WE SEND IT FROM THE BACKGROUND SERVICE
                     //SO WE CALL THE UI THREAD AND RUN IT THERE
@@ -372,7 +354,7 @@ public class BackgroundMonitor extends Service {
             appInUse = stat.getPackageName();
 
 
-            if (isSystemApp(appInUse)) {
+            if (isTrackedApp(appInUse)) {
 
                 try {
                     App.localDatabase.insert(appInUse, 0, 0, totalTime);

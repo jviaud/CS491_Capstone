@@ -156,7 +156,7 @@ public class HomeUsageGraphFragment extends Fragment {
 
         if (maxValue < 10) {
             Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = 10;
+            v.top = 15;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);

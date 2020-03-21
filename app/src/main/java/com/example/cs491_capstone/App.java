@@ -4,7 +4,7 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import androidx.preference.PreferenceManager;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -26,9 +28,11 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class App extends Application {
@@ -76,10 +80,6 @@ public class App extends Application {
      */
     public static String HOUR = getCurrentHourInterval();
     /**
-     * The name of the default home launcher app on the phone
-     */
-    public static String HOME_LAUNCHER_NAME;
-    /**
      * this boolean is used to mark the start of a new week. A new week is defined as the first Sunday
      */
     public static boolean isNewWeek = false;
@@ -88,22 +88,15 @@ public class App extends Application {
      * The sub list inside this list is ordered from start of week to end. So, 0 is the start of the week, Sun, and 7 is the end of the week, Sat.
      */
     public static ArrayList<ArrayList<String>> currentPeriod = getCurrentPeriod();
-    /**
-     * list of all apps to be excluded from system apps filter
-     */
-    public static List<String> EXCLUDE_LIST = Arrays.asList("com.google.android.calender", "com.android.camera2", "com.android.chrome",
-            "com.google.android.deskclock", "com.google.contacts", "com.google.android.apps.docs", "com.android.documentsui",
-            "com.google.android.gm", "com.google.android.videos", "com.google.android.music", "com.google.android.vending", "com.google.android.apps.maps",
-            "com.google.android.apps.messaging", "com.android.phone", "com.google.android.apps.photos", "com.android.storagemanager",
-            "com.google.android.apps.wallpaper", "com.google.android.youtube");
-    public static List<InstalledAppInfo> APP_LIST;
+    public static List<String> INCLUDED_APPS_LIST;
+    public static List<InstalledAppInfo> ALL_APPS_LIST;
+    public static Set<String> SPECIAL_APPS;
     /**
      * Reference to FireBase Database
      */
     FirebaseDatabase firebaseDatabase;
 
-    public static ArrayList<InstalledAppInfo> getInstalledApps(Context context) {
-        ArrayList<InstalledAppInfo> installedApps = new ArrayList<>();
+    public static void getInstalledApps(Context context) {
 
         PackageManager packageManager = context.getPackageManager();
         // CREATE LIST OF PACKAGE INFO TO GRAB A LIST OF ALL INSTALLED APPS
@@ -113,21 +106,51 @@ public class App extends Application {
             //FOR EVERY PACKAGE INFO IN THIS LIST
             //GRAB A SPECIFIC PACKAGE INFO AND ASSIGN IT TO P, THIS IS NOT REQUIRED BUT MAKES CODE LOOK CLEANER BELOW
             PackageInfo p = packs.get(i);
+            String pack = p.packageName;
+            String appName = p.applicationInfo.loadLabel(packageManager).toString();
+            Drawable icon = p.applicationInfo.loadIcon(packageManager);
 
-
-            //CHECK IF AN APPLICATION IS A SYSTEM APP
-            //isSystemApp() WILL RETURN TRUE IF APPLICATION IS  A SYSTEM APP e.g AN APP THAT IS PART OF THE SYSTEM IMAGE
-            if (isSystemApp(p.packageName, context)) {
-                //IF NOT A SYSTEM APP THEN GRAB ALL REQUIRED INFO AND CREATE A NEW OBJECT OF TYPE INSTALLED APP INFO
-                String appName = p.applicationInfo.loadLabel(packageManager).toString();
-                Drawable icon = p.applicationInfo.loadIcon(packageManager);
-                String pack = p.packageName;
-                installedApps.add(new InstalledAppInfo(pack, appName, icon));
+            if (isSystemApp(pack, context)) {
+                INCLUDED_APPS_LIST.add(pack);
+                ALL_APPS_LIST.add(new InstalledAppInfo(pack, appName, icon).setTracked(true));
+            } else {
+                ALL_APPS_LIST.add(new InstalledAppInfo(pack, appName, icon).setTracked(false));
             }
-        }
-        //RETURN THE LIST OF OBJECTS
 
-        return installedApps;
+
+        }
+        // Collections.addAll(INCLUDED_APPS_LIST, SPECIAL_APPS);
+        Collections.sort(ALL_APPS_LIST);
+        Log.i("TRACKED", "INCLUDED" + INCLUDED_APPS_LIST);
+        for (InstalledAppInfo info : ALL_APPS_LIST) {
+            Log.i("TRACKED", "EXCLUDED" + info.getPackageName() + "|" + info.isTracked());
+        }
+
+        //RETURN THE LIST OF OBJECTS
+    }
+
+
+    public static boolean isTrackedApp(String packageName) {
+
+        return (INCLUDED_APPS_LIST.contains(packageName));
+    }
+
+
+    /**
+     * @param packageName the package name of the app too check
+     * @return true if the app is a System app as identified by ApplicationInfo but will return false if the app is in the list of exclusions
+     */
+    public static boolean isSystemApp(String packageName, Context context) {
+        ApplicationInfo ai = null;
+        try {
+            ai = context.getPackageManager().getApplicationInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        //IF THE APPLICATION INFO DOES NOT IDENTIFY THE PACKAGE AS A UPDATED_SYSTEM_APP & A FLAG_SYSTEM APP & IT IS NOT IN THE EXCLUSION LIST THEN RETURN TRUE; ELSE RETURN FALSE;
+        return !(!SPECIAL_APPS.contains(packageName) && ((ai.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 0) & ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0));
+
     }
 
     /**
@@ -239,24 +262,6 @@ public class App extends Application {
     }
 
     /**
-     * @param packageName the package name of the app too check
-     * @return true if the app is a System app as identified by ApplicationInfo but will return false if the app is in the list of exclusions
-     */
-    public static boolean isSystemApp(String packageName, Context context) {
-        ApplicationInfo ai = null;
-        try {
-            ai = context.getPackageManager().getApplicationInfo(packageName, 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        //IF THE APPLICATION INFO DOES NOT IDENTIFY THE PACKAGE AS A UPDATED_SYSTEM_APP & A FLAG_SYSTEM APP & IT IS NOT IN THE EXCLUSION LIST THEN RETURN TRUE; ELSE RETURN FALSE;
-        return !(((ai.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 0) & ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0) & !EXCLUDE_LIST.contains(packageName));
-
-
-    }
-
-    /**
      * @return A string representing the hour of the day in military time 12AM in 0, 1PM is 13
      */
     public static String getCurrentHourInterval() {
@@ -289,7 +294,7 @@ public class App extends Application {
             try {
                 //WE USE PACKAGE MANAGER TO GET APPLICATION INFO
                 //FROM APPLICATION INFO WE CAN GET A GLOBAL int REPRESENTING THE APP'S CATEGORY
-                int categoryVal = 0;
+                int categoryVal;
 
                 categoryVal = context.getPackageManager().getApplicationInfo(packageName, 0).category;
 
@@ -337,10 +342,28 @@ public class App extends Application {
 
     }
 
-
     @Override
     public void onCreate() {
         super.onCreate();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (prefs.getBoolean("firstrun", true)) {
+            SPECIAL_APPS = new HashSet<>();
+            String[] apps = {"com.google.android.calender", "com.android.camera2", "com.android.chrome",
+                    "com.google.android.deskclock", "com.google.contacts", "com.google.android.apps.docs", "com.android.documentsui",
+                    "com.google.android.gm", "com.google.android.videos", "com.google.android.music", "com.google.android.vending", "com.google.android.apps.maps",
+                    "com.google.android.apps.messaging", "com.android.phone", "com.google.android.apps.photos", "com.android.storagemanager",
+                    "com.google.android.apps.wallpaper", "com.google.android.youtube"};
+            Collections.addAll(SPECIAL_APPS, apps);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putStringSet("exclusion_list", SPECIAL_APPS);
+        } else {
+            App.SPECIAL_APPS = prefs.getStringSet("exclusion_list", null);
+        }
+
+        INCLUDED_APPS_LIST = new ArrayList<>();
+        ALL_APPS_LIST = new ArrayList<>();
+        getInstalledApps(getApplicationContext());
 
 
         //CREATE INSTANCE OF THE SQL LITE DATABASE
@@ -365,17 +388,6 @@ public class App extends Application {
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         usageDatabase = firebaseDatabase.getReference().child("UsageTable");
-        /// END INITIALIZE DATABASE AND TABLES
-
-        //usageDatabase.child("02-01-2020").child("21").child("com-cap").child("NOTIFICATION").setValue(3);
-
-
-        ///GET THE NAME OF THE HOME LAUNCHER
-        //THIS MAY VARY DEPENDING ON THE MODEL OF THE PHONE OR IF A CUSTOM LAUNCHER IS BEING USED
-        PackageManager localPackageManager = getPackageManager();
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.addCategory("android.intent.category.HOME");
-        HOME_LAUNCHER_NAME = localPackageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY).activityInfo.packageName;
         ///
 
         //THIS IS A SELF CHECK FOR PACKAGE NAME
@@ -384,8 +396,6 @@ public class App extends Application {
         //THIS IS DONE DYNAMICALLY IN CASE PACKAGE NAME CHANGES
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
-        ///GENERATE LIST OF INSTALLED APPS' PACKAGE NAMES
-        APP_LIST = getInstalledApps(this);
         ///
 
         ///CREATE NOTIFICATION CHANNELS

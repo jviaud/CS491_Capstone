@@ -175,6 +175,7 @@ public class HomeFragment extends Fragment {
                 break;
         }
         listAdapter.notifyDataSetChanged();
+        setListViewHeightBasedOnChildren(mostUsedListView);
 
         String time = App.timeFormatter(Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)));
         totalUsage.setText(time);
