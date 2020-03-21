@@ -89,6 +89,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private InstalledAppsListAdapter listAdapter;
 
+    private List<InstalledAppInfo> COPY_OF_LIST;
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.settings, rootKey);
@@ -96,7 +98,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         //Initialise the size of the database
         dbSize = localDatabase.getRowCount();
 
-        listAdapter = new InstalledAppsListAdapter(getContext(), ALL_APPS_LIST);
+        //WE CREATE A COPY OF THE LIST IN CASE THE USER DECIDES TO CANCEL MIDWAY WE WANT TO BE ABLE TO REVERT THE CHANGES
+        COPY_OF_LIST = new ArrayList<>(ALL_APPS_LIST);
+        listAdapter = new InstalledAppsListAdapter(getContext(), COPY_OF_LIST);
 
         /*
         It would be better too implement the Onclick listener so it isn't so cluttered here but I can't get the click events to trigger the listeners that way
@@ -111,19 +115,24 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 LayoutInflater inflater = requireActivity().getLayoutInflater();
                 View view = inflater.inflate(R.layout.dialog_apps_list_layout, null);
 
-                ListView listView = view.findViewById(R.id.dialog_list);
+                final ListView listView = view.findViewById(R.id.dialog_list);
                 listView.setAdapter(listAdapter);
 
                 builder.setView(view)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
-                                // Toast.makeText(getContext(), "" + picker.getValue(), Toast.LENGTH_SHORT).show();
+                                //IF USER CLICKS OKAY THEN WE SAVE THE CHANGES TO THE LIST
+                                ALL_APPS_LIST = COPY_OF_LIST;
 
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                //IF THEY CANCEL WE SET THE COPY BACK TO THE ORIGINAL
+                                COPY_OF_LIST = ALL_APPS_LIST;
+                                //TODO BOXES NOT BEING CHECKED BACK
+                                //listAdapter.notifyDataSetChanged();
                                 dialog.dismiss();
                             }
                         }).create().show();
@@ -664,28 +673,20 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             listHolder.icon.setImageDrawable(installedAppInfoList.get(position).getIcon());
             listHolder.box.setText(installedAppInfoList.get(position).getSimpleName());
 
+
+            //CHECK BOXES IN LIST VIEW WILL NOT RETAIN THEIR POSITION AND THUS WILL BECOME UNCHECKED OR CHECKED INCORRECTLY WHEN SCROLLED
+            //SO WE MUST DO THIS TO SAVE THE STATE OF THE CHECKBOX
             final boolean state = installedAppInfoList.get(position).isTracked();
             listHolder.box.setChecked(state);
-
             listHolder.box.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //ESSENTIALLY IT IS EQUAL TOO THE OPPOSITE OF ITSELF WHEN CLICKED, IF TRUE THEN FALSE, IF FALSE THEN TRUE
                     installedAppInfoList.get(position).setTracked(!state);
                 }
             });
-
-            if (state) {
-                Log.i("TRACKED", installedAppInfoList.get(position).getPackageName());
-            }
-
-
-
-
-
             /*Set tag to all checkBox**/
             listHolder.box.setTag(position);
-
-
             return convertView;
         }
 

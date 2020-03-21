@@ -120,7 +120,7 @@ public class App extends Application {
 
         }
         // Collections.addAll(INCLUDED_APPS_LIST, SPECIAL_APPS);
-        Collections.sort(ALL_APPS_LIST);
+        Collections.sort(ALL_APPS_LIST, Collections.<InstalledAppInfo>reverseOrder());
         Log.i("TRACKED", "INCLUDED" + INCLUDED_APPS_LIST);
         for (InstalledAppInfo info : ALL_APPS_LIST) {
             Log.i("TRACKED", "EXCLUDED" + info.getPackageName() + "|" + info.isTracked());
@@ -357,9 +357,11 @@ public class App extends Application {
             Collections.addAll(SPECIAL_APPS, apps);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putStringSet("exclusion_list", SPECIAL_APPS);
-        } else {
-            App.SPECIAL_APPS = prefs.getStringSet("exclusion_list", null);
+            editor.apply();
         }
+        SPECIAL_APPS = prefs.getStringSet("exclusion_list", SPECIAL_APPS);
+
+        //TODO IF THE APP IS TERMINATED WE NEED TO BE ABLE TOO SAVE THE LIST OF APPS THAT SHOULD BE TRACKED, FOR NOW WE CAN IGNORE THIS FOR PRESENTATION PURPOSES
 
         INCLUDED_APPS_LIST = new ArrayList<>();
         ALL_APPS_LIST = new ArrayList<>();
@@ -400,6 +402,13 @@ public class App extends Application {
 
         ///CREATE NOTIFICATION CHANNELS
         createNotificationChannel();
+
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
     }
 

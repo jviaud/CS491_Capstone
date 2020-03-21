@@ -389,6 +389,7 @@ public class BackgroundMonitor extends Service {
         return START_REDELIVER_INTENT;
     }
 
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
