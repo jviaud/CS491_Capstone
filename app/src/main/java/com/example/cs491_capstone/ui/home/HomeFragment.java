@@ -62,11 +62,8 @@ public class HomeFragment extends Fragment {
     private TextView minutes_timer;
     private TextView seconds_timer;
 
-
     private TextView totalUsage, percentDelta;
-
     private CardView phoneTimerCard;
-
     private SharedPreferences preferences;
 
 

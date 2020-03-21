@@ -5,12 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/backarrow"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/graph_card_container"
+        app:layout_constraintStart_toStartOf="@+id/graph_card_container"
+        app:srcCompat="@drawable/ic_back_arrow" />
+
+
+    <ImageView
+        android:id="@+id/nextarrow"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/graph_card_container"
+        app:layout_constraintEnd_toEndOf="@+id/graph_card_container"
+        app:srcCompat="@drawable/ic_next_arrow" />
+
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
+        android:id="@+id/graph_card_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="46dp"
         android:layout_marginEnd="16dp"
         android:elevation="6dp"
         app:cardBackgroundColor="?attr/cardbackground"
@@ -18,30 +39,74 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <lecho.lib.hellocharts.view.ColumnChartView
-            android:id="@+id/daily_chart"
-            android:layout_width="wrap_content"
-            android:layout_height="250dp"
-            android:layout_margin="8dp" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/date_placeholder"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <lecho.lib.hellocharts.view.ColumnChartView
+                android:id="@+id/daily_chart"
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:layout_margin="8dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/date" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/pie_card_container"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/change_graph">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/list_card_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:elevation="6dp"
         app:cardBackgroundColor="?attr/cardbackground"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pie_card_container">
 
 
         <ListView
-            android:id="@+id/most_used_list"
+            android:id="@+id/used_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="parent"
@@ -57,4 +122,29 @@
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/show_today"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="SHOW TODAY"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/nextarrow"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/change_graph"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="CATEGORY"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/graph_card_container" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

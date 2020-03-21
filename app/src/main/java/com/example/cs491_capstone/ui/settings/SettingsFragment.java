@@ -83,7 +83,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      */
     public static boolean parentalControls = false;
     /**
-     * Represents the size of the database, used when downloading the database to show progress
+     * Represents the size of the database, used when downloading/uploading the database to show progress
      */
     private static int dbSize;
 

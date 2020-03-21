@@ -250,7 +250,7 @@
             app:layout_constraintTop_toBottomOf="@+id/time_card_container">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView"
+                android:id="@+id/list_card_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -318,7 +318,7 @@
                 android:elevation="6dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView"
+                app:layout_constraintTop_toBottomOf="@+id/list_card_container"
                 app:tabIndicatorColor="#000"
                 app:tabTextColor="?attr/textcolor_alt" />
 
