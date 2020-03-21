@@ -18,6 +18,7 @@ import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,7 +35,8 @@ import static com.example.cs491_capstone.App.clock;
 import static com.example.cs491_capstone.App.currentPeriod;
 
 public class DailyUsageGraph extends Fragment {
-    private static boolean change = false;
+    private static boolean byCategory = false;
+    private static HashMap<String, Integer> categoryMap;
     private final String MAX_PREV = currentPeriod.get(3).get(0);
     private final String MAX_NEXT = currentPeriod.get(0).get(6);
     private ColumnChartView barChart;
@@ -62,12 +64,26 @@ public class DailyUsageGraph extends Fragment {
         nextButton = view.findViewById(R.id.nextarrow);
         changeGraph = view.findViewById(R.id.change_graph);
 
+
         indexInWeek = currentPeriod.get(indexInPeriod).indexOf(App.DATE);
         graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
         Log.i("GRAPHS", "DATE=" + graphDate + "|" + currentPeriod.get(0).get(6));
         if (graphDate.equals(MAX_NEXT)) {
             nextButton.setVisibility(View.GONE);
         }
+
+        changeGraph.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                byCategory = !byCategory;
+                if (byCategory) {
+                    changeGraph.setText(R.string.byApps);
+                } else {
+                    changeGraph.setText(R.string.byCategory);
+                }
+            }
+        });
+
 
         showToday.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +94,7 @@ public class DailyUsageGraph extends Fragment {
                     nextButton.setVisibility(View.GONE);
                 }
                 showToday.setVisibility(View.GONE);
-                createUsageChart(graphDate);
+                createUsageChart(graphDate, byCategory);
 
             }
         });
@@ -93,14 +109,14 @@ public class DailyUsageGraph extends Fragment {
                 if (indexInWeek >= 0) {
                     graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
                     todayDate.setText(graphDate);
-                    createUsageChart(graphDate);
+                    createUsageChart(graphDate, byCategory);
                 } else {
                     indexInPeriod++;
                     indexInWeek = 6;
                     if (indexInPeriod < 4) {
                         graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
                         todayDate.setText(graphDate);
-                        createUsageChart(graphDate);
+                        createUsageChart(graphDate, byCategory);
                     }
                 }
                 if (graphDate.equals(MAX_PREV)) {
@@ -123,14 +139,14 @@ public class DailyUsageGraph extends Fragment {
                 if (indexInWeek <= 6) {
                     graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
                     todayDate.setText(graphDate);
-                    createUsageChart(graphDate);
+                    createUsageChart(graphDate, byCategory);
                 } else {
                     indexInPeriod--;
                     indexInWeek = 0;
                     if (indexInPeriod > 0) {
                         graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
                         todayDate.setText(graphDate);
-                        createUsageChart(graphDate);
+                        createUsageChart(graphDate, byCategory);
                     }
 
                 }
@@ -148,13 +164,14 @@ public class DailyUsageGraph extends Fragment {
         todayDate.setText(graphDate);
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
-        createUsageChart(graphDate);
+        createUsageChart(graphDate, byCategory);
     }
 
-    private void createUsageChart(String date) {
+    private void createUsageChart(String date, boolean byCategory) {
 
         //STYLING FOR GRAPHS
         barChart.setZoomEnabled(false);
@@ -172,7 +189,14 @@ public class DailyUsageGraph extends Fragment {
         List<SubcolumnValue> values;
 
         //FOR NOW WE ONLY NEED ONE SUB COLUMN
-        int numSubColumns = 1;
+        int numSubColumns;
+        if (byCategory) {
+            numSubColumns = 8;
+        } else {
+            numSubColumns = 1;
+        }
+
+
         //THE NUMBER OF COLUMNS IS THE CURRENT HOUR, THIS IS DONE FOR STYLING PURPOSES
         //THERE IS NO REASON TO SHOW THE COLUMNS AFTER THE CURRENT HOUR BECAUSE WE KNOW THEY WILL BE 0
         int numColumns = clock.length;
@@ -182,9 +206,15 @@ public class DailyUsageGraph extends Fragment {
             //WE CREATE A LIST OF VALUES, THIS WILL COME IN HANDY WHEN WE SPLIT BY CATEGORY AND HAVE A STACKED BAR GRAPH BUT FOR NOW IT WILL ONLY HOLD ONE VALUE
             values = new ArrayList<>();
             for (int j = 0; j < numSubColumns; ++j) {
+                long value = 0;
+                if (byCategory) {
+                    value = Long.parseLong(App.localDatabase.getSumTotalStat(date, i + "", DatabaseHelper.USAGE_TIME)) / 60000;
 
-                //WE DO NOT NEED TO CATCH ANY EXCEPTIONS HERE BECAUSE THE getSumTotalStat() METHOD WILL RETURN 0 IF NULL AND ALL DATA IS CLEAN WHEN INSERTED INTO THE GRAPH
-                long value = Long.parseLong(App.localDatabase.getSumTotalStat(date, i + "", DatabaseHelper.USAGE_TIME)) / 60000;
+                } else {
+                    //WE DO NOT NEED TO CATCH ANY EXCEPTIONS HERE BECAUSE THE getSumTotalStat() METHOD WILL RETURN 0 IF NULL AND ALL DATA IS CLEAN WHEN INSERTED INTO THE GRAPH
+                    value = Long.parseLong(App.localDatabase.getSumTotalStat(date, i + "", DatabaseHelper.USAGE_TIME)) / 60000;
+                }
+
 
                 Log.i("GRAPH", "Hour:" + i + " ::Time:" + value);
                 //WE DIVIDE THE TOTAL TIME IN MILLI BY 60000 TO GET THE NUMBER OF MINUTES
@@ -194,17 +224,13 @@ public class DailyUsageGraph extends Fragment {
                     break;
                 } else {
                     SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.DKGRAY);
-
                     int hours = (int) (value / (60) % 24);
                     int minutes = (int) (value % 60);
-
-
                     if (hours == 0) {
                         subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s", minutes, "m"));
                     } else {
                         subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m"));
                     }
-
                     values.add(subcolumnValue);
                 }
 

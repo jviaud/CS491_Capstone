@@ -17,5 +17,7 @@
     <string name="get_started">Get Started</string>
     <string name="launcher_icon">launcher icon</string>
     <string name="show_today">SHOW TODAY</string>
+    <string name="byCategory">SHOW CATEGORY</string>
+    <string name="byApps">SHOW APPS</string>
 
 </resources>

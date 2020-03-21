@@ -9,8 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import java.util.ArrayList;
 
 /**
@@ -55,15 +53,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     private static final String DATABASE_NAME = "Usage.db";
 
+    private static final String APP_CATEGORY = "CATEGORY";
 
-    public DatabaseHelper(@Nullable Context context) {
+    private Context context;
+
+
+    public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
+        this.context = context;
 //        SQLiteDatabase db = this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TABLE_NAME + " (" + ENTRY_ID + " TEXT PRIMARY KEY," + DATE + " TEXT," + HOUR_OF_DAY + " INTEGER," + PACKAGE_NAME + " TEXT, " + UNLOCKS_COUNT + " INTEGER," + NOTIFICATIONS_COUNT + " INTEGER, " + USAGE_TIME + " REAL)");
+        db.execSQL("create table " + TABLE_NAME + " (" + ENTRY_ID + " TEXT PRIMARY KEY," + DATE + " TEXT," + HOUR_OF_DAY + " INTEGER," + PACKAGE_NAME + " TEXT, " + UNLOCKS_COUNT + " INTEGER," + NOTIFICATIONS_COUNT + " INTEGER, " + USAGE_TIME + " REAL, " + APP_CATEGORY + " TEXT)");
     }
 
     @Override
@@ -85,10 +88,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
 
-        //THESE TWO VALUES WILL BE AUTOMATICALLY ASSIGNED
+        //THESE THREE VALUES WILL BE AUTOMATICALLY ASSIGNED
         //AS THEY WILL CHANGE AUTOMATICALLY DEPENDING ON THE DATE AND TIME OF DAY
         contentValues.put(DATE, App.DATE);
         contentValues.put(HOUR_OF_DAY, App.HOUR);
+        String category = App.getAppCategoryName(packageName, context);
+        contentValues.put(APP_CATEGORY, category);
+
 
         ///THERE SHOULD ONLY BE ONE PACKAGE NAME PER DAY/HOUR
         //WE CANT USE AN AUTO INCREMENT PRIMARY KEY BECAUSE THERE WILL BE REPEATS WITHIN THE HOUR
@@ -482,6 +488,151 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else {
             return buffer.toString();
         }
+    }
+
+    public String getSumTotalStatByCategory(String date, String hour, String col, String category) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        //
+
+        Cursor res = db.rawQuery("SELECT ROUND(SUM(" + col + "),0) " +
+                "FROM " + TABLE_NAME + " " +
+                "WHERE " + DATE + "= \"" + date + "\" AND " + HOUR_OF_DAY + "= \"" + hour + "\" AND " + APP_CATEGORY + "= \"" + category + "\"", null);
+
+        StringBuilder buffer = new StringBuilder();
+
+        //READ LINES FROM CURSOR INTO BUFFER
+        if (col.equals(USAGE_TIME)) {
+            while (res.moveToNext()) {
+                buffer.append(res.getLong(0));
+
+            }
+        } else {
+            while (res.moveToNext()) {
+                buffer.append(res.getString(0));
+
+            }
+        }
+
+        res.close();
+
+        Log.i("RETURN", buffer.toString());
+        if (buffer.toString().equals("null")) {
+            return "0";
+        } else {
+            return buffer.toString();
+        }
+    }
+
+    public String getSumTotalStatByCategory(String date, String col, String category) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        //
+
+        Cursor res = db.rawQuery("SELECT ROUND(SUM(" + col + "),0) " +
+                "FROM " + TABLE_NAME + " " +
+                "WHERE " + DATE + "= \"" + date + "\" AND " + APP_CATEGORY + "= \"" + category + "\"", null);
+
+        StringBuilder buffer = new StringBuilder();
+
+        //READ LINES FROM CURSOR INTO BUFFER
+        if (col.equals(USAGE_TIME)) {
+            while (res.moveToNext()) {
+                buffer.append(res.getLong(0));
+
+            }
+        } else {
+            while (res.moveToNext()) {
+                buffer.append(res.getString(0));
+
+            }
+        }
+
+        res.close();
+
+        if (buffer.toString().equals("null"))
+            return "0";
+        else return buffer.toString();
+    }
+
+    public ArrayList<String> appsUsed(String date, String hour, String col) {
+        ArrayList<String> used = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + " FROM " + TABLE_NAME +
+                " GROUP BY " + PACKAGE_NAME +
+                " HAVING " + DATE + " =\"" + date + "\" " +
+                " AND " + HOUR_OF_DAY + " =\"" + hour + "\" " +
+                " ORDER BY SUM(" + col + ") ", null);
+
+        //READ LINES FROM CURSOR INTO BUFFER
+
+        while (res.moveToNext()) {
+            used.add(res.getString(0));
+        }
+
+        Log.i("TOP", "" + used);
+        res.close();
+        return used;
+    }
+
+    public ArrayList<String> appsUsed(String date, String col) {
+        ArrayList<String> used = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + " FROM " + TABLE_NAME +
+                " GROUP BY " + PACKAGE_NAME +
+                " HAVING " + DATE + " =\"" + date + "\" " +
+                " ORDER BY SUM(" + col + ") ", null);
+
+        //READ LINES FROM CURSOR INTO BUFFER
+
+        while (res.moveToNext()) {
+            used.add(res.getString(0));
+        }
+
+        Log.i("TOP", "" + used);
+        res.close();
+        return used;
+    }
+
+    public ArrayList<String> categoryUsed(String date, String hour, String col) {
+        ArrayList<String> used = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor res = db.rawQuery("SELECT " + APP_CATEGORY + " FROM " + TABLE_NAME +
+                " GROUP BY " + APP_CATEGORY +
+                " HAVING " + DATE + " =\"" + date + "\" " +
+                " AND " + HOUR_OF_DAY + " =\"" + hour + "\" " +
+                " ORDER BY SUM(" + col + ") ", null);
+
+        //READ LINES FROM CURSOR INTO BUFFER
+
+        while (res.moveToNext()) {
+            used.add(res.getString(0));
+        }
+
+        Log.i("TOP", "" + used);
+        res.close();
+        return used;
+    }
+
+    public ArrayList<String> categoryUsed(String date, String col) {
+        ArrayList<String> used = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor res = db.rawQuery("SELECT " + APP_CATEGORY + " FROM " + TABLE_NAME +
+                " GROUP BY " + APP_CATEGORY +
+                " HAVING " + DATE + " =\"" + date + "\" " +
+                " ORDER BY SUM(" + col + ") ", null);
+
+        //READ LINES FROM CURSOR INTO BUFFER
+
+        while (res.moveToNext()) {
+            used.add(res.getString(0));
+        }
+
+        Log.i("TOP", "" + used);
+        res.close();
+        return used;
     }
 
     /**

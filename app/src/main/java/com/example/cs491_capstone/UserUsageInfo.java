@@ -100,7 +100,6 @@ public class UserUsageInfo implements Comparable<UserUsageInfo>, Parcelable {
         );
     }
 
-
     @Override
     public int compareTo(UserUsageInfo o) {
         long t1 = o.getUsage();
