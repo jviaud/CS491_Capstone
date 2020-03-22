@@ -147,7 +147,7 @@ public class HomeUnlocksGraphFragment extends Fragment {
         } else {
 
             Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = maxValue + 5;
+            v.top = ((maxValue + 4) / 5) * 5; //NEXT MULTIPLE OF 5;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);

@@ -1,12 +1,15 @@
 package com.example.cs491_capstone.ui.usage.usage_graphs.daily;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,12 +20,14 @@ import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui.usage.UsageFragment;
+import com.example.cs491_capstone.ui.usage.UsageListViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import lecho.lib.hellocharts.gesture.ContainerScrollType;
+import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Column;
@@ -32,22 +37,41 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 import static com.example.cs491_capstone.App.clock;
+import static com.example.cs491_capstone.App.localDatabase;
 import static com.example.cs491_capstone.ui.usage.UsageFragment.categoryKey;
 import static com.example.cs491_capstone.ui.usage.UsageFragment.weeksSingleFormat;
 
 public class DailyUsageGraph extends Fragment {
-
-    private static boolean[] keyTrack = new boolean[]{false, false, false, false, false, false, false, false};
+    /**
+     * used to tell which keys have been used, the number of booleans in this array is equal to the number of keys
+     */
+    private static boolean[] keyTrack = new boolean[]{false, false, false, false, false, false, false, false, false};
+    /**
+     * boolean to tell the graph if it should generate a stacked graph or not
+     */
     private static boolean byCategory = false;
+    private static List<String> usedList;
+    /**
+     * The maximum number of days in the weeks list, we could get this manually, it is just 7*4
+     */
     private final int MAX_NEXT = weeksSingleFormat.size();
+    /**
+     * The current index we are on inside the week list
+     */
+    private int indexInWeek;
+    /**
+     * Layout under the graph used to hold keys
+     */
+    private LinearLayout keyContainer;
     private ColumnChartView barChart;
     private TextView todayDate;
     private Button prevButton, nextButton;
     private Button changeGraph;
     private String graphDate;
-    private int indexInWeek;
-    private LinearLayout keyContainer;
     private TextView showToday;
+    private UsageListViewAdapter listAdapter;
+    private ListView listView;
+
 
     @Nullable
     @Override
@@ -67,6 +91,8 @@ public class DailyUsageGraph extends Fragment {
         nextButton = view.findViewById(R.id.nextarrow);
         changeGraph = view.findViewById(R.id.change_graph);
         keyContainer = view.findViewById(R.id.keycontainer);
+        listView = view.findViewById(R.id.used_list);
+
 
         indexInWeek = weeksSingleFormat.indexOf(App.DATE);
         graphDate = weeksSingleFormat.get(indexInWeek);
@@ -77,18 +103,32 @@ public class DailyUsageGraph extends Fragment {
         prevButton.setOnClickListener(click);
         nextButton.setOnClickListener(click);
 
+//        usedList = localDatabase.appsUsed(graphDate, DatabaseHelper.USAGE_TIME);
+//        listAdapter = new UsageListViewAdapter(getContext(), usedList);
+//        listView.setAdapter(listAdapter);
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
+        //WEIRD ERRORS CAUSE BY RESUMING WITH THE CATEGORY GRAPH
+        //TOO AVOID IT WE JUST SET THE GRAPH BACK TO NORMAL
+        //BOOLEAN IS SET BACK TO FALSE
         byCategory = false;
+        //BUTTON TEXT IS SET BACK TO DEFAULT
         changeGraph.setText(R.string.byCategory);
+        //JUST IN CASE WE SET THE DATE TEXT
         todayDate.setText(graphDate);
+
+        //TODO REMOVE THE CATEGORY KEYS PROPERLY,CAUSES KEYS TO NOT SHOW NEXT TIME CATEGORY BUTTON IS PRESSED
+        //keyContainer.removeAllViews();
+
+        //AND GENERATE THE NORMAL GRAPH
         createUsageChart(graphDate, byCategory);
     }
 
+    @SuppressLint("SetTextI18n")
     private void createUsageChart(String date, boolean byCategory) {
 
         //STYLING FOR GRAPHS
@@ -124,6 +164,8 @@ public class DailyUsageGraph extends Fragment {
                     } else {
                         //THE SUB COLUMNS COLOR IS CHOSEN FROM A LIST OF COLORS SO IT WILL ALWAYS BE THE SAME COLOR
                         SubcolumnValue subcolumnValue = new SubcolumnValue(value, categoryKey[j]);
+
+                        //TODO KEY IS SHOWING THE WRONG VALUE, STORE VALUE IN HASH MAP AND INCREMENT VALUE FOR KEY HERE
 
                         int hours = (int) (value / (60) % 24);
                         int minutes = (int) (value % 60);
@@ -253,6 +295,8 @@ public class DailyUsageGraph extends Fragment {
         //SET COLUMNS TO GRAPH
         barChart.setColumnChartData(data);
 
+        barChart.setOnValueTouchListener(new ValueTouchListener());
+
         if (maxValue < 10) {
             Viewport v = new Viewport(barChart.getMaximumViewport());
             v.top = 15;
@@ -261,7 +305,7 @@ public class DailyUsageGraph extends Fragment {
             barChart.setViewportCalculationEnabled(false);
         } else {
             Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = ((maxValue + 4) / 5) * 5; //maxValue + 10;
+            v.top = ((maxValue + 4) / 5) * 5; //NEXT MULTIPLE OF 5;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);
@@ -291,14 +335,22 @@ public class DailyUsageGraph extends Fragment {
     }
 
     private void showTodayGraph() {
+        //WHEN SHOW TODAY IS PRESSED EVERYTHING HAS TO BE RESET
+        //DATE IS SET TOO TODAY
         graphDate = App.DATE;
+        //DATE TITLE IS SET TO TODAY
         todayDate.setText(graphDate);
+        //HIDE THE NEXT BUTTON, WE DO NOT SHOW FUTURE GRAPHS BECAUSE WE KNOW THEY ARE BLANK
         nextButton.setVisibility(View.GONE);
+        //GRAPH IS SHOWING TODAY SO WE DO NOT SHOW THE SKIP TO TODAY BUTTON
         showToday.setVisibility(View.GONE);
+        //WE SHOW THE PREV BUTTON BECAUSE IT MAY HAVE BEEN SET TO GONE IF WE REACHED THE BEGINNING OF THE LIST
+        prevButton.setVisibility(View.VISIBLE);
 
         //THIS IS THE INDEX OF TODAY
         indexInWeek = weeksSingleFormat.indexOf(App.DATE);
 
+        //CREATE THE GRAPH
         createUsageChart(graphDate, byCategory);
     }
 
@@ -308,20 +360,23 @@ public class DailyUsageGraph extends Fragment {
         //GO FORWARD ONE DAY
         indexInWeek++;
 
+        //MAX_NEXT IS THE END OOF THE LIST, PREVENTS OUT OF BOUNDS EXCEPTION
         if (indexInWeek <= MAX_NEXT) {
+            //FIRST CHANGE THE GRAPH DATE TO THE DATE IN THE LIST
             graphDate = weeksSingleFormat.get(indexInWeek);
+            //IF THIS DATE IS EQUAL TO TODAY'S DATE THEN WE HIDE THE BUTTONS
             if (graphDate.equals(App.DATE)) {
                 nextButton.setVisibility(View.GONE);
                 showToday.setVisibility(View.GONE);
-            }
-            if (!graphDate.equals(App.DATE)) {
-                showToday.setVisibility(View.VISIBLE);
             } else {
-                showToday.setVisibility(View.GONE);
+                //ELSE WE SHOW THE BUTTON TOO SKIP TO TODAY'S DATE
+                showToday.setVisibility(View.VISIBLE);
             }
+            //SET THE DATE TEXT AND GENERATE THE GRAPH
             todayDate.setText(graphDate);
             createUsageChart(graphDate, byCategory);
         } else {
+            //IF WE ARE AT THE END OOF THE LIST THEN WE HIDE THE NEXT BUTTON
             nextButton.setVisibility(View.GONE);
         }
 
@@ -334,20 +389,24 @@ public class DailyUsageGraph extends Fragment {
         //GO BACK ONE DAY
         indexInWeek--;
 
+        //ONLY IF WE HAVE NOT PASSED THE BEGINNING OF THE LIST, THIS PREVENTS A NEGATIVE OUT OF BOUNDS EXCEPTION
         if (indexInWeek >= 0) {
             graphDate = weeksSingleFormat.get(indexInWeek);
             if (indexInWeek == 0) {
                 prevButton.setVisibility(View.GONE);
             }
+            //AS LONG AS THE GRAPH DATE ISN'T SHOWING TODAY THEN WE SHOW THE SKIP TO TODAY BUTTON
             if (!graphDate.equals(App.DATE)) {
                 showToday.setVisibility(View.VISIBLE);
             } else {
+                //ELSE WE HIDE THE BUTTON
                 showToday.setVisibility(View.GONE);
             }
+            //SET THE DATE TEXT AND GENERATE THE GRAPH
             todayDate.setText(graphDate);
             createUsageChart(graphDate, byCategory);
-
         } else {
+            //IF WE HAVE EXCEEDED THE LIMIT THEN HIDE THE PREV BUTTON
             prevButton.setVisibility(View.GONE);
         }
 
@@ -375,6 +434,25 @@ public class DailyUsageGraph extends Fragment {
                     break;
 
             }
+        }
+    }
+
+    private class ValueTouchListener implements ColumnChartOnValueSelectListener {
+
+        @Override
+        public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
+            String hour = String.valueOf(subcolumnIndex);
+            usedList = localDatabase.appsUsed(graphDate, hour, DatabaseHelper.USAGE_TIME);
+            Log.i("GRAPH", "" + hour + " | " + usedList);
+            listAdapter = new UsageListViewAdapter(getContext(), usedList);
+            listAdapter.setDay(graphDate);
+            listAdapter.setHour(hour);
+            listView.setAdapter(listAdapter);
+        }
+
+        @Override
+        public void onValueDeselected() {
+
         }
     }
 }

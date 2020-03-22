@@ -625,7 +625,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     static class InstalledAppsViewHolder {
         CheckBox box;
         ImageView icon;
-
     }
 
     private static class InstalledAppsListAdapter extends BaseAdapter {

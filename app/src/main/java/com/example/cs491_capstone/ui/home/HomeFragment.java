@@ -316,7 +316,7 @@ public class HomeFragment extends Fragment {
             if (convertView == null) {
                 //CREATE VIEWHOLDER AND INFLATE LAYOUT
                 listHolder = new MostUsedAppsViewHolder();
-                convertView = inflater.inflate(R.layout.home_most_used_list_layout, parent, false);
+                convertView = inflater.inflate(R.layout.usage_card_layout, parent, false);
 
                 //ASSIGN VIEW HOLDER CLASS VARIABLE TO LAYOUT
                 listHolder.icon = convertView.findViewById(R.id.icon);

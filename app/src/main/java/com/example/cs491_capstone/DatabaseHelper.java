@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -55,12 +56,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String APP_CATEGORY = "CATEGORY";
 
-    private Context context;
+    private final Context context;
 
-
-    public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
-        this.context = context;
+    /**
+     * @param activity this is a reference to the Application. We use to to get the context since Context can't be static
+     */
+    public DatabaseHelper(App activity) {
+        super(activity, DATABASE_NAME, null, 1);
+        new WeakReference<>(activity);
+        context = activity.getApplicationContext();
 //        SQLiteDatabase db = this.getWritableDatabase();
     }
 

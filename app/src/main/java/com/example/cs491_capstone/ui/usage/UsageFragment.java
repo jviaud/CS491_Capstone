@@ -2,7 +2,6 @@ package com.example.cs491_capstone.ui.usage;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +26,8 @@ import java.util.List;
 public class UsageFragment extends Fragment {
 
 
-    public final static String[] category = new String[]{"Maps", "Social", "Movies & Video", "Audio", "Game", "Image", "News", "Productivity"};
-    public final static int[] categoryKey = new int[]{Color.BLUE, Color.GREEN, Color.LTGRAY, Color.RED, Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.DKGRAY};
+    public final static String[] category = new String[]{"Maps", "Social", "Movies & Video", "Audio", "Game", "Image", "News", "Productivity", "Other"};
+    public final static int[] categoryKey = new int[]{Color.BLUE, Color.GREEN, Color.LTGRAY, Color.RED, Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.DKGRAY, Color.BLACK};
     public static ArrayList<String> weeksSingleFormat;
     private int indicatorWidth;
 
@@ -94,11 +93,13 @@ public class UsageFragment extends Fragment {
             }
         });
 
+        ///WE TAKE THE LIST OF LIST AND MAKE IT EASIER TO TRAVERSE BY PUTTING IT INTO A SINGLE LIST IN THE REVERSE ORDER
+        //ONLY THE ORDER OF THE OUTER LIST IS REVERSED, THE ORDER OF THE STRINGS IN THE INNER LIST IS KEPT
+        //THIS WAY WE CAN GOO BACK AND FORWARD WITHOUT HAVING TO SWITCH TO DIFFERENT INNER LIST
         weeksSingleFormat = new ArrayList<>();
         for (int i = 3; i >= 0; i--) {
             weeksSingleFormat.addAll(App.currentPeriod.get(i));
         }
-        Log.i("WEEK", "" + weeksSingleFormat);
 
 
     }

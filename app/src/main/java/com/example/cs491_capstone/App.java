@@ -299,10 +299,9 @@ public class App extends Application {
 
                 categoryVal = context.getPackageManager().getApplicationInfo(packageName, 0).category;
 
-
                 //THE INT WILL BE -1 IF THE APP'S CATEGORY HAS NOT BEEN DEFINED IN ITS MANIFEST
                 if (categoryVal == -1) {
-                    return "UNDEFINED";
+                    return "Other";
                 } else {
                     //ONCE WE HAVE THE CORRECT CATEGORY AWE MUST CONVERT IT TO A STRING BECAUSE IT IS RETURNED AS A CHARACTER ARRAY
                     //WE MUST ALSO REMOVE THE UNDERSCORE
@@ -312,7 +311,7 @@ public class App extends Application {
                 e.printStackTrace();
             }
         }
-        return "UNDEFINED";
+        return "Other";
     }
 
     /**

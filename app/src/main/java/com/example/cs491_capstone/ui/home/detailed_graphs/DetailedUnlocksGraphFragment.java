@@ -140,7 +140,7 @@ public class DetailedUnlocksGraphFragment extends Fragment {
             barChartTop.setViewportCalculationEnabled(false);
         } else {
             Viewport v = new Viewport(barChartTop.getMaximumViewport());
-            v.top = maxValue + 5;
+            v.top = ((maxValue + 4) / 5) * 5; //NEXT MULTIPLE OF 5;
             barChartTop.setMaximumViewport(v);
             barChartTop.setCurrentViewport(v);
             barChartTop.setViewportCalculationEnabled(false);
@@ -201,7 +201,7 @@ public class DetailedUnlocksGraphFragment extends Fragment {
             barChartBottom.setViewportCalculationEnabled(false);
         } else {
             Viewport v = new Viewport(barChartBottom.getMaximumViewport());
-            v.top = maxValue + 5;
+            v.top = ((maxValue + 4) / 5) * 5; //NEXT MULTIPLE OF 5;
             barChartBottom.setMaximumViewport(v);
             barChartBottom.setCurrentViewport(v);
             barChartBottom.setViewportCalculationEnabled(false);
