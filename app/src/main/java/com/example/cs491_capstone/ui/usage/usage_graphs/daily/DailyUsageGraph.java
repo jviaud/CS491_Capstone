@@ -2,7 +2,6 @@ package com.example.cs491_capstone.ui.usage.usage_graphs.daily;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.usage.UsageFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,23 +32,22 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 import static com.example.cs491_capstone.App.clock;
-import static com.example.cs491_capstone.App.currentPeriod;
+import static com.example.cs491_capstone.ui.usage.UsageFragment.categoryKey;
+import static com.example.cs491_capstone.ui.usage.UsageFragment.weeksSingleFormat;
 
 public class DailyUsageGraph extends Fragment {
-    public final static String[] category = new String[]{"Maps", "Social", "Movies & Video", "Audio", "Game", "Image", "News", "Productivity"};
-    public final static int[] categoryKey = new int[]{Color.BLUE, Color.GREEN, Color.LTGRAY, Color.RED, Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.DKGRAY};
+
     private static boolean[] keyTrack = new boolean[]{false, false, false, false, false, false, false, false};
     private static boolean byCategory = false;
-    private final String MAX_PREV = currentPeriod.get(3).get(0);
-    private final String MAX_NEXT = currentPeriod.get(0).get(6);
+    private final int MAX_NEXT = weeksSingleFormat.size();
     private ColumnChartView barChart;
     private TextView todayDate;
     private Button prevButton, nextButton;
     private Button changeGraph;
     private String graphDate;
-    private int indexInPeriod = 0;
     private int indexInWeek;
     private LinearLayout keyContainer;
+    private TextView showToday;
 
     @Nullable
     @Override
@@ -60,120 +59,33 @@ public class DailyUsageGraph extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //FIND AND INITIALIZE ALL VIEWS
+        showToday = view.findViewById(R.id.show_today);
         barChart = view.findViewById(R.id.daily_chart);
-        final TextView showToday = view.findViewById(R.id.show_today);
         todayDate = view.findViewById(R.id.date);
         prevButton = view.findViewById(R.id.backarrow);
         nextButton = view.findViewById(R.id.nextarrow);
         changeGraph = view.findViewById(R.id.change_graph);
         keyContainer = view.findViewById(R.id.keycontainer);
 
+        indexInWeek = weeksSingleFormat.indexOf(App.DATE);
+        graphDate = weeksSingleFormat.get(indexInWeek);
 
-        indexInWeek = currentPeriod.get(indexInPeriod).indexOf(App.DATE);
-        graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
-        Log.i("GRAPHS", "DATE=" + graphDate + "|" + currentPeriod.get(0).get(6));
-        if (graphDate.equals(MAX_NEXT)) {
-            nextButton.setVisibility(View.GONE);
-        }
+        Click click = new Click();
+        changeGraph.setOnClickListener(click);
+        showToday.setOnClickListener(click);
+        prevButton.setOnClickListener(click);
+        nextButton.setOnClickListener(click);
 
-        changeGraph.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                byCategory = !byCategory;
-                if (byCategory) {
-                    changeGraph.setText(R.string.byApps);
-                } else {
-                    changeGraph.setText(R.string.byCategory);
-
-                }
-                createUsageChart(graphDate, byCategory);
-            }
-        });
-
-
-        showToday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                graphDate = App.DATE;
-                todayDate.setText(graphDate);
-                if (graphDate.equals(MAX_NEXT)) {
-                    nextButton.setVisibility(View.GONE);
-                }
-                showToday.setVisibility(View.GONE);
-                createUsageChart(graphDate, byCategory);
-
-            }
-        });
-
-
-        prevButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("GRAPHS", "PREV1.INDEX IN WEEK " + indexInWeek + "| INDEX IN PERIOD " + indexInPeriod);
-                nextButton.setVisibility(View.VISIBLE);
-                indexInWeek--;
-                if (indexInWeek >= 0) {
-                    graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
-                    todayDate.setText(graphDate);
-                    createUsageChart(graphDate, byCategory);
-                } else {
-                    indexInPeriod++;
-                    indexInWeek = 6;
-                    if (indexInPeriod < 4) {
-                        graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
-                        todayDate.setText(graphDate);
-                        createUsageChart(graphDate, byCategory);
-                    }
-                }
-                if (graphDate.equals(MAX_PREV)) {
-                    prevButton.setVisibility(View.GONE);
-                }
-                if (!graphDate.equals(App.DATE)) {
-                    showToday.setVisibility(View.VISIBLE);
-                } else {
-                    showToday.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("GRAPHS", "NEXT1.INDEX IN WEEK " + indexInWeek + "| INDEX IN PERIOD " + indexInPeriod);
-                prevButton.setVisibility(View.VISIBLE);
-                indexInWeek++;
-                if (indexInWeek <= 6) {
-                    graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
-                    todayDate.setText(graphDate);
-                    createUsageChart(graphDate, byCategory);
-                } else {
-                    indexInPeriod--;
-                    indexInWeek = 0;
-                    if (indexInPeriod > 0) {
-                        graphDate = currentPeriod.get(indexInPeriod).get(indexInWeek);
-                        todayDate.setText(graphDate);
-                        createUsageChart(graphDate, byCategory);
-                    }
-
-                }
-                if (graphDate.equals(MAX_NEXT)) {
-                    nextButton.setVisibility(View.GONE);
-                }
-                if (!graphDate.equals(App.DATE)) {
-                    showToday.setVisibility(View.VISIBLE);
-                } else {
-                    showToday.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        todayDate.setText(graphDate);
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
+        byCategory = false;
+        changeGraph.setText(R.string.byCategory);
+        todayDate.setText(graphDate);
         createUsageChart(graphDate, byCategory);
     }
 
@@ -199,30 +111,34 @@ public class DailyUsageGraph extends Fragment {
         //THERE IS NO REASON TO SHOW THE COLUMNS AFTER THE CURRENT HOUR BECAUSE WE KNOW THEY WILL BE 0
         int numColumns = clock.length;
 
-
+        //CHOOSE WHAT KIND OF GRAPH WE ARE CREATING BASED ON IF THE CATEGORY BUTTON WAS CLICKED
         if (byCategory) {
             //
             for (int i = 0; i < numColumns; i++) {
                 values = new ArrayList<>();
-                for (int j = 0; j < category.length; j++) {
-                    long value = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(date, i + "", DatabaseHelper.USAGE_TIME, category[j])) / 60000;
-                    Log.i("GRAPHS", "COLUMN:" + j + " |HOUR:" + i + " |VALUE:" + value + " |Category:" + category[j]);
+                for (int j = 0; j < UsageFragment.category.length; j++) {
+                    long value = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(date, i + "", DatabaseHelper.USAGE_TIME, UsageFragment.category[j])) / 60000;
 
                     if (value == 0) {
                         values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     } else {
+                        //THE SUB COLUMNS COLOR IS CHOSEN FROM A LIST OF COLORS SO IT WILL ALWAYS BE THE SAME COLOR
                         SubcolumnValue subcolumnValue = new SubcolumnValue(value, categoryKey[j]);
 
-                        Log.i("GRAPHS", "COLOR:" + categoryKey[j]);
                         int hours = (int) (value / (60) % 24);
                         int minutes = (int) (value % 60);
+                        String formattedVal;
                         if (hours == 0) {
-                            subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s", minutes, "m"));
+                            formattedVal = String.format(Locale.ENGLISH, "%d%s", minutes, "m");
+                            //  subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s", minutes, "m"));
                         } else {
-                            subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m"));
+                            formattedVal = String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m");
+                            //   subcolumnValue.setLabel(String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m"));
                         }
+                        subcolumnValue.setLabel("");
                         values.add(subcolumnValue);
 
+                        //DYNAMICALLY ADD THE KEYS FOR ONLY THE COLUMN CATEGORIES THAT HAVE BEEN USED
                         if (!keyTrack[j]) {
                             TextView key = new TextView(getContext());
                             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -230,7 +146,7 @@ public class DailyUsageGraph extends Fragment {
                                     LinearLayout.LayoutParams.WRAP_CONTENT);// Height of TextView
                             lp.setMargins(15, 15, 15, 15);
                             key.setLayoutParams(lp);
-                            key.setText(category[j]);
+                            key.setText(UsageFragment.category[j] + " " + formattedVal);
                             key.setTextSize(15);
                             key.setTextColor(categoryKey[j]);
                             keyContainer.addView(key);
@@ -249,7 +165,7 @@ public class DailyUsageGraph extends Fragment {
                 //WE CREATE A COLUMN WE THE VALUES WE JUST RECEIVED FROM THE TABLE/DATABASE
                 Column column = new Column(values)
                         .setHasLabelsOnlyForSelected(true);
-
+                column.setHasLabels(false);
 
                 //ADD THE CURRENT COLUMN TO THE LIST OF COLUMNS
                 columns.add(column);
@@ -306,8 +222,11 @@ public class DailyUsageGraph extends Fragment {
 
         //PASS THE LIST OF COLUMNS TO THE GRAPH
         ColumnChartData data = new ColumnChartData(columns);
+        //MAKE THE BAR GRAPH STACKED
         if (byCategory) {
             data.setStacked(true);
+            data.setValueLabelBackgroundColor(Color.TRANSPARENT);
+            data.setValueLabelsTextColor(Color.TRANSPARENT);
         }
 
 
@@ -342,14 +261,15 @@ public class DailyUsageGraph extends Fragment {
             barChart.setViewportCalculationEnabled(false);
         } else {
             Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = maxValue + 20;
+            v.top = ((maxValue + 4) / 5) * 5; //maxValue + 10;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);
         }
 
         // Set selection mode to keep selected month column highlighted.
-        barChart.setValueSelectionEnabled(true);
+        // barChart.setValueSelectionEnabled(true);
+        // barChart.
 
 
         //ANIMATE GRAPH / NOT ACTUALLY NECESSARY
@@ -357,5 +277,105 @@ public class DailyUsageGraph extends Fragment {
 
     }
 
+    private void swapGraph() {
+        byCategory = !byCategory;
+        if (byCategory) {
+            changeGraph.setText(R.string.byApps);
+        } else {
+            //REMOVE THE KEY
+            keyContainer.removeAllViewsInLayout();
+            keyTrack = new boolean[]{false, false, false, false, false, false, false, false};
+            changeGraph.setText(R.string.byCategory);
+        }
+        createUsageChart(graphDate, byCategory);
+    }
 
+    private void showTodayGraph() {
+        graphDate = App.DATE;
+        todayDate.setText(graphDate);
+        nextButton.setVisibility(View.GONE);
+        showToday.setVisibility(View.GONE);
+
+        //THIS IS THE INDEX OF TODAY
+        indexInWeek = weeksSingleFormat.indexOf(App.DATE);
+
+        createUsageChart(graphDate, byCategory);
+    }
+
+    private void nextGraph() {
+        //IF THIS HAS BEEN CLICKED AT LEAST ONCE THEN IT MEANS WE ARE NO LONGER AT THE END AND CAN SHOW THE PREV BUTTON
+        prevButton.setVisibility(View.VISIBLE);
+        //GO FORWARD ONE DAY
+        indexInWeek++;
+
+        if (indexInWeek <= MAX_NEXT) {
+            graphDate = weeksSingleFormat.get(indexInWeek);
+            if (graphDate.equals(App.DATE)) {
+                nextButton.setVisibility(View.GONE);
+                showToday.setVisibility(View.GONE);
+            }
+            if (!graphDate.equals(App.DATE)) {
+                showToday.setVisibility(View.VISIBLE);
+            } else {
+                showToday.setVisibility(View.GONE);
+            }
+            todayDate.setText(graphDate);
+            createUsageChart(graphDate, byCategory);
+        } else {
+            nextButton.setVisibility(View.GONE);
+        }
+
+
+    }
+
+    private void prevGraph() {
+        //IF THIS HAS BEEN CLICKED AT LEAST ONCE THEN IT MEANS WE ARE NO LONGER AT THE BEGINNING AND CAN SHOW THE NEXT BUTTON
+        nextButton.setVisibility(View.VISIBLE);
+        //GO BACK ONE DAY
+        indexInWeek--;
+
+        if (indexInWeek >= 0) {
+            graphDate = weeksSingleFormat.get(indexInWeek);
+            if (indexInWeek == 0) {
+                prevButton.setVisibility(View.GONE);
+            }
+            if (!graphDate.equals(App.DATE)) {
+                showToday.setVisibility(View.VISIBLE);
+            } else {
+                showToday.setVisibility(View.GONE);
+            }
+            todayDate.setText(graphDate);
+            createUsageChart(graphDate, byCategory);
+
+        } else {
+            prevButton.setVisibility(View.GONE);
+        }
+
+
+    }
+
+    public class Click implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            int id = v.getId();
+
+            switch (id) {
+                case R.id.change_graph:
+                    swapGraph();
+                    break;
+                case R.id.show_today:
+                    showTodayGraph();
+                    break;
+                case R.id.nextarrow:
+                    nextGraph();
+                    break;
+                case R.id.backarrow:
+                    prevGraph();
+                    break;
+
+            }
+        }
+    }
 }
+

@@ -99,6 +99,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         dbSize = localDatabase.getRowCount();
 
         //WE CREATE A COPY OF THE LIST IN CASE THE USER DECIDES TO CANCEL MIDWAY WE WANT TO BE ABLE TO REVERT THE CHANGES
+        //TODO MAKE THIS A DEEP CLONE, SO THEY DON'T POINT TO THE SAME OBJECT REFERENCE, CHANGES IN ONE WILL NOT AFFECT CHANGES IN THE OTHER
         COPY_OF_LIST = new ArrayList<>(ALL_APPS_LIST);
         listAdapter = new InstalledAppsListAdapter(getContext(), COPY_OF_LIST);
 

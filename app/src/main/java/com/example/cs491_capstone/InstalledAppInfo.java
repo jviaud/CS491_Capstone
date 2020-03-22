@@ -45,8 +45,7 @@ public class InstalledAppInfo implements Comparable<InstalledAppInfo> {
     }
 
 
-
-    ///
+///
 
     ///SETTERS
     ///

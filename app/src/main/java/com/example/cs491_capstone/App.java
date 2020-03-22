@@ -186,7 +186,7 @@ public class App extends Application {
         //WE ALSO TRIGGER THE LAST WEEK REMOVAL FROM THE DATABASE
         if (dayOfWeek.equals("Sun")) {
             thisSunday = now;
-            currentWeek.add(0, formatter.print(now));
+           // currentWeek.add(0, formatter.print(now));
             isNewWeek = true;
         }
 
@@ -206,6 +206,7 @@ public class App extends Application {
             }
             Log.i("DATE_LIST", "prev:" + dayOfWeek);
         }
+
 
 
         //RESET THE CURRENT DATE BACK TO TODAY
