@@ -6,6 +6,16 @@
     <color name="black">#000</color>
     <color name="silver">#C0C0C0</color>
 
+    <color name="maps">#ED0909</color>
+    <color name="social">#0030E3</color>
+    <color name="video">#00FFCE</color>
+    <color name="audio">#FFE400</color>
+    <color name="game">#FF6800</color>
+    <color name="image">#2B2B2B</color>
+    <color name="news">#930DE6</color>
+    <color name="productivity">#43F602</color>
+
+
     <!--    COLORS FOR INTRO SCREEN -->
     <!--       BACKGROUND COLOR-->
     <color name="intro_background_one">#A2CFEF</color>

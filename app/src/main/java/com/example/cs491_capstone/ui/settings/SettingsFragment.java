@@ -471,7 +471,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                     && (!nextLine[3].equals("PACKAGE_NAME"))
                                     && (!nextLine[4].equals("UNLOCKS_COUNT"))
                                     && (!nextLine[5].equals("NOTIFICATIONS_COUNT"))
-                                    && (!nextLine[6].equals("USAGE_TIME"))) {
+                                    && (!nextLine[6].equals("USAGE_TIME"))
+                                    && (!nextLine[6].equals("CATEGORY"))) {
                                 //WE PURPOSELY THROW AN EXCEPTION IF THE HEADERS ARE NOT IN THIS ORDER
                                 throw exception;
                             }
@@ -593,6 +594,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             curCSV.getString(3),
                             curCSV.getString(4),
                             curCSV.getString(5),
+                            curCSV.getString(6),
                             String.format(Locale.ENGLISH, "%.0f", curCSV.getFloat(6))};
                     csvWrite.writeNext(arrStr);
                     line++;

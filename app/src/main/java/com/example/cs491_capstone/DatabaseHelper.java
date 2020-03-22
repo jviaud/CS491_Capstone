@@ -93,6 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(DATE, App.DATE);
         contentValues.put(HOUR_OF_DAY, App.HOUR);
         String category = App.getAppCategoryName(packageName, context);
+        //Log.i("TRACK", category);
         contentValues.put(APP_CATEGORY, category);
 
 
