@@ -18,9 +18,6 @@ import android.widget.ListView;
 
 import androidx.preference.PreferenceManager;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -60,10 +57,6 @@ public class App extends Application {
      */
     public static String PACKAGE_NAME;
     /**
-     * Reference to specific table in Database holding usage statistics
-     */
-    public static DatabaseReference usageDatabase;
-    /**
      * The SQL Lite database
      */
     public static DatabaseHelper localDatabase;
@@ -91,10 +84,6 @@ public class App extends Application {
     public static List<String> INCLUDED_APPS_LIST;
     public static List<InstalledAppInfo> ALL_APPS_LIST;
     public static Set<String> SPECIAL_APPS;
-    /**
-     * Reference to FireBase Database
-     */
-    FirebaseDatabase firebaseDatabase;
 
     public static void getInstalledApps(Context context) {
 
@@ -186,7 +175,7 @@ public class App extends Application {
         //WE ALSO TRIGGER THE LAST WEEK REMOVAL FROM THE DATABASE
         if (dayOfWeek.equals("Sun")) {
             thisSunday = now;
-           // currentWeek.add(0, formatter.print(now));
+            // currentWeek.add(0, formatter.print(now));
             isNewWeek = true;
         }
 
@@ -206,7 +195,6 @@ public class App extends Application {
             }
             Log.i("DATE_LIST", "prev:" + dayOfWeek);
         }
-
 
 
         //RESET THE CURRENT DATE BACK TO TODAY
@@ -383,14 +371,6 @@ public class App extends Application {
             localDatabase.emptyWeek(currentPeriod.get(3).get(6));
         }
 
-
-        ///INITIALIZE DATABASE AND TABLES
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        //CACHES RECENTLY USED TABLES TO DISK -> MAY BE REMOVED LATER
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
-        usageDatabase = firebaseDatabase.getReference().child("UsageTable");
-        ///
 
         //THIS IS A SELF CHECK FOR PACKAGE NAME
         //WHEN CHECKING FOR USAGE_TIME PERMISSION, A PACKAGE NAME IS NEEDED

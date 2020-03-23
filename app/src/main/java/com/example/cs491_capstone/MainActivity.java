@@ -115,14 +115,6 @@ public class MainActivity extends AppCompatActivity {
 
         ///RETRIEVE TODAY'S USAGE STATS
         usageInfo = getUsageToday();
-
-        //Log.i("DB",""+App.localDatabase.getAllData());
-
-//        @SuppressLint("RestrictedApi") PeriodicWorkRequest synclocal = new PeriodicWorkRequest.Builder(SyncFireDBWorker.class, 1, TimeUnit.HOURS)
-//                .setPeriodStartTime(App.START_OF_DAY, TimeUnit.MILLISECONDS)
-//                .build();
-//        WorkManager.getInstance(this).enqueue(synclocal);
-
     }
 
     @Override

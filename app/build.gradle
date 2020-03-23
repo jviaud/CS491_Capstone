@@ -34,15 +34,12 @@ dependencies {
     implementation 'com.pacioianu.david:ink-page-indicator:1.3.0' //CUSTOM TAB INDICATOR
     //
     //UTILITY
+    apply plugin: 'com.android.application'
+    apply plugin: 'com.google.gms.google-services'
     implementation 'com.opencsv:opencsv:4.6' //CSV READER, DON'T USE 5.1
     implementation 'com.nbsp:library:1.8' // FILE PICKER
     implementation "androidx.preference:preference:1.1.0" //PREFERENCES
-    apply plugin: 'com.android.application' //FIREBASE
-    apply plugin: 'com.google.gms.google-services' //FIREBASE
-    implementation 'com.google.firebase:firebase-analytics:17.2.3' //FIREBASE
-    implementation 'com.google.firebase:firebase-database:19.2.1' //FIREBASE
     implementation 'joda-time:joda-time:2.10.5' // JODA-TIME
-    implementation "androidx.work:work-runtime:2.3.3" //WORKER MANAGER
     //
     //ANIMATION
     implementation 'com.airbnb.android:lottie:3.4.0' // LOTTIE

@@ -1,7 +1,6 @@
 package com.example.cs491_capstone.ui.usage;
 
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,15 +96,10 @@ public class UsageFragment extends Fragment {
         ///WE TAKE THE LIST OF LIST AND MAKE IT EASIER TO TRAVERSE BY PUTTING IT INTO A SINGLE LIST IN THE REVERSE ORDER
         //ONLY THE ORDER OF THE OUTER LIST IS REVERSED, THE ORDER OF THE STRINGS IN THE INNER LIST IS KEPT
         //THIS WAY WE CAN GOO BACK AND FORWARD WITHOUT HAVING TO SWITCH TO DIFFERENT INNER LIST
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                weeksSingleFormat = new ArrayList<>();
-                for (int i = 3; i >= 0; i--) {
-                    weeksSingleFormat.addAll(App.currentPeriod.get(i));
-                }
-            }
-        });
+        weeksSingleFormat = new ArrayList<>();
+        for (int i = 3; i >= 0; i--) {
+            weeksSingleFormat.addAll(App.currentPeriod.get(i));
+        }
 
 
     }
