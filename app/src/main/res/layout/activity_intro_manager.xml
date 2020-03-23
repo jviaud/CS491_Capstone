@@ -25,7 +25,7 @@
 
     <view
         android:id="@+id/intro_pager"
-        class="com.example.cs491_capstone.ui.intro.IntroManager$LockableViewPager"
+        class="com.example.cs491_capstone.ui.intro.LockableViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

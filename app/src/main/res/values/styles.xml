@@ -65,7 +65,7 @@
     </style>
     <!--    -->
 
-    <!---->
+    <!--NEXT AND PREV BUTTON STYLING-->
     <style name="ShapeAppearanceOverlay.Button.Triangle.Next" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopLeft">0dp</item>

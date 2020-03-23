@@ -7,7 +7,6 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -97,7 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(DATE, App.DATE);
         contentValues.put(HOUR_OF_DAY, App.HOUR);
         String category = App.getAppCategoryName(packageName, context);
-        //Log.i("TRACK", category);
+
         contentValues.put(APP_CATEGORY, category);
 
 
@@ -171,7 +170,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public void set(String packageName, String col_one, float value_one) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Log.i("RESULT", "VALUE" + value_one);
         //UPDATE TABLE_NAME SET COL = VALUE WHERE DATE = CURRENT_DATE AND HOUR_OF_DAY = CURRENT_HOUR
         //UPDATE THE CURRENT COL TO A NEW VALUE
         db.execSQL("UPDATE " + TABLE_NAME +
@@ -266,10 +264,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String result = buffer.toString();
         if (result.equals("")) {
-            Log.i("RESULT", "NULL");
             return "0";
         } else {
-            Log.i("RESULT", "..." + result);
             return result;
         }
     }
@@ -307,10 +303,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         res.close();
         String result = buffer.toString();
         if (result.equals("")) {
-            Log.i("RESULT", "NULL");
             return "0";
         } else {
-            Log.i("RESULT", "..." + result);
             return result;
         }
     }
@@ -340,10 +334,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String result = buffer.toString();
         if (result.equals("")) {
-            Log.i("RESULT", "NULL");
             return "0";
         } else {
-            Log.i("RESULT", "" + result);
             return result;
         }
     }
@@ -411,7 +403,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         res.close();
 
-        Log.i("RETURN", buffer.toString());
+
         if (buffer.toString().equals("null")) {
             return "0";
         } else {
@@ -487,7 +479,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         res.close();
 
-        Log.i("RETURN", buffer.toString());
         if (buffer.toString().equals("null")) {
             return "0";
         } else {
@@ -509,7 +500,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (col.equals(USAGE_TIME)) {
             while (res.moveToNext()) {
                 buffer.append(res.getLong(0));
-
             }
         } else {
             while (res.moveToNext()) {
@@ -520,7 +510,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         res.close();
 
-        Log.i("RETURN", buffer.toString());
+
         if (buffer.toString().equals("null")) {
             return "0";
         } else {
@@ -563,18 +553,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + " FROM " + TABLE_NAME +
-                " GROUP BY " + PACKAGE_NAME +
-                " HAVING " + DATE + " =\"" + date + "\" " +
-                " AND " + HOUR_OF_DAY + " =\"" + hour + "\" " +
-                " ORDER BY SUM(" + col + ") ", null);
-
-        //READ LINES FROM CURSOR INTO BUFFER
+                " GROUP BY " + DATE + "," + HOUR_OF_DAY + "," + PACKAGE_NAME +
+                " HAVING " + DATE + " = \"" + date + "\" " +
+                " AND " + HOUR_OF_DAY + " = " + hour + " " +
+                " AND " + col + " > " + 0 + " " +
+                " ORDER BY SUM(" + col + ") DESC", null);
 
         while (res.moveToNext()) {
             used.add(res.getString(0));
         }
 
-        Log.i("TOP", "" + used);
+
         res.close();
         return used;
     }
@@ -584,9 +573,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + " FROM " + TABLE_NAME +
-                " GROUP BY " + PACKAGE_NAME +
+                " GROUP BY " + DATE + "," + PACKAGE_NAME +
                 " HAVING " + DATE + " =\"" + date + "\" " +
-                " ORDER BY SUM(" + col + ") ", null);
+                " AND " + col + " > " + 0 + " " +
+                " ORDER BY SUM(" + col + ") DESC ", null);
 
         //READ LINES FROM CURSOR INTO BUFFER
 
@@ -594,7 +584,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             used.add(res.getString(0));
         }
 
-        Log.i("TOP", "" + used);
+
         res.close();
         return used;
     }
@@ -604,10 +594,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor res = db.rawQuery("SELECT " + APP_CATEGORY + " FROM " + TABLE_NAME +
-                " GROUP BY " + APP_CATEGORY +
+                " GROUP BY " + DATE + "," + HOUR_OF_DAY + "," + APP_CATEGORY +
                 " HAVING " + DATE + " =\"" + date + "\" " +
                 " AND " + HOUR_OF_DAY + " =\"" + hour + "\" " +
-                " ORDER BY SUM(" + col + ") ", null);
+                " AND " + col + " > " + 0 + " " +
+                " ORDER BY SUM(" + col + ") DESC", null);
 
         //READ LINES FROM CURSOR INTO BUFFER
 
@@ -615,7 +606,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             used.add(res.getString(0));
         }
 
-        Log.i("TOP", "" + used);
+
         res.close();
         return used;
     }
@@ -625,20 +616,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor res = db.rawQuery("SELECT " + APP_CATEGORY + " FROM " + TABLE_NAME +
-                " GROUP BY " + APP_CATEGORY +
+                " GROUP BY " + DATE + "," + APP_CATEGORY +
                 " HAVING " + DATE + " =\"" + date + "\" " +
-                " ORDER BY SUM(" + col + ") ", null);
+                " AND " + col + " > " + 0 + " " +
+                " ORDER BY SUM(" + col + ") DESC", null);
 
         //READ LINES FROM CURSOR INTO BUFFER
 
         while (res.moveToNext()) {
             used.add(res.getString(0));
         }
-
-        Log.i("TOP", "" + used);
         res.close();
         return used;
     }
+
 
     /**
      * @param date
@@ -660,7 +651,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             top.add(res.getString(0));
         }
 
-        Log.i("TOP", "" + top);
+
         res.close();
         return top;
     }

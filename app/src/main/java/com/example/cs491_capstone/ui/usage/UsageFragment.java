@@ -1,6 +1,7 @@
 package com.example.cs491_capstone.ui.usage;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.R;
-import com.example.cs491_capstone.ui.intro.IntroManager;
+import com.example.cs491_capstone.ui.intro.LockableViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class UsageFragment extends Fragment {
         //CREATE TABBED LAYOUT FOR WEEK/DAY CONTENT
         final View indicator = view.findViewById(R.id.indicator);
         final TabLayout tabLayout = view.findViewById(R.id.tabbed_layout);
-        IntroManager.LockableViewPager viewPager = view.findViewById(R.id.viewPager);
+        LockableViewPager viewPager = view.findViewById(R.id.viewPager);
         viewPager.setSwipeable(false);
         ViewPageAdapter adapter = new ViewPageAdapter(getFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
@@ -96,10 +97,15 @@ public class UsageFragment extends Fragment {
         ///WE TAKE THE LIST OF LIST AND MAKE IT EASIER TO TRAVERSE BY PUTTING IT INTO A SINGLE LIST IN THE REVERSE ORDER
         //ONLY THE ORDER OF THE OUTER LIST IS REVERSED, THE ORDER OF THE STRINGS IN THE INNER LIST IS KEPT
         //THIS WAY WE CAN GOO BACK AND FORWARD WITHOUT HAVING TO SWITCH TO DIFFERENT INNER LIST
-        weeksSingleFormat = new ArrayList<>();
-        for (int i = 3; i >= 0; i--) {
-            weeksSingleFormat.addAll(App.currentPeriod.get(i));
-        }
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                weeksSingleFormat = new ArrayList<>();
+                for (int i = 3; i >= 0; i--) {
+                    weeksSingleFormat.addAll(App.currentPeriod.get(i));
+                }
+            }
+        });
 
 
     }
@@ -138,6 +144,8 @@ public class UsageFragment extends Fragment {
             //TO HAVE A NAME AD THIS BAK TO CONSTRUCTOR
             titles.add(title);
         }
+
+
     }
 
 

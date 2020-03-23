@@ -19,5 +19,7 @@
     <string name="show_today">SHOW TODAY</string>
     <string name="byCategory">SHOW CATEGORY</string>
     <string name="byApps">SHOW APPS</string>
+    <string name="listApps">APPS USED</string>
+    <string name="listCategory">CATEGORIES USED</string>
 
 </resources>
