@@ -63,7 +63,7 @@ public class App extends Application {
     /**
      * The SQL Lite database for Awards
      */
-    public static AwardDataBaseHelper awardDataBase;
+    public static GoalDataBaseHelper awardDataBase;
     /**
      * The current date in yyyy-MM-dd format. This is used for the firebaseDatabase and must be "-" separated because "/" is a special character is firebase
      */
@@ -357,7 +357,6 @@ public class App extends Application {
 
 
         //CREATE INSTANCE OF THE SQL LITE DATABASE
-        awardDataBase = new AwardDataBaseHelper(this);
         localDatabase = new DatabaseHelper(this);
 
 

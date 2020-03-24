@@ -21,5 +21,8 @@
     <string name="byApps">SHOW APPS</string>
     <string name="listApps">APPS USED</string>
     <string name="listCategory">CATEGORIES USED</string>
+    <string name="usage">Usage</string>
+    <string name="notifications">Notifications</string>
+    <string name="unlocks">Unlocks</string>
 
 </resources>

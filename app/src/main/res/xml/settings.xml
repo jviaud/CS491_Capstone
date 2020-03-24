@@ -54,14 +54,14 @@
             android:dependency="parental_controls"
             android:key="toggle_wifi"
             android:title="Wifi"
-            app:defaultValue="false"
+            app:defaultValue="true"
             app:summary="Toggle WiFi ON/OFF" />
 
         <SwitchPreference
             android:dependency="parental_controls"
             android:key="toggle_data"
             android:title="Data"
-            app:defaultValue="false"
+            app:defaultValue="true"
             app:summary="Toggle Data ON/OFF" />
 
 

@@ -44,6 +44,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.settings.SettingsAppList" />
+        <activity android:name=".ui.award.NewGoal" />
 
 
         <service
