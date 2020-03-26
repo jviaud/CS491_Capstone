@@ -20,7 +20,7 @@ import android.widget.ListView;
 
 import androidx.preference.PreferenceManager;
 
-import com.example.cs491_capstone.services.NewAppInstalledListener;
+import com.example.cs491_capstone.services.AppChangeListener;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -67,7 +67,7 @@ public class App extends Application {
     /**
      * The SQL Lite database for Awards
      */
-    public static GoalDataBaseHelper awardDataBase;
+    public static GoalDataBaseHelper goalDataBase;
     /**
      * The current date in yyyy-MM-dd format. This is used for the firebaseDatabase and must be "-" separated because "/" is a special character is firebase
      */
@@ -97,7 +97,7 @@ public class App extends Application {
 
     public static Set<String> SPECIAL_APPS;
 
-    private NewAppInstalledListener newAppListener;
+    private AppChangeListener newAppListener;
 
     public static void getInstalledApps(Context context) {
 
@@ -378,7 +378,7 @@ public class App extends Application {
         newAppFilter.addDataScheme("package"); //MUST ADD DATA SCHEME OR RECEIVER WILL NOT TRIGGER
         IntentFilter lessAppFilter = new IntentFilter(Intent.ACTION_PACKAGE_REMOVED);
         lessAppFilter.addDataScheme("package"); //MUST ADD DATA SCHEME OR RECEIVER WILL NOT TRIGGER
-        newAppListener = new NewAppInstalledListener();
+        newAppListener = new AppChangeListener();
         registerReceiver(newAppListener, newAppFilter);
         registerReceiver(newAppListener, lessAppFilter);
         ///
