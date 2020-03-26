@@ -75,7 +75,7 @@ public class LockableViewPager extends ViewPager {
 
     private static class FixedSpeedScroller extends Scroller {
 
-        private int mDuration = 500;
+        private int mDuration = 400;
 
         public FixedSpeedScroller(Context context) {
             super(context);
