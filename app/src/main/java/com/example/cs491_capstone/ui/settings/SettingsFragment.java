@@ -88,7 +88,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static int dbSize;
 
     private InstalledAppsListAdapter listAdapter;
-
     private List<InstalledAppInfo> COPY_OF_LIST;
 
     @Override
@@ -98,10 +97,25 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         //Initialise the size of the database
         dbSize = localDatabase.getRowCount();
 
+        if(App.HOUR.equals("0")){
+            //TODO CLEAR ALL APP AND PHONE LIMITS AT START OPF DAY
+        }
+
+
         //WE CREATE A COPY OF THE LIST IN CASE THE USER DECIDES TO CANCEL MIDWAY WE WANT TO BE ABLE TO REVERT THE CHANGES
         //TODO MAKE THIS A DEEP CLONE, SO THEY DON'T POINT TO THE SAME OBJECT REFERENCE, CHANGES IN ONE WILL NOT AFFECT CHANGES IN THE OTHER
-        COPY_OF_LIST = new ArrayList<>(ALL_APPS_LIST);
-        listAdapter = new InstalledAppsListAdapter(getContext(), COPY_OF_LIST);
+        COPY_OF_LIST = new ArrayList<>();
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (InstalledAppInfo info : ALL_APPS_LIST) {
+                    COPY_OF_LIST.add(new InstalledAppInfo(info.getPackageName(), info.getSimpleName(), info.getIcon()).setTracked(info.isTracked()));
+                }
+            }
+        });
+//
+
 
         /*
         It would be better too implement the Onclick listener so it isn't so cluttered here but I can't get the click events to trigger the listeners that way
@@ -116,6 +130,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 LayoutInflater inflater = requireActivity().getLayoutInflater();
                 View view = inflater.inflate(R.layout.dialog_apps_list_layout, null);
 
+                listAdapter = new InstalledAppsListAdapter(getContext(), COPY_OF_LIST);
                 final ListView listView = view.findViewById(R.id.dialog_list);
                 listView.setAdapter(listAdapter);
 
@@ -124,16 +139,29 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
                                 //IF USER CLICKS OKAY THEN WE SAVE THE CHANGES TO THE LIST
-                                ALL_APPS_LIST = COPY_OF_LIST;
-
+                                ALL_APPS_LIST.clear();
+                                AsyncTask.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        for (InstalledAppInfo info : COPY_OF_LIST) {
+                                            ALL_APPS_LIST.add(new InstalledAppInfo(info.getPackageName(), info.getSimpleName(), info.getIcon()).setTracked(info.isTracked()));
+                                        }
+                                    }
+                                });
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 //IF THEY CANCEL WE SET THE COPY BACK TO THE ORIGINAL
-                                COPY_OF_LIST = ALL_APPS_LIST;
-                                //TODO BOXES NOT BEING CHECKED BACK
-                                //listAdapter.notifyDataSetChanged();
+                                COPY_OF_LIST.clear();
+                                AsyncTask.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        for (InstalledAppInfo info : ALL_APPS_LIST) {
+                                            COPY_OF_LIST.add(new InstalledAppInfo(info.getPackageName(), info.getSimpleName(), info.getIcon()).setTracked(info.isTracked()));
+                                        }
+                                    }
+                                });
                                 dialog.dismiss();
                             }
                         }).create().show();
@@ -162,7 +190,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 if (!(boolean) newValue) {
                     timeLeft = -1;
                 }
-
                 return true;
             }
         });
@@ -188,7 +215,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
-                                // Toast.makeText(getContext(), "" + picker.getValue(), Toast.LENGTH_SHORT).show();
                                 timeLeft = picker.getValue() * 60000;
                             }
                         })
@@ -197,8 +223,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                 dialog.dismiss();
                             }
                         }).create().show();
-
-
                 return true;
             }
         });
@@ -302,7 +326,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("CSV FORMAT")
                     .setMessage("The .csv file must contain the following headers in the same order\n" +
-                            "ENTRY_ID\nDATE\nHOUR_OF_DAY\nPACKAGE_NAME\nUNLOCKS_COUNT\nNOTIFICATIONS_COUNT\nUSAGE_TIME")
+                            "ENTRY_ID\nDATE\nHOUR_OF_DAY\nPACKAGE_NAME\nUNLOCKS_COUNT\nNOTIFICATIONS_COUNT\nUSAGE_TIME\nCATEGORY")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
