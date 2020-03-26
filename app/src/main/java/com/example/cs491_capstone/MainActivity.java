@@ -34,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<UserUsageInfo> usageInfo;
     SharedPreferences prefs = null;
     /**
+     * Broadcaster receiver that listens when new apps are installed to the system
+     */
+
+    /**
      * on click listener for bottom nav
      */
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
@@ -113,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
         Intent serviceIntent = new Intent(this, BackgroundMonitor.class);//Wifi Listener Intent
         startService(serviceIntent);
 
+
+
         ///RETRIEVE TODAY'S USAGE STATS
         usageInfo = getUsageToday();
     }
@@ -142,6 +148,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         usageInfo.clear();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
     }
     //

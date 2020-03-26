@@ -4,6 +4,8 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -17,6 +19,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import androidx.preference.PreferenceManager;
+
+import com.example.cs491_capstone.services.NewAppInstalledListener;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -92,6 +96,8 @@ public class App extends Application {
     public static List<InstalledAppInfo> ALL_APPS_LIST;
 
     public static Set<String> SPECIAL_APPS;
+
+    private NewAppInstalledListener newAppListener;
 
     public static void getInstalledApps(Context context) {
 
@@ -367,6 +373,16 @@ public class App extends Application {
         //CREATE INSTANCE OF THE SQL LITE DATABASE
         localDatabase = new DatabaseHelper(this);
 
+        ///REGISTER APP ADD/REMOVE RECEIVER, CAN NOT BE REGISTERED FROM MANIFEST DUE TO ANDROID RESTRICTIONS
+        IntentFilter newAppFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
+        newAppFilter.addDataScheme("package"); //MUST ADD DATA SCHEME OR RECEIVER WILL NOT TRIGGER
+        IntentFilter lessAppFilter = new IntentFilter(Intent.ACTION_PACKAGE_REMOVED);
+        lessAppFilter.addDataScheme("package"); //MUST ADD DATA SCHEME OR RECEIVER WILL NOT TRIGGER
+        newAppListener = new NewAppInstalledListener();
+        registerReceiver(newAppListener, newAppFilter);
+        registerReceiver(newAppListener, lessAppFilter);
+        ///
+
 
         /*
         1. SINCE currentPeriod IS SET BEFORE WE REACH THIS METHOD WE DON'T NEED TOO WORRY ABOUT IT BEING NULL
@@ -395,7 +411,7 @@ public class App extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        unregisterReceiver(newAppListener);
 
     }
 
