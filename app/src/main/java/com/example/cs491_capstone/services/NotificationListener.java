@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteConstraintException;
-import android.nfc.FormatException;
 import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -13,18 +12,16 @@ import android.util.Log;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 
-import java.text.ParseException;
+import static com.example.cs491_capstone.App.INCLUDED_APPS_LIST;
 
 public class NotificationListener extends NotificationListenerService {
 
     /**
-     * CONTEXT IS NEEDED FOR PACKAGE MANAGER & PACKAGE MANAGER IS NEEDED FOR SIMPLE APP NAME
+     * BOOLEAN REPRESENTING IF NOTIFICATION MANAGER IS ABLE TO CONNECT
+     * BY DEFAULT WE ASSUME IT IS UNABLE TO CONNECT AND THEREFORE PERMISSION IS NOT GRANTED
+     * set to true in onListenerConnected() and set to false in onListenerDisconnected() methods
      */
-    Context context;
-    /**
-     * used to get app info such as icon,package name and simple name
-     */
-    private PackageManager packageManager;
+    public static boolean connectedNL = false;
     /**
      * represents the package name oof the app sending the notification
      */
@@ -34,12 +31,13 @@ public class NotificationListener extends NotificationListenerService {
      */
     simpleAppName;
     /**
-     * BOOLEAN REPRESENTING IF NOTIFICATION MANAGER IS ABLE TO CONNECT
-     * BY DEFAULT WE ASSUME IT IS UNABLE TO CONNECT AND THEREFORE PERMISSION IS NOT GRANTED
-     * set to true in onListenerConnected() and set to false in onListenerDisconnected() methods
+     * CONTEXT IS NEEDED FOR PACKAGE MANAGER & PACKAGE MANAGER IS NEEDED FOR SIMPLE APP NAME
      */
-    public static boolean connectedNL = false;
-
+    Context context;
+    /**
+     * used to get app info such as icon,package name and simple name
+     */
+    private PackageManager packageManager;
 
     @Override
     public void onCreate() {
@@ -61,22 +59,22 @@ public class NotificationListener extends NotificationListenerService {
         //USE PACKAGE MANAGER TO GET STANDARD APP NAME
         simpleAppName = getSimpleAppName(notificationPackage);
 
-
-        try {
-            App.localDatabase.insert(notificationPackage, 0, 1, 0);
-            Log.i("TRACK", "NEW NOTIFICATION ENTRY SUCCESS " + notificationPackage + "  ");
-        } catch (SQLiteConstraintException ce) {
-            int count = 0;
-            if (App.localDatabase.get(DatabaseHelper.NOTIFICATIONS_COUNT, notificationPackage).equals("")) {
-                App.localDatabase.set(notificationPackage, DatabaseHelper.NOTIFICATIONS_COUNT, count + 1);
-                Log.i("TRACK", "UPDATING NEW NOTIFICATION ENTRY " + notificationPackage + "  " + count);
-            } else {
-                count = Integer.parseInt(App.localDatabase.get(DatabaseHelper.NOTIFICATIONS_COUNT, notificationPackage)) + 1;
-                App.localDatabase.set(notificationPackage, DatabaseHelper.NOTIFICATIONS_COUNT, count);
-                Log.i("TRACK", "UPDATING EXISTING NOTIFICATION ENTRY " + notificationPackage + "  " + count + "  : " + App.localDatabase.get(DatabaseHelper.NOTIFICATIONS_COUNT, notificationPackage));
+        if (INCLUDED_APPS_LIST.contains(notificationPackage)) {
+            try {
+                App.localDatabase.insert(notificationPackage, 0, 1, 0);
+                Log.i("TRACK", "NEW NOTIFICATION ENTRY SUCCESS " + notificationPackage + "  ");
+            } catch (SQLiteConstraintException ce) {
+                int count = 0;
+                if (App.localDatabase.get(DatabaseHelper.NOTIFICATIONS_COUNT, notificationPackage).equals("")) {
+                    App.localDatabase.set(notificationPackage, DatabaseHelper.NOTIFICATIONS_COUNT, count + 1);
+                    Log.i("TRACK", "UPDATING NEW NOTIFICATION ENTRY " + notificationPackage + "  " + count);
+                } else {
+                    count = Integer.parseInt(App.localDatabase.get(DatabaseHelper.NOTIFICATIONS_COUNT, notificationPackage)) + 1;
+                    App.localDatabase.set(notificationPackage, DatabaseHelper.NOTIFICATIONS_COUNT, count);
+                    Log.i("TRACK", "UPDATING EXISTING NOTIFICATION ENTRY " + notificationPackage + "  " + count + "  : " + App.localDatabase.get(DatabaseHelper.NOTIFICATIONS_COUNT, notificationPackage));
+                }
             }
         }
-
     }
 
     /**

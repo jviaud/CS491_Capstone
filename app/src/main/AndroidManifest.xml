@@ -43,7 +43,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.settings.SettingsAppList" />
         <activity android:name=".ui.award.NewGoal" />
 
 
@@ -57,6 +56,13 @@
         </service>
 
         <service android:name=".services.BackgroundMonitor" />
+
+        <receiver android:name=".services.NewAppInstalledListener">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
 
     </application>
 </manifest>

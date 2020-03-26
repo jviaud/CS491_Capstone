@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
+import static com.example.cs491_capstone.App.INCLUDED_APPS_LIST;
 import static com.example.cs491_capstone.App.isTrackedApp;
 import static com.example.cs491_capstone.ui.settings.SettingsFragment.dataDisabled;
 import static com.example.cs491_capstone.ui.settings.SettingsFragment.parentalControls;
@@ -354,7 +355,7 @@ public class BackgroundMonitor extends Service {
             appInUse = stat.getPackageName();
 
 
-            if (isTrackedApp(appInUse)) {
+            if (INCLUDED_APPS_LIST.contains(appInUse)) {
 
                 try {
                     App.localDatabase.insert(appInUse, 0, 0, totalTime);

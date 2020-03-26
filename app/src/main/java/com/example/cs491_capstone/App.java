@@ -81,8 +81,16 @@ public class App extends Application {
      * The sub list inside this list is ordered from start of week to end. So, 0 is the start of the week, Sun, and 7 is the end of the week, Sat.
      */
     public static ArrayList<ArrayList<String>> currentPeriod = getCurrentPeriod();
+    /**
+     * Used to determine if an app is being tracked, based on this list we get the list of installed apps.
+     * We also use this too prevent apps that are not being tracked being added too the database
+     */
     public static List<String> INCLUDED_APPS_LIST;
+    /**
+     * This is is used to show all apps that are installed
+     */
     public static List<InstalledAppInfo> ALL_APPS_LIST;
+
     public static Set<String> SPECIAL_APPS;
 
     public static void getInstalledApps(Context context) {

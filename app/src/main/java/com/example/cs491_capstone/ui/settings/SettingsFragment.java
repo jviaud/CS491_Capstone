@@ -54,6 +54,7 @@ import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.cs491_capstone.App.ALL_APPS_LIST;
+import static com.example.cs491_capstone.App.INCLUDED_APPS_LIST;
 import static com.example.cs491_capstone.App.localDatabase;
 import static com.example.cs491_capstone.services.BackgroundMonitor.timeLeft;
 
@@ -97,7 +98,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         //Initialise the size of the database
         dbSize = localDatabase.getRowCount();
 
-        if(App.HOUR.equals("0")){
+        if (App.HOUR.equals("0")) {
             //TODO CLEAR ALL APP AND PHONE LIMITS AT START OPF DAY
         }
 
@@ -140,11 +141,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             public void onClick(DialogInterface dialog, int id) {
                                 //IF USER CLICKS OKAY THEN WE SAVE THE CHANGES TO THE LIST
                                 ALL_APPS_LIST.clear();
+                                INCLUDED_APPS_LIST.clear();
                                 AsyncTask.execute(new Runnable() {
                                     @Override
                                     public void run() {
                                         for (InstalledAppInfo info : COPY_OF_LIST) {
                                             ALL_APPS_LIST.add(new InstalledAppInfo(info.getPackageName(), info.getSimpleName(), info.getIcon()).setTracked(info.isTracked()));
+                                            INCLUDED_APPS_LIST.add(info.getPackageName());
                                         }
                                     }
                                 });
