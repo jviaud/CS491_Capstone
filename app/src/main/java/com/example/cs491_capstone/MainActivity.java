@@ -118,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
         startService(serviceIntent);
 
 
-
         ///RETRIEVE TODAY'S USAGE STATS
         usageInfo = getUsageToday();
     }

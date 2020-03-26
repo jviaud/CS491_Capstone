@@ -27,6 +27,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
+import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.UserUsageInfo;
 import com.example.cs491_capstone.ui.home.home_graphs.HomeNotificationGraphFragment;
@@ -47,6 +48,7 @@ import static com.example.cs491_capstone.App.setListViewHeightBasedOnChildren;
 import static com.example.cs491_capstone.MainActivity.usageInfo;
 import static com.example.cs491_capstone.services.BackgroundMonitor.timeLeft;
 import static com.example.cs491_capstone.ui.settings.SettingsFragment.parentalControls;
+import static com.example.cs491_capstone.ui.settings.SettingsFragment.trackedAppsChanged;
 
 
 public class HomeFragment extends Fragment {
@@ -120,8 +122,6 @@ public class HomeFragment extends Fragment {
             } else
                 break;
         }
-
-
         //NOW WE FORM A SUBLIST OF THE TOP X APPS AND PASS IT TO THE ADAPTER
         listAdapter = new MostUsedAppsListAdapter(getContext(), topItems);
         mostUsedListView.setAdapter(listAdapter);
@@ -165,15 +165,30 @@ public class HomeFragment extends Fragment {
         topItems.clear();
         parentalControls = preferences.getBoolean("parental_controls", false);
 
+        //IF TRACKED LIST HAS CHANGED THEN WE NEED NEW USAGE INFO
+        if (trackedAppsChanged) {
+            usageInfo = MainActivity.getUsageToday();
+        }
+        /*
+        REGARDLESS IF TRACKED APPS HAVE CHANGED WE ALWAYS REGENERATE THE TOP 5 APPS IN ON RESUME
+        UNFORTUNATELY WE HAVE TO RUN THIS TWICE
+        1)WE CAN NOT APPLY THIS LIST TO THE LIST VIEW HERE BECAUSE WE WOULD ALSO HAVE TO REGENERATE THE LIST VIEW AND CALCULATE THE SIZE WHICH IS INEFFICIENT TO DO EVERY TIME
+        2) WE COULD ONLY RECALCULATE THE LIST SIZE IF SOMETHING IN THE LIST HAS CHANGED BUT THEN WE WOULD HAVE TO ITERATE OVER THE WHOLE LISE
+        3)THIS FOR LOOP IS ALSO IN THE ON CREATE CAUSING IT TO RUN TWICE BUT THIS IS MORE EFFICIENT THAN METHOD 1 & 2 BECAUSE WE KNOW IT WILL ONLY ITERATE OVER AT MOST 5 ELEMENTS EVERY TIME
+        */
         for (int i = 0; i <= maximumOnDisplay; i++) {
             if (usageInfo.get(i).getUsage() > 0) {
                 topItems.add(usageInfo.get(i));
             } else
                 break;
         }
+
+
+        //RESIZE EVERY TIME ON ONRESUME IS INEFFICIENT, WE KNOW CHANGES WILL OONLY OCCUR IF AN APP HAS BEEN REMOVED FROM TRACK LIST
+        if (trackedAppsChanged) {
+            setListViewHeightBasedOnChildren(mostUsedListView);
+        }
         listAdapter.notifyDataSetChanged();
-        //TODO RESIZE EVERY TIME ON ONRESUME IS INEFFICIENT
-        //setListViewHeightBasedOnChildren(mostUsedListView);
 
         String time = App.timeFormatter(Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)));
         totalUsage.setText(time);

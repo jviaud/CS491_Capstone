@@ -83,11 +83,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      *
      */
     public static boolean parentalControls = false;
+    public static boolean trackedAppsChanged = false;
     /**
      * Represents the size of the database, used when downloading/uploading the database to show progress
      */
     private static int dbSize;
-
     private InstalledAppsListAdapter listAdapter;
     private List<InstalledAppInfo> COPY_OF_LIST;
 
@@ -149,6 +149,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                             ALL_APPS_LIST.add(new InstalledAppInfo(info.getPackageName(), info.getSimpleName(), info.getIcon()).setTracked(info.isTracked()));
                                             INCLUDED_APPS_LIST.add(info.getPackageName());
                                         }
+                                        trackedAppsChanged = true;
                                     }
                                 });
                             }
