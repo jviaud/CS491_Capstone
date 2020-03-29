@@ -219,7 +219,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
                     long value = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(date, i + "", DatabaseHelper.USAGE_TIME, category)) / 60000;
 
                     if (value == 0) {
-                        values.add(new SubcolumnValue(value, Color.TRANSPARENT));
+                      //  values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     } else {
                         //THE SUB COLUMNS COLOR IS CHOSEN FROM A LIST OF COLORS SO IT WILL ALWAYS BE THE SAME COLOR
                         SubcolumnValue subcolumnValue = new SubcolumnValue(value, categoryKey[j]);
@@ -243,7 +243,6 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
                 //ADD THE CURRENT COLUMN TO THE LIST OF COLUMNS
                 columns.add(column);
             }
-            //TODO ADD KEY FOR DAY HERE
             ArrayList<String> categories = localDatabase.categoryUsed(date, DatabaseHelper.USAGE_TIME);
 
             for (String category : categories) {
@@ -264,7 +263,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
                 key.setLayoutParams(lp);
                 key.setText(category + " " + formattedVal);
                 key.setTextSize(15);
-                //  key.setTextColor(categoryKey[j]);
+//                key.setTextColor(categoryKey[j]);
                 keyContainer.addView(key);
             }
 
@@ -381,12 +380,13 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         byCategory = !byCategory;
         if (byCategory) {
             changeGraph.setText(R.string.byApps);
-            listTitle.setText(R.string.listApps);
+            listTitle.setText((R.string.listCategory));
+
         } else {
             //REMOVE THE KEY
             keyContainer.removeAllViewsInLayout();
             changeGraph.setText(R.string.byCategory);
-            listTitle.setText((R.string.listCategory));
+            listTitle.setText(R.string.listApps);
         }
         createUsageChart(graphDate, byCategory);
     }

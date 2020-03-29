@@ -24,6 +24,7 @@ import com.example.cs491_capstone.services.AppChangeListener;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -94,7 +95,6 @@ public class App extends Application {
      * This is is used to show all apps that are installed
      */
     public static List<InstalledAppInfo> ALL_APPS_LIST;
-
     public static Set<String> SPECIAL_APPS;
 
     private AppChangeListener newAppListener;
@@ -138,6 +138,23 @@ public class App extends Application {
         return (INCLUDED_APPS_LIST.contains(packageName));
     }
 
+    /**
+     * USES JODA TIME API
+     * GET TODAY'S DATE THEN GET THE START TIME OF TODAY'S DATE AS A LONG
+     * THIS WILL ALWAYS RETURN THE BEGINNING OF THE CURRENT DAY
+     *
+     * @return The long representing the start of the day
+     */
+    private static long getStartOfDay() {
+        //
+        DateTimeZone timeZone = DateTimeZone.forID("America/Montreal");
+        DateTime now = DateTime.now(timeZone);
+        DateTime todayStart = now.withTimeAtStartOfDay();
+        DateTime tomorrowStart = now.plusDays(1).withTimeAtStartOfDay();
+        Interval today = new Interval(todayStart, tomorrowStart);
+
+        return today.getStartMillis();
+    }
 
     /**
      * @param packageName the package name of the app too check
@@ -372,6 +389,7 @@ public class App extends Application {
 
         //CREATE INSTANCE OF THE SQL LITE DATABASE
         localDatabase = new DatabaseHelper(this);
+        goalDataBase = new GoalDataBaseHelper(this);
 
         ///REGISTER APP ADD/REMOVE RECEIVER, CAN NOT BE REGISTERED FROM MANIFEST DUE TO ANDROID RESTRICTIONS
         IntentFilter newAppFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);

@@ -364,12 +364,13 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
         byCategory = !byCategory;
         if (byCategory) {
             changeGraph.setText(R.string.byApps);
-            listTitle.setText(R.string.listApps);
+            listTitle.setText((R.string.listCategory));
+
         } else {
             //REMOVE THE KEY
             keyContainer.removeAllViewsInLayout();
             changeGraph.setText(R.string.byCategory);
-            listTitle.setText((R.string.listCategory));
+            listTitle.setText(R.string.listApps);
         }
         createUsageChart(graphDate, byCategory);
     }

@@ -52,7 +52,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Name of the firebaseDatabase
      */
     private static final String DATABASE_NAME = "Usage.db";
-
+    /**
+     * the category oof the app
+     */
     private static final String APP_CATEGORY = "CATEGORY";
 
     private final Context context;
@@ -64,7 +66,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(activity, DATABASE_NAME, null, 1);
         new WeakReference<>(activity);
         context = activity.getApplicationContext();
-//        SQLiteDatabase db = this.getWritableDatabase();
     }
 
     @Override
@@ -132,8 +133,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         contentValues.put(DATE, date);
         contentValues.put(HOUR_OF_DAY, hour);
-
-        contentValues.put(ENTRY_ID, packageName + "-" + date + "-" + hour);
+        //packageName + "-" + date + "-" + hour
+        contentValues.put(ENTRY_ID, id);
 
         contentValues.put(PACKAGE_NAME, packageName);
         contentValues.put(UNLOCKS_COUNT, unlocks);
@@ -313,7 +314,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param packageName the package name of the app
      * @return A String representing the total time this app has been used today
      */
-    String getSumAppUsageTime(String packageName) {
+    public String getSumAppUsageTime(String packageName) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         //
@@ -447,6 +448,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else return buffer.toString();
     }
 
+
     /**
      * @param date
      * @param hour
@@ -486,6 +488,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * @param date
+     * @param hour
+     * @param col
+     * @param category
+     * @return
+     */
     public String getSumTotalStatByCategory(String date, String hour, String col, String category) {
         SQLiteDatabase db = this.getWritableDatabase();
         //
@@ -518,6 +527,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * @param date
+     * @param col
+     * @param category
+     * @return
+     */
     public String getSumTotalStatByCategory(String date, String col, String category) {
         SQLiteDatabase db = this.getWritableDatabase();
         //
@@ -548,6 +563,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else return buffer.toString();
     }
 
+    /**
+     * @param date
+     * @param hour
+     * @param col
+     * @return
+     */
     public ArrayList<String> appsUsed(String date, String hour, String col) {
         ArrayList<String> used = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -568,6 +589,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return used;
     }
 
+    /**
+     * @param date
+     * @param col
+     * @return
+     */
     public ArrayList<String> appsUsed(String date, String col) {
         ArrayList<String> used = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -589,6 +615,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return used;
     }
 
+    /**
+     * @param date
+     * @param hour
+     * @param col
+     * @return
+     */
     public ArrayList<String> categoryUsed(String date, String hour, String col) {
         ArrayList<String> used = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -611,6 +643,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return used;
     }
 
+    /**
+     * @param date
+     * @param col
+     * @return
+     */
     public ArrayList<String> categoryUsed(String date, String col) {
         ArrayList<String> used = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -657,7 +694,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * returns all data from table
+     * gets all data from table
      *
      * @return Cursor of all data in table
      */

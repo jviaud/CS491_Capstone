@@ -21,6 +21,13 @@
         <item name="launcher_background">#23DBDC</item>
     </style>
 
+    <style name="GoalTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
     <!--    STYLE FOR TRANSPARENT ACTIVITY-->
     <style name="Theme.Transparent" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>

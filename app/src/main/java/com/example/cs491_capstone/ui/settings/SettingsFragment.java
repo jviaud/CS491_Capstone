@@ -104,9 +104,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
 
         //WE CREATE A COPY OF THE LIST IN CASE THE USER DECIDES TO CANCEL MIDWAY WE WANT TO BE ABLE TO REVERT THE CHANGES
-        //TODO MAKE THIS A DEEP CLONE, SO THEY DON'T POINT TO THE SAME OBJECT REFERENCE, CHANGES IN ONE WILL NOT AFFECT CHANGES IN THE OTHER
         COPY_OF_LIST = new ArrayList<>();
-
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -207,11 +205,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 // Get the layout inflater
                 LayoutInflater inflater = requireActivity().getLayoutInflater();
                 View view = inflater.inflate(R.layout.dialog_limit_layout, null);
-                final NumberPicker picker = view.findViewById(R.id.numberPicker1);
+                final NumberPicker hour = view.findViewById(R.id.hour);
+                final NumberPicker minutes = view.findViewById(R.id.minutes);
 
-                picker.setMinValue(1);
-                picker.setMaxValue(1430);
-                picker.setWrapSelectorWheel(false);
+
+                hour.setMinValue(0);
+                hour.setMaxValue(23);
+                hour.setWrapSelectorWheel(false);
+                //
+                minutes.setMinValue(0);
+                minutes.setMaxValue(59);
+                minutes.setWrapSelectorWheel(false);
 
 
                 builder.setView(view)
@@ -219,7 +223,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
-                                timeLeft = picker.getValue() * 60000;
+                                // timeLeft = picker.getValue() * 60000;
+                                timeLeft = (hour.getValue() * 3600000) + (minutes.getValue() * 60000);
+
+
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

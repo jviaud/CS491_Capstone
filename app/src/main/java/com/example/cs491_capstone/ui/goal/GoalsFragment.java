@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.award;
+package com.example.cs491_capstone.ui.goal;
 
 import android.content.Intent;
 import android.os.Bundle;

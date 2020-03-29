@@ -43,7 +43,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.award.NewGoal" />
+        <activity
+            android:name=".ui.goal.NewGoal"
+            android:label="New Goal"
+            android:parentActivityName="com.example.cs491_capstone.ui.goal.GoalsFragment"
+            android:theme="@style/GoalTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.cs491_capstone.ui.goal.GoalsFragment" />
+        </activity>
 
 
         <service
