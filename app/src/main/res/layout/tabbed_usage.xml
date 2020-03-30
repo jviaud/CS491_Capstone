@@ -10,6 +10,7 @@
         android:id="@+id/graph_choice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabTextAppearance="@style/MineCustomTabText"
         android:layout_marginTop="16dp"
         android:background="?attr/cardbackground"
         android:elevation="6dp"

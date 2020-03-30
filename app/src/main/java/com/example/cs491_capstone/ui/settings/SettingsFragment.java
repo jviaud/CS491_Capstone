@@ -570,7 +570,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             NotificationCompat.Builder notification = new NotificationCompat.Builder(activity.getApplicationContext(), App.CHANNEL_2_ID_ALERTS)
                     .setSmallIcon(R.drawable.ic_file_download)
                     .setContentTitle("Upload")
-                    .setContentText("Error Uploading:\n" + s)
+                    .setContentText(s)
                     .setPriority(NotificationCompat.PRIORITY_LOW)
                     .setOngoing(true)
                     .setOnlyAlertOnce(true)

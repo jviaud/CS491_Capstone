@@ -19,9 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
@@ -33,6 +31,7 @@ import com.example.cs491_capstone.UserUsageInfo;
 import com.example.cs491_capstone.ui.home.home_graphs.HomeNotificationGraphFragment;
 import com.example.cs491_capstone.ui.home.home_graphs.HomeUnlocksGraphFragment;
 import com.example.cs491_capstone.ui.home.home_graphs.HomeUsageGraphFragment;
+import com.example.cs491_capstone.ui_helpers.ViewPageAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import org.joda.time.DateTime;
@@ -360,39 +359,6 @@ public class HomeFragment extends Fragment {
         }
 
 
-    }
-
-    ///ADAPTER CLASSS FOR TABBED LAYOUT
-    public static class ViewPageAdapter extends FragmentStatePagerAdapter {
-        private List<Fragment> fragmentList = new ArrayList<>();
-        private List<String> titles = new ArrayList<>();
-
-        ViewPageAdapter(@NonNull FragmentManager fm, int behavior) {
-            super(fm, behavior);
-        }
-
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            return fragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-
-            return titles.size();
-        }
-
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titles.get(position);
-        }
-
-        void addFragment(Fragment fragment, String title) {
-            fragmentList.add(fragment);
-            titles.add(title);
-        }
     }
 
 

@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.intro;
+package com.example.cs491_capstone.ui_helpers;
 
 import android.content.Context;
 import android.util.AttributeSet;

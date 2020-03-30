@@ -14,11 +14,11 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
     /**
      * THE NAME OF THE DRAWABLE AS IT APPEARS IN THE  RES/DRAWABLES FOLDER e.g R.DRAWABLES.##
      */
-    public static final String GOAL_DATE = "GOAL_DATE";
+    private static final String GOAL_DATE = "GOAL_DATE";
     /**
      * goals can be for a specific app or for overall phone usage or a specific category
      */
-    public static final String GOAL_TYPE = "GOAL_TYPE";
+    private static final String GOAL_TYPE = "GOAL_TYPE";
     /**
      * if goals are for a specific app the package name of the app is recorded else 0
      */
@@ -30,11 +30,11 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
     /**
      * if the goal is usage based then the time is recorded in milli
      */
-    public static final String GOAL_USAGE = "GOAL_USAGE";
+    private static final String GOAL_USAGE = "GOAL_USAGE";
     /**
      * if the goal is unlocks based then the number of unlocks is recorded
      */
-    public static final String GOAL_UNLOCKS = "GOAL_UNLOCKS";
+    private static final String GOAL_UNLOCKS = "GOAL_UNLOCKS";
     /**
      *
      */
@@ -91,6 +91,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
     public void insert(String date, String type, long usage, int unlocks) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+
 
         contentValues.put(GOAL_DATE, date);
         contentValues.put(GOAL_TYPE, type);
@@ -182,5 +183,18 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean canInsert(String date, String type) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_NAME +
+                " WHERE " + GOAL_DATE + " = \"" + date + "\"" + " AND " + GOAL_TYPE + "='" + type + "'", null);
+
+        StringBuilder buffer = new StringBuilder();
+        while (res.moveToNext()) {
+            buffer.append(res.getString(0));
+        }
+        String result = buffer.toString();
+
+        return result.equals("0");
+    }
 
 }

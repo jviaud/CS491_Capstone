@@ -21,6 +21,7 @@ import com.example.cs491_capstone.UserUsageInfo;
 import com.example.cs491_capstone.ui.home.detailed_graphs.DetailedNotificationGraphFragment;
 import com.example.cs491_capstone.ui.home.detailed_graphs.DetailedUnlocksGraphFragment;
 import com.example.cs491_capstone.ui.home.detailed_graphs.DetailedUsageGraphFragment;
+import com.example.cs491_capstone.ui_helpers.ViewPageAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import static com.example.cs491_capstone.App.DATE;
@@ -75,7 +76,7 @@ public class DetailedAppActivity extends AppCompatActivity {
 
         TabLayout tabLayout = findViewById(R.id.graph_choice);
         ViewPager viewPager = findViewById(R.id.graph_container);
-        HomeFragment.ViewPageAdapter adapter = new HomeFragment.ViewPageAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        ViewPageAdapter adapter = new ViewPageAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

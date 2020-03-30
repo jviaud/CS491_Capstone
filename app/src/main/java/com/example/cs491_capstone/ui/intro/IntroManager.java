@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui_helpers.LockableViewPager;
+import com.example.cs491_capstone.ui_helpers.ZoomOutPageTransformer;
 import com.novoda.spritz.Spritz;
 import com.novoda.spritz.SpritzStep;
 import com.pixelcan.inkpageindicator.InkPageIndicator;

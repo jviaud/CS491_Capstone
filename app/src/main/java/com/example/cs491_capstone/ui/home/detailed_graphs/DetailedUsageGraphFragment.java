@@ -2,7 +2,6 @@ package com.example.cs491_capstone.ui.home.detailed_graphs;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,8 +83,6 @@ public class DetailedUsageGraphFragment extends Fragment {
 
             values = new ArrayList<>();//CREATE NEW LIST OF VALUES
             for (int j = 0; j < numSubcolumns; j++) {
-                //
-                Log.i("STATS", "" + App.currentPeriod.get(0) + "  " + App.currentPeriod.get(0).size());
                 long val = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(0).get(i), DatabaseHelper.USAGE_TIME, DetailedAppActivity.packageName)) / 60000;
 
 

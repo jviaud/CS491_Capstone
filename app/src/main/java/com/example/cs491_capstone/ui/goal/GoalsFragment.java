@@ -1,6 +1,5 @@
 package com.example.cs491_capstone.ui.goal;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +8,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.cs491_capstone.ui_helpers.ViewPageAdapter;
+import com.google.android.material.tabs.TabLayout;
 
 public class GoalsFragment extends Fragment {
 
@@ -27,16 +29,20 @@ public class GoalsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        TabLayout tabLayout = view.findViewById(R.id.graph_choice);
+        ViewPager viewPager = view.findViewById(R.id.graph_container);
+        ViewPageAdapter adapter = new ViewPageAdapter(getChildFragmentManager(), FragmentPagerAdapter.POSITION_UNCHANGED);
 
-        FloatingActionButton fab = view.findViewById(R.id.new_goal);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), NewGoal.class);
-                startActivity(intent);
-            }
-        });
+        adapter.addFragment(new PhoneGoalFragment(), "General");
+        adapter.addFragment(new AppGoalFragment(), "Applications");
+        adapter.addFragment(new CategoryGoalFragment(), "Category");
+
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+
     }
 
 

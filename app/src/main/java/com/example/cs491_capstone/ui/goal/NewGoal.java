@@ -53,7 +53,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
     ChipGroup type, categoryList, stats;
     CardView appInfo, usageCard, unlocksCard;
     EditText hour, minutes, unlock_amount;
-    TextView dateTitle, appName, errorMessage;
+    TextView dateTitle, appName, errorMessage, errorUsage, errorUnlocks;
     ImageView appIcon;
     Button done;
     private InstalledAppsListAdapter listAdapter;
@@ -107,6 +107,8 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         unlock_amount = findViewById(R.id.unlock_amount);
         done = findViewById(R.id.done_button);
         errorMessage = findViewById(R.id.error_message);
+        errorUsage = findViewById(R.id.error_usage);
+        errorUnlocks = findViewById(R.id.error_unlocks);
 
 
         //MIN AND MAX VALUES FOR EDIT TEXT
@@ -132,7 +134,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                 if (s.length() != 0) {
                     if (Integer.parseInt(s.toString()) < 0) {
                         if (Integer.parseInt(minutes.getText().toString()) > 0) {
-                            Log.i("GOALS", "" + Arrays.toString(formCompletion));
+
                             formCompletion[2] = true;
                             if (areAllTrue(formCompletion)) {
                                 done.setEnabled(true);
@@ -141,6 +143,10 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                             }
                         } else {
                             formCompletion[2] = false;
+                            done.setEnabled(false);
+                            String error = "Either Hour or Minutes has to be greater than 0";
+                            errorUsage.setText(error);
+                            errorUsage.setVisibility(View.VISIBLE);
                         }
                     } else {
                         formCompletion[2] = true;
@@ -172,7 +178,6 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                 if (s.length() != 0) {
                     if (Integer.parseInt(s.toString()) < 0) {
                         if (Integer.parseInt(hour.getText().toString()) > 0) {
-                            Log.i("GOALS", "" + Arrays.toString(formCompletion));
                             formCompletion[2] = true;
                             if (areAllTrue(formCompletion)) {
                                 done.setEnabled(true);
@@ -181,6 +186,10 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                             }
                         } else {
                             formCompletion[2] = false;
+                            done.setEnabled(false);
+                            String error = "Either Hour or Minutes has to be greater than 0";
+                            errorUsage.setText(error);
+                            errorUsage.setVisibility(View.VISIBLE);
                         }
                     } else {
                         formCompletion[2] = true;
@@ -193,6 +202,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                 } else {
                     formCompletion[2] = false;
                 }
+
             }
 
             @Override
@@ -209,8 +219,8 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() != 0) {
-                    if (Integer.parseInt(s.toString()) < 0) {
-                        Log.i("GOALS", "" + Arrays.toString(formCompletion));
+                    if (Integer.parseInt(s.toString()) > 0) {
+                        errorUnlocks.setVisibility(View.GONE);
                         formCompletion[2] = true;
                         if (areAllTrue(formCompletion)) {
                             done.setEnabled(true);
@@ -218,12 +228,10 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                             done.setEnabled(false);
                         }
                     } else {
-                        formCompletion[2] = true;
-                        if (areAllTrue(formCompletion)) {
-                            done.setEnabled(true);
-                        } else {
-                            done.setEnabled(false);
-                        }
+                        formCompletion[2] = false;
+                        errorUnlocks.setVisibility(View.VISIBLE);
+                        String error = "Must be greater than 0";
+                        errorUnlocks.setText(error);
                     }
                 } else {
                     formCompletion[2] = false;
@@ -290,7 +298,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         } else {
             day = String.valueOf(dayOfMonth);
         }
-        date = year + "/" + (month + 1) + "/" + day;
+        date = year + "-" + (month + 1) + "-" + day;
         dateTitle.setText(date);
 
 
@@ -360,9 +368,10 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                 break;
             case View.VISIBLE:
                 usageCard.setVisibility(View.GONE);
-                if (unlocksCard.getVisibility() == View.GONE)
+                errorUsage.setVisibility(View.GONE);
+                if (unlocksCard.getVisibility() == View.GONE) {
                     formCompletion[2] = false;
-                Log.i("GOALS", "" + Arrays.toString(formCompletion));
+                }
                 break;
         }
 
@@ -376,30 +385,41 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                 break;
             case View.VISIBLE:
                 unlocksCard.setVisibility(View.GONE);
-                if (usageCard.getVisibility() == View.GONE)
+                errorUnlocks.setVisibility(View.GONE);
+                if (usageCard.getVisibility() == View.GONE) {
                     formCompletion[2] = false;
-                Log.i("GOALS", "" + Arrays.toString(formCompletion));
+                }
                 break;
         }
     }
 
     public void insertData() {
-        long usage;
-        int unlocks;
+        long usage = 0;
+        int unlocks = 0;
         if (usageCard.getVisibility() != View.GONE) {
-            usage = (Integer.parseInt(hour.getText().toString()) * 360000) + (Integer.parseInt(minutes.getText().toString()) * 60000);
-        } else {
-            usage = 0;
+            if (hour.getText().length() > 0) {
+                usage = (Integer.parseInt(hour.getText().toString()) * 36000);
+            }
+            if (minutes.getText().length() > 0) {
+                usage += (Integer.parseInt(minutes.getText().toString()) * 60000);
+            }
         }
         if (unlocksCard.getVisibility() != View.GONE) {
-            unlocks = (Integer.parseInt(unlock_amount.getText().toString()));
-        } else {
-            unlocks = 0;
+            if (unlock_amount.getText().length() > 0) {
+                unlocks = (Integer.parseInt(unlock_amount.getText().toString()));
+            }
+
         }
 
-        //TODO ADD DUPLICATE CHECKER
-        App.goalDataBase.insert(date, goalType, usage, unlocks);
-
+        //DUPLICATE CHECKER
+        if (App.goalDataBase.canInsert(date, goalType)) {
+            App.goalDataBase.insert(date, goalType, usage, unlocks);
+            finish();
+        } else {
+            String error = "A " + goalType.replace("_", " ") + " has already been set for " + date + ". Please try editing the goal instead.";
+            errorMessage.setText(error);
+            errorMessage.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

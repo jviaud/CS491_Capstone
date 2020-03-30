@@ -15,6 +15,7 @@ import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui.usage.usage_graphs.daily.DailyNotificationGraph;
 import com.example.cs491_capstone.ui.usage.usage_graphs.daily.DailyUnlocksGraph;
 import com.example.cs491_capstone.ui.usage.usage_graphs.daily.DailyUsageGraph;
+import com.example.cs491_capstone.ui_helpers.ViewPageAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 public class UsageDailyFragment extends Fragment {
@@ -34,7 +35,7 @@ public class UsageDailyFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.graph_choice);
         ViewPager viewPager = view.findViewById(R.id.graph_container);
-        UsageFragment.ViewPageAdapter adapter = new UsageFragment.ViewPageAdapter(getChildFragmentManager(), FragmentPagerAdapter.POSITION_UNCHANGED);
+        ViewPageAdapter adapter = new ViewPageAdapter(getChildFragmentManager(), FragmentPagerAdapter.POSITION_UNCHANGED);
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

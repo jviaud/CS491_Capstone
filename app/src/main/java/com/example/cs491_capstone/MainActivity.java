@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -15,11 +16,13 @@ import androidx.preference.PreferenceManager;
 
 import com.example.cs491_capstone.services.BackgroundMonitor;
 import com.example.cs491_capstone.ui.goal.GoalsFragment;
+import com.example.cs491_capstone.ui.goal.NewGoal;
 import com.example.cs491_capstone.ui.home.HomeFragment;
 import com.example.cs491_capstone.ui.intro.IntroManager;
 import com.example.cs491_capstone.ui.settings.SettingsFragment;
 import com.example.cs491_capstone.ui.usage.UsageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +36,7 @@ import static com.example.cs491_capstone.App.localDatabase;
 public class MainActivity extends AppCompatActivity {
     public static ArrayList<UserUsageInfo> usageInfo;
     SharedPreferences prefs = null;
+    FloatingActionButton fab;
     /**
      * Broadcaster receiver that listens when new apps are installed to the system
      */
@@ -48,15 +52,19 @@ public class MainActivity extends AppCompatActivity {
 
                     switch (item.getItemId()) {
                         case R.id.nav_home:
+                            fab.setVisibility(View.VISIBLE);
                             selectedFragment = new HomeFragment();
                             break;
                         case R.id.nav_parental:
+                            fab.setVisibility(View.VISIBLE);
                             selectedFragment = new GoalsFragment();
                             break;
                         case R.id.nav_usage:
+                            fab.setVisibility(View.VISIBLE);
                             selectedFragment = new UsageFragment();
                             break;
                         case R.id.nav_settings:
+                            fab.setVisibility(View.GONE);
                             selectedFragment = new SettingsFragment();
                             break;
                     }
@@ -65,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             };
+
 
     public static ArrayList<UserUsageInfo> getUsageToday() {
         //FOR EVERY APP IN APP LIST
@@ -110,6 +119,18 @@ public class MainActivity extends AppCompatActivity {
         //SET HOME FRAGMENT TO BE SELECTED BY DEFAULT
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new HomeFragment()).commit();
+
+
+        fab = findViewById(R.id.new_goal);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, NewGoal.class);
+                startActivity(intent);
+            }
+        });
+
+
         ///END CREATE BOTTOM NAVIGATION
 
 

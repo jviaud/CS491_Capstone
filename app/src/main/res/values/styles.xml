@@ -21,11 +21,19 @@
         <item name="launcher_background">#23DBDC</item>
     </style>
 
+    <!--  STYLE FOR NEW GOAL ACTIVITY  -->
     <style name="GoalTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <!--    -->
+
+    <!--  STYLE FOR TAB LAYOUT  -->
+    <style name="MineCustomTabText" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">12sp</item>
+    </style>
+    <!---->
 
 
     <!--    STYLE FOR TRANSPARENT ACTIVITY-->

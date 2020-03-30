@@ -15,6 +15,10 @@ import androidx.fragment.app.Fragment;
 import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
+
 public class GetStartedFragment extends Fragment {
     @Nullable
     @Override
@@ -43,9 +47,8 @@ public class GetStartedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
-
-               // intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_REORDER_TO_FRONT);
             }
         });
 
