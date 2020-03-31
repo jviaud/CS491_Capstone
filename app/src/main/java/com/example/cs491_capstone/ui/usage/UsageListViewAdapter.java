@@ -13,13 +13,14 @@ import android.widget.TextView;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.UserUsageInfo;
 
 import java.util.List;
 import java.util.Locale;
 
 public class UsageListViewAdapter extends BaseAdapter {
     private LayoutInflater inflater;
-    private List<String> usedList;
+    private List<UserUsageInfo> usedList;
     private boolean byCategory;
     private PackageManager packageManager;
     private String hour;
@@ -27,7 +28,7 @@ public class UsageListViewAdapter extends BaseAdapter {
     private String column;
 
     //CONSTRUCTOR
-    public UsageListViewAdapter(Context context, List<String> usedList) {
+    public UsageListViewAdapter(Context context, List<UserUsageInfo> usedList) {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.usedList = usedList;
         packageManager = context.getPackageManager();
@@ -69,7 +70,7 @@ public class UsageListViewAdapter extends BaseAdapter {
         UsageListViewHolder listHolder;
 
         if (convertView == null) {
-            //CREATE VIEWHOLDER AND INFLATE LAYOUT
+            //CREATE VIEW HOLDER AND INFLATE LAYOUT
             listHolder = new UsageListViewHolder();
             convertView = inflater.inflate(R.layout.usage_card_layout, parent, false);
 
@@ -85,7 +86,7 @@ public class UsageListViewAdapter extends BaseAdapter {
         }
 
         if (byCategory) {
-            String category = usedList.get(position);
+            String category = usedList.get(position).getCategory();
 
             listHolder.name.setText(category);
             String formattedVal = "";
@@ -100,11 +101,9 @@ public class UsageListViewAdapter extends BaseAdapter {
                 } else {
                     formattedVal = String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m");
                 }
-                //  Log.i("TOP", "U-VAL" + value);
             } else {
                 long value = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(date, hour, column, category));
                 formattedVal = " " + value;
-                //   Log.i("TOP", "O-VAL" + value);
             }
             listHolder.time.setText(formattedVal);
 
@@ -140,7 +139,7 @@ public class UsageListViewAdapter extends BaseAdapter {
 
 
         } else {
-            String packageName = usedList.get(position);
+            String packageName = usedList.get(position).getPackageName();
             try {
                 ApplicationInfo ai = packageManager.getApplicationInfo(packageName, 0);
                 listHolder.name.setText(ai.loadLabel(packageManager).toString());
@@ -158,11 +157,10 @@ public class UsageListViewAdapter extends BaseAdapter {
                     } else {
                         formattedVal = String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m");
                     }
-                    // Log.i("TOP", "U-VAL" + value);
                 } else {
-                    long value = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(date, hour, column, packageName));
+                    long value = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(date, hour, column, packageName));
                     formattedVal = " " + value;
-                    // Log.i("TOP", "O-VAL" + value);
+
                 }
                 listHolder.time.setText(formattedVal);
 

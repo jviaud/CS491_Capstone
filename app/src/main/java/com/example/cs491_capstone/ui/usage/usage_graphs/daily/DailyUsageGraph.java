@@ -1,11 +1,13 @@
 package com.example.cs491_capstone.ui.usage.usage_graphs.daily;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ListView;
@@ -18,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.UserUsageInfo;
+import com.example.cs491_capstone.ui.home.DetailedAppActivity;
 import com.example.cs491_capstone.ui.usage.UsageFragment;
 import com.example.cs491_capstone.ui.usage.UsageListViewAdapter;
 
@@ -45,7 +49,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
      * boolean to tell the graph if it should generate a stacked graph or not
      */
     private static boolean byCategory = false;
-    private static List<String> usedList;
+    private static List<UserUsageInfo> usedList;
     /**
      * The maximum number of days in the weeks list, we could get this manually, it is just 7*4
      */
@@ -219,7 +223,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
                     long value = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(date, i + "", DatabaseHelper.USAGE_TIME, category)) / 60000;
 
                     if (value == 0) {
-                      //  values.add(new SubcolumnValue(value, Color.TRANSPARENT));
+                        //  values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     } else {
                         //THE SUB COLUMNS COLOR IS CHOSEN FROM A LIST OF COLORS SO IT WILL ALWAYS BE THE SAME COLOR
                         SubcolumnValue subcolumnValue = new SubcolumnValue(value, categoryKey[j]);
@@ -478,11 +482,8 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
 
 
             String hour = String.valueOf(columnIndex);
-            if (byCategory) {
-                usedList = localDatabase.categoryUsed(graphDate, hour, DatabaseHelper.USAGE_TIME);
-            } else {
-                usedList = localDatabase.appsUsed(graphDate, hour, DatabaseHelper.USAGE_TIME);
-            }
+
+            usedList = localDatabase.appsUsed(graphDate, hour, DatabaseHelper.USAGE_TIME);
 
 
             listAdapter = new UsageListViewAdapter(getContext(), usedList);
@@ -491,12 +492,24 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
             listAdapter.setHour(hour);
             listAdapter.setColumn(DatabaseHelper.USAGE_TIME);
             listView.setAdapter(listAdapter);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    UserUsageInfo item = (UserUsageInfo) parent.getItemAtPosition(position);
+
+                    Intent intent = new Intent(getContext(), DetailedAppActivity.class);
+                    intent.putExtra("APP", item);
+                    startActivity(intent);
+                }
+            });
+
             App.setListViewHeightBasedOnChildren(listView);
         }
 
         @Override
         public void onValueDeselected() {
-            listAdapter = new UsageListViewAdapter(getContext(), new ArrayList<String>());
+            listAdapter = new UsageListViewAdapter(getContext(), new ArrayList<UserUsageInfo>());
             listView.setAdapter(listAdapter);
             App.setListViewHeightBasedOnChildren(listView);
         }

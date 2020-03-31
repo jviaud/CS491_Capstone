@@ -24,7 +24,6 @@ import com.example.cs491_capstone.services.AppChangeListener;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -95,10 +94,20 @@ public class App extends Application {
      * This is is used to show all apps that are installed
      */
     public static List<InstalledAppInfo> ALL_APPS_LIST;
+    /**
+     * List of special apps to be ignored from the filter by default, This is a Set because it is easier to save in SharedPreferences
+     */
     public static Set<String> SPECIAL_APPS;
-
+    /**
+     * The BroadCast Receiver that listens for any new or removed apps so a new list of apps can be generated. This is much more efficient than polling for changes ourselves
+     */
     private AppChangeListener newAppListener;
 
+    /**
+     * Populates #ALL_APPS_LIST with #InstalledAppInfo of all application that are installed on the system
+     *
+     * @param context the context making the call
+     */
     public static void getInstalledApps(Context context) {
 
         PackageManager packageManager = context.getPackageManager();
@@ -128,33 +137,19 @@ public class App extends Application {
         for (InstalledAppInfo info : ALL_APPS_LIST) {
             Log.i("TRACKED", "EXCLUDED" + info.getPackageName() + "|" + info.isTracked());
         }
-
-        //RETURN THE LIST OF OBJECTS
     }
 
-
+    /**
+     * Checks if an app should be tracked. Compares its package name to a list of pre defined packages
+     *
+     * @param packageName the package to be compared
+     * @return true if the app is being tracked or false if the app is not in the list of apps to be tracked
+     */
     public static boolean isTrackedApp(String packageName) {
 
         return (INCLUDED_APPS_LIST.contains(packageName));
     }
 
-    /**
-     * USES JODA TIME API
-     * GET TODAY'S DATE THEN GET THE START TIME OF TODAY'S DATE AS A LONG
-     * THIS WILL ALWAYS RETURN THE BEGINNING OF THE CURRENT DAY
-     *
-     * @return The long representing the start of the day
-     */
-    private static long getStartOfDay() {
-        //
-        DateTimeZone timeZone = DateTimeZone.forID("America/Montreal");
-        DateTime now = DateTime.now(timeZone);
-        DateTime todayStart = now.withTimeAtStartOfDay();
-        DateTime tomorrowStart = now.plusDays(1).withTimeAtStartOfDay();
-        Interval today = new Interval(todayStart, tomorrowStart);
-
-        return today.getStartMillis();
-    }
 
     /**
      * @param packageName the package name of the app too check
@@ -358,7 +353,6 @@ public class App extends Application {
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
-
     }
 
     @Override
@@ -368,6 +362,7 @@ public class App extends Application {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (prefs.getBoolean("firstrun", true)) {
             SPECIAL_APPS = new HashSet<>();
+            //THIS IS THE DEFAULT LIST WE KNOW WE WANT TO IGNORE
             String[] apps = {"com.google.android.calender", "com.android.camera2", "com.android.chrome",
                     "com.google.android.deskclock", "com.google.contacts", "com.google.android.apps.docs", "com.android.documentsui",
                     "com.google.android.gm", "com.google.android.videos", "com.google.android.music", "com.google.android.vending", "com.google.android.apps.maps",
@@ -430,7 +425,6 @@ public class App extends Application {
     public void onTerminate() {
         super.onTerminate();
         unregisterReceiver(newAppListener);
-
     }
 
     /**

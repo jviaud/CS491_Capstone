@@ -83,12 +83,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      *
      */
     public static boolean parentalControls = false;
+    /**
+     * Keeps track if there has been any changes to the Apps being tracked
+     */
     public static boolean trackedAppsChanged = false;
     /**
      * Represents the size of the database, used when downloading/uploading the database to show progress
      */
     private static int dbSize;
+    /**
+     * List Adapter for the Dialog containing the list of installed apps
+     */
     private InstalledAppsListAdapter listAdapter;
+    /**
+     * A DeepCopy of the ALL_APPS_LIST so we have the user make changes and cancel if they need to without making those changes permanent or having to reverse them
+     */
     private List<InstalledAppInfo> COPY_OF_LIST;
 
     @Override
@@ -113,14 +122,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 }
             }
         });
-//
 
 
         /*
         It would be better too implement the Onclick listener so it isn't so cluttered here but I can't get the click events to trigger the listeners that way
         So I unfortunately have to put all the click listeners here
          */
-
         Preference appList = findPreference(("exclusion_list"));
         appList.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -325,6 +332,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
     }
 
+    /**
+     * Checks for permission before starting Async task to insert CSV data into database
+     */
     private void getCSV() {
 
         //SELF CHECK READ_EXTERNAL_STORAGE PERMISSION
@@ -388,6 +398,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     }
 
+    /**
+     * Checks for permission before starting Async task to upload database data to CSV
+     */
     private void putCSV() {
         //SELF CHECK WRITE PERMISSION
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -439,6 +452,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
 
+    /**
+     * Handles downloading a CSV and inserting it into the database
+     */
     private static class ImportCSV extends AsyncTask<Intent, Integer, String> {
         /**
          * Weak reference to activity because we need context but don't want to cause memory leak
@@ -582,6 +598,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
     }
 
+
+    /**
+     * Handles downloading the database and inserting it into a CSV
+     */
     private static class ExportCSV extends AsyncTask<NotificationCompat.Builder, Integer, String> {
 
         /**
@@ -657,6 +677,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
 
+    ////VIEW HOLDER FOR LIST VIEW IN DIALOG
     static class InstalledAppsViewHolder {
         CheckBox box;
         ImageView icon;

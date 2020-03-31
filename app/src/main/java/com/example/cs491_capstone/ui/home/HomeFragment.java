@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
-import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.UserUsageInfo;
 import com.example.cs491_capstone.ui.home.home_graphs.HomeNotificationGraphFragment;
@@ -43,8 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.example.cs491_capstone.App.localDatabase;
 import static com.example.cs491_capstone.App.setListViewHeightBasedOnChildren;
-import static com.example.cs491_capstone.MainActivity.usageInfo;
 import static com.example.cs491_capstone.services.BackgroundMonitor.timeLeft;
 import static com.example.cs491_capstone.ui.settings.SettingsFragment.parentalControls;
 import static com.example.cs491_capstone.ui.settings.SettingsFragment.trackedAppsChanged;
@@ -62,7 +60,7 @@ public class HomeFragment extends Fragment {
     private TextView hour_timer;
     private TextView minutes_timer;
     private TextView seconds_timer;
-
+    private List<UserUsageInfo> userInfo;
     private TextView totalUsage, percentDelta;
     private CardView phoneTimerCard;
     private SharedPreferences preferences;
@@ -81,6 +79,10 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        userInfo = localDatabase.topAppsUsedToday(App.DATE);
+
 
         //HEADER
         totalUsage = view.findViewById(R.id.total_usage);
@@ -108,21 +110,8 @@ public class HomeFragment extends Fragment {
         seconds_timer = view.findViewById(R.id.timer_seconds);
 
 
-        //SORT THE LIST OF APP USAGE INFO, THIS IS SORTED BY TOTAL TIME USED FOR THE DAY
-
-
-        /*
-        EVEN THOUGH WE WANT TO DISPLAY UP TO X AMOUNT OF APPS ON THE HOME PAGE, THERE IS NO REASON TO DISPLAY USAGE FOR APPS WITH 0 USAGE TIME
-        SO WE LOOK AT THE TOP X AMOUNT OF APPS AND IF THEY DON'T HAVE A TIME GREATER THAN 0 WE DON'T INCLUDE IT IN THE DISPLAY
-         */
-        for (int i = 0; i <= maximumOnDisplay; i++) {
-            if (usageInfo.get(i).getUsage() > 0) {
-                topItems.add(usageInfo.get(i));
-            } else
-                break;
-        }
         //NOW WE FORM A SUBLIST OF THE TOP X APPS AND PASS IT TO THE ADAPTER
-        listAdapter = new MostUsedAppsListAdapter(getContext(), topItems);
+        listAdapter = new MostUsedAppsListAdapter(getContext(), userInfo);
         mostUsedListView.setAdapter(listAdapter);
         setListViewHeightBasedOnChildren(mostUsedListView);
 
@@ -159,33 +148,14 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //WE MUST REFRESH THE ADAPTER CONTAINING THE LIST VIEW
-        //AND RECREATE THE LIST
-        topItems.clear();
         parentalControls = preferences.getBoolean("parental_controls", false);
 
-        //IF TRACKED LIST HAS CHANGED THEN WE NEED NEW USAGE INFO
+        //RESIZE EVERY TIME ON ONRESUME IS INEFFICIENT, WE KNOW CHANGES WILL ONLY OCCUR IF AN APP HAS BEEN REMOVED FROM TRACK LIST
         if (trackedAppsChanged) {
-            usageInfo = MainActivity.getUsageToday();
-        }
-        /*
-        REGARDLESS IF TRACKED APPS HAVE CHANGED WE ALWAYS REGENERATE THE TOP 5 APPS IN ON RESUME
-        UNFORTUNATELY WE HAVE TO RUN THIS TWICE
-        1)WE CAN NOT APPLY THIS LIST TO THE LIST VIEW HERE BECAUSE WE WOULD ALSO HAVE TO REGENERATE THE LIST VIEW AND CALCULATE THE SIZE WHICH IS INEFFICIENT TO DO EVERY TIME
-        2) WE COULD ONLY RECALCULATE THE LIST SIZE IF SOMETHING IN THE LIST HAS CHANGED BUT THEN WE WOULD HAVE TO ITERATE OVER THE WHOLE LISE
-        3)THIS FOR LOOP IS ALSO IN THE ON CREATE CAUSING IT TO RUN TWICE BUT THIS IS MORE EFFICIENT THAN METHOD 1 & 2 BECAUSE WE KNOW IT WILL ONLY ITERATE OVER AT MOST 5 ELEMENTS EVERY TIME
-        */
-        for (int i = 0; i <= maximumOnDisplay; i++) {
-            if (usageInfo.get(i).getUsage() > 0) {
-                topItems.add(usageInfo.get(i));
-            } else
-                break;
-        }
-
-
-        //RESIZE EVERY TIME ON ONRESUME IS INEFFICIENT, WE KNOW CHANGES WILL OONLY OCCUR IF AN APP HAS BEEN REMOVED FROM TRACK LIST
-        if (trackedAppsChanged) {
+            userInfo = localDatabase.topAppsUsedToday(App.DATE);
             setListViewHeightBasedOnChildren(mostUsedListView);
+        } else {
+            userInfo = localDatabase.topAppsUsedToday(App.DATE);
         }
         listAdapter.notifyDataSetChanged();
 
@@ -204,7 +174,6 @@ public class HomeFragment extends Fragment {
 
         setPercentDelta();
     }
-
 
     private void setPercentDelta() {
         int todayIndex = App.currentPeriod.get(0).indexOf(App.DATE);
@@ -349,10 +318,10 @@ public class HomeFragment extends Fragment {
 
             //String packageName = installedAppInfoList.get(position).getPackageName();
 
-            String time = installedAppInfoList.get(position).formatTime(installedAppInfoList.get(position).getUsage());
+            //String time = installedAppInfoList.get(position).formatTime(installedAppInfoList.get(position).getUsage());
             //long time = installedAppInfoList.get(position).getDailyUsage();
-            Log.i("TRACK", "" + time);
-            listHolder.time.setText(String.valueOf(time));
+            // Log.i("TRACK", "" + time);
+            listHolder.time.setText(String.valueOf(installedAppInfoList.get(position).formatTime()));
 
 
             return convertView;

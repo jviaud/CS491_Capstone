@@ -11,6 +11,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import java.lang.reflect.Field;
 
+/**
+ * A custom viewPager that can disable swipes
+ */
 public class LockableViewPager extends ViewPager {
 
     private boolean swipeable;

@@ -44,10 +44,4 @@ public class InstalledAppInfo implements Comparable<InstalledAppInfo> {
         return o.getSimpleName().compareTo(getSimpleName());
     }
 
-
-///
-
-    ///SETTERS
-    ///
-
 }

@@ -2,7 +2,6 @@ package com.example.cs491_capstone;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,17 +23,12 @@ import com.example.cs491_capstone.ui.usage.UsageFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
-import static com.example.cs491_capstone.App.ALL_APPS_LIST;
-import static com.example.cs491_capstone.App.localDatabase;
 
 public class MainActivity extends AppCompatActivity {
-    public static ArrayList<UserUsageInfo> usageInfo;
+    //public static ArrayList<UserUsageInfo> usageInfo;
     SharedPreferences prefs = null;
     FloatingActionButton fab;
     /**
@@ -74,30 +68,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-
-    public static ArrayList<UserUsageInfo> getUsageToday() {
-        //FOR EVERY APP IN APP LIST
-        //WE USE THIS LIST BECAUSE IT IS ALREADY FILTERED
-        //WE DON'T HAVE TO FILTER IT AGAIN
-        ArrayList<UserUsageInfo> usageInfo = new ArrayList<>();
-
-
-        for (int i = 0; i < ALL_APPS_LIST.size(); i++) {
-            String packageName = ALL_APPS_LIST.get(i).getPackageName();
-
-
-            if (ALL_APPS_LIST.get(i).isTracked()) {
-                String appName = ALL_APPS_LIST.get(i).getSimpleName();
-                Drawable icon = ALL_APPS_LIST.get(i).getIcon();
-                Long time = Long.parseLong(localDatabase.getSumAppUsageTime(packageName));
-                usageInfo.add(new UserUsageInfo(packageName, appName, icon, time));
-            }
-            //Log.i("TRACKED", packageName);
-        }
-
-        Collections.sort(usageInfo);
-        return usageInfo;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ///RETRIEVE TODAY'S USAGE STATS
-        usageInfo = getUsageToday();
+        //usageInfo = getUsageToday();
     }
 
     @Override
@@ -160,20 +130,6 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             App.SPECIAL_APPS = prefs.getStringSet("exclusion_list", null);
-            usageInfo = getUsageToday();
         }
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        usageInfo.clear();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-    }
-    //
 }

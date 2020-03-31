@@ -11,6 +11,10 @@ import java.util.List;
 
 
 ///ADAPTER CLASSS FOR TABBED LAYOUT
+
+/**
+ * PageAdapter used throughout the package, placed here since the same one is used almost all the time
+ */
 public class ViewPageAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> fragmentList = new ArrayList<>();
     private List<String> titles = new ArrayList<>();

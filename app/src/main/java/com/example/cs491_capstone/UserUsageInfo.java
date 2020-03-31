@@ -5,7 +5,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class UserUsageInfo implements Comparable<UserUsageInfo>, Parcelable {
 
@@ -36,19 +35,20 @@ public class UserUsageInfo implements Comparable<UserUsageInfo>, Parcelable {
      * The total number of times for today the app has been opened first upon unlock
      */
     private Long usage;
+    private String category;
 
 
-    /**
-     * @param packageName The String representing the app's package name e.g "com.example.cs491_capstone".
-     * @param simpleName  The String representing the apps simple name as it appears in the Google PlayStore
-     * @param icon        The Drawable Icon as it appears in the Google PlayStore
-     * @param usage       g
-     */
-    public UserUsageInfo(String packageName, String simpleName, Drawable icon, Long usage) {
+    UserUsageInfo(String packageName, String simpleName, Drawable icon, Long usage) {
         this.packageName = packageName;
         this.simpleName = simpleName;
         this.icon = icon;
         this.usage = usage;
+    }
+
+    UserUsageInfo(String packageName, String simpleName, String category) {
+        this.packageName = packageName;
+        this.simpleName = simpleName;
+        this.category = category;
     }
 
     ///
@@ -58,6 +58,11 @@ public class UserUsageInfo implements Comparable<UserUsageInfo>, Parcelable {
     protected UserUsageInfo(Parcel in) {
         packageName = in.readString();
         simpleName = in.readString();
+        category = in.readString();
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     /**
@@ -89,15 +94,21 @@ public class UserUsageInfo implements Comparable<UserUsageInfo>, Parcelable {
     }
 
     /**
-     * @param time the time as a long
      * @return the formatted string in HH:MM:SS format
      */
-    public String formatTime(long time) {
-        return String.format(Locale.ENGLISH, "%02d:%02d:%02d",
-                TimeUnit.MILLISECONDS.toHours(time),
-                TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(time)),
-                TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time))
-        );
+    public String formatTime() {
+        String formattedVal;
+        long value = usage / 60000;
+        int hours = (int) (value / (60) % 24);
+        int minutes = (int) (value % 60);
+
+
+        if (hours == 0) {
+            formattedVal = String.format(Locale.ENGLISH, "%d%s", minutes, "m");
+        } else {
+            formattedVal = String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m");
+        }
+        return formattedVal;
     }
 
     @Override
@@ -117,5 +128,6 @@ public class UserUsageInfo implements Comparable<UserUsageInfo>, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(packageName);
         dest.writeString(simpleName);
+        dest.writeString(category);
     }
 }

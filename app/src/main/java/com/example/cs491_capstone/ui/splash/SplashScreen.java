@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 
+/**
+ * An activity that starts before MainActivity to display the logo. This is just stylistic
+ */
 public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

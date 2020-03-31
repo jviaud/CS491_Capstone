@@ -2,11 +2,14 @@ package com.example.cs491_capstone;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.drawable.Drawable;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -20,14 +23,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public static final String DATE = "USAGE_DATE";
     /**
-     * The hour of the day that the usage stat occurs, from 0-23
-     */
-    public static final String HOUR_OF_DAY = "HOUR_OF_DAY";
-    /**
-     * The package that the usage stat belongs to. This will be shared between the two tables and will act like a foreign key
-     */
-    public static final String PACKAGE_NAME = "PACKAGE_NAME";
-    /**
      * This represents to number of times a specific app was the first to be opened after an unlock event and not the total number oof time the phone was unlocked
      * this information will be used to get the total number of phone unlocks by just taking the sum of unlocks for that day.
      */
@@ -40,6 +35,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * the total amount of time an app was used for
      */
     public static final String USAGE_TIME = "USAGE_TIME";
+    /**
+     * The hour of the day that the usage stat occurs, from 0-23
+     */
+    private static final String HOUR_OF_DAY = "HOUR_OF_DAY";
+    /**
+     * The package that the usage stat belongs to. This will be shared between the two tables and will act like a foreign key
+     */
+    private static final String PACKAGE_NAME = "PACKAGE_NAME";
     /**
      * The UsageTable will give detailed usage statistics for a specific app
      */
@@ -56,8 +59,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * the category oof the app
      */
     private static final String APP_CATEGORY = "CATEGORY";
-
+    /**
+     * a reference to the context so we can use package manager
+     */
     private final Context context;
+    /**
+     * used to get simple names and drawables when returning list of UserUsageStat
+     */
+    private final PackageManager packageManager;
 
     /**
      * @param activity this is a reference to the Application. We use to to get the context since Context can't be static
@@ -66,6 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(activity, DATABASE_NAME, null, 1);
         new WeakReference<>(activity);
         context = activity.getApplicationContext();
+        packageManager = context.getPackageManager();
     }
 
     @Override
@@ -81,6 +91,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * this insert is used to insert into the database throughout the application
+     *
      * @param packageName   The package name of the app
      * @param unlocks       the number of time the app was used first after an unlock event on a specific date during 1 hour intervals
      * @param notifications the number of notifications the app has sent on a specific date during 1 hour intervals
@@ -116,9 +128,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * @param id
-     * @param date
-     * @param hour
+     * This insert is used to insert into the database from a csv
+     *
+     * @param id            the id of the entry
+     * @param date          the date of the entry
+     * @param hour          the hour of the entry
      * @param packageName   The package name of the app
      * @param unlocks       the number of time the app was used first after an unlock event on a specific date during 1 hour intervals
      * @param notifications the number of notifications the app has sent on a specific date during 1 hour intervals
@@ -311,37 +325,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * @param packageName the package name of the app
-     * @return A String representing the total time this app has been used today
-     */
-    public String getSumAppUsageTime(String packageName) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        //
-
-        Cursor res = db.rawQuery("SELECT SUM(" + USAGE_TIME + ") " +
-                "FROM " + TABLE_NAME + " " +
-                "WHERE " + PACKAGE_NAME + " = \"" + packageName + "\"" + " " +
-                "AND " + DATE + "= \"" + App.DATE + "\"", null);
-
-        StringBuilder buffer = new StringBuilder();
-
-        //READ LINES FROM CURSOR INTO BUFFER
-        while (res.moveToNext()) {
-            buffer.append(res.getLong(0));
-        }
-
-        res.close();
-
-        String result = buffer.toString();
-        if (result.equals("")) {
-            return "0";
-        } else {
-            return result;
-        }
-    }
-
-    /**
+     * get the sum of a particular app by  date
+     *
      * @param date the date of the usage stats
      * @return A string representing to total time the phone has been used for a specific date
      */
@@ -376,6 +361,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * get the sum of a particular stat by date and time
+     *
      * @param date the date of the usage stats
      * @return A string representing to total time the phone has been used for a specific date
      */
@@ -413,10 +400,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * @param date
-     * @param col
-     * @param packageName
-     * @return The summation of a particular column by date
+     * get the sume of a particular app by date for a specific app
+     *
+     * @param date        the date to retrieve
+     * @param col         the column to retrieve
+     * @param packageName the package to retrieve
+     * @return The summation of a particular column by date grouped by package name
      */
     public String getSumTotalStatByPackage(String date, String col, String packageName) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -448,13 +437,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else return buffer.toString();
     }
 
-
     /**
-     * @param date
-     * @param hour
-     * @param col
-     * @param packageName
-     * @return The summation of a particular column by date and time
+     * Gets the sum of a particular stat by date and time for an app
+     *
+     * @param date        the date to retrieve
+     * @param hour        the hour to retrieve
+     * @param col         the column to retrieve
+     * @param packageName the package name to retrieve
+     * @return The summation of a particular column by date and time grouped by package name
      */
     public String getSumTotalStatByPackage(String date, String hour, String col, String packageName) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -489,11 +479,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * @param date
-     * @param hour
-     * @param col
-     * @param category
-     * @return
+     * get the sum of a particular stat by date and time for a specific category
+     *
+     * @param date     the date to retrieve
+     * @param hour     the hour to retrieve
+     * @param col      the column to retrieve
+     * @param category the category to retrieve
+     * @return The summation of a particular column by date and time grouped by category
      */
     public String getSumTotalStatByCategory(String date, String hour, String col, String category) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -528,10 +520,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * @param date
-     * @param col
-     * @param category
-     * @return
+     * get the sum of a particular stat by date for a specific category
+     *
+     * @param date     the date to retrieve
+     * @param col      the column to retrieve
+     * @param category the category to retrieve
+     * @return The summation of a particular column by date and time grouped by category
      */
     public String getSumTotalStatByCategory(String date, String col, String category) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -564,16 +558,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * @param date
-     * @param hour
-     * @param col
-     * @return
+     * Get Apps that were used on a specific day and time as #UserUsageInfo, used to populate list view
+     *
+     * @param date the date to retrieve
+     * @param hour the hour to retrieve
+     * @param col  the column to retrieve
+     * @return A list of #UserUsageInfo
      */
-    public ArrayList<String> appsUsed(String date, String hour, String col) {
-        ArrayList<String> used = new ArrayList<>();
+    public ArrayList<UserUsageInfo> appsUsed(String date, String hour, String col) {
+        ArrayList<UserUsageInfo> used = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
 
-        Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + " FROM " + TABLE_NAME +
+        Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + "," + APP_CATEGORY + " FROM " + TABLE_NAME +
                 " GROUP BY " + DATE + "," + HOUR_OF_DAY + "," + PACKAGE_NAME +
                 " HAVING " + DATE + " = \"" + date + "\" " +
                 " AND " + HOUR_OF_DAY + " = " + hour + " " +
@@ -581,7 +577,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " ORDER BY SUM(" + col + ") DESC", null);
 
         while (res.moveToNext()) {
-            used.add(res.getString(0));
+
+            String packageName = res.getString(0);
+            String category = res.getString(1);
+            String appName = "";
+            try {
+                ApplicationInfo ai = packageManager.getApplicationInfo(packageName, 0);
+                appName = ai.loadLabel(packageManager).toString();
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            used.add(new UserUsageInfo(packageName, appName, category));
+
         }
 
 
@@ -590,52 +598,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * @param date
-     * @param col
-     * @return
+     * Get Apps that were used on a specific day as #UserUsageInfo, used to populate list view
+     *
+     * @param date the date to retrieve
+     * @param col  the column to retrieve
+     * @return A list of #UserUsageInfo
      */
-    public ArrayList<String> appsUsed(String date, String col) {
-        ArrayList<String> used = new ArrayList<>();
+    public ArrayList<UserUsageInfo> appsUsed(String date, String col) {
+        ArrayList<UserUsageInfo> used = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
 
-        Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + " FROM " + TABLE_NAME +
+        Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + "," + APP_CATEGORY + " FROM " + TABLE_NAME +
                 " GROUP BY " + DATE + "," + PACKAGE_NAME +
-                " HAVING " + DATE + " =\"" + date + "\" " +
-                " AND " + col + " > " + 0 + " " +
-                " ORDER BY SUM(" + col + ") DESC ", null);
-
-        //READ LINES FROM CURSOR INTO BUFFER
-
-        while (res.moveToNext()) {
-            used.add(res.getString(0));
-        }
-
-
-        res.close();
-        return used;
-    }
-
-    /**
-     * @param date
-     * @param hour
-     * @param col
-     * @return
-     */
-    public ArrayList<String> categoryUsed(String date, String hour, String col) {
-        ArrayList<String> used = new ArrayList<>();
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        Cursor res = db.rawQuery("SELECT " + APP_CATEGORY + " FROM " + TABLE_NAME +
-                " GROUP BY " + DATE + "," + HOUR_OF_DAY + "," + APP_CATEGORY +
-                " HAVING " + DATE + " =\"" + date + "\" " +
-                " AND " + HOUR_OF_DAY + " =\"" + hour + "\" " +
+                " HAVING " + DATE + " = \"" + date + "\" " +
                 " AND " + col + " > " + 0 + " " +
                 " ORDER BY SUM(" + col + ") DESC", null);
 
-        //READ LINES FROM CURSOR INTO BUFFER
-
         while (res.moveToNext()) {
-            used.add(res.getString(0));
+
+
+            String packageName = res.getString(0);
+            String category = res.getString(1);
+            String appName = "";
+            ApplicationInfo ai = null;
+            try {
+                ai = packageManager.getApplicationInfo(packageName, 0);
+                appName = ai.loadLabel(packageManager).toString();
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            used.add(new UserUsageInfo(packageName, appName, category));
+
         }
 
 
@@ -644,9 +638,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * @param date
-     * @param col
-     * @return
+     * Get a list of the top 5 apps used for a specific day. Apps with a value less than 1 will not be included
+     *
+     * @param date the date to retrieve
+     * @return A list of #UserUsageInfo
+     */
+    public ArrayList<UserUsageInfo> topAppsUsedToday(String date) {
+        ArrayList<UserUsageInfo> used = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + ",SUM(" + USAGE_TIME + ") FROM " + TABLE_NAME +
+                " GROUP BY " + DATE + "," + PACKAGE_NAME +
+                " HAVING " + DATE + " =\"" + date + "\"" +
+                " ORDER BY SUM(" + USAGE_TIME + ") DESC LIMIT 5", null);
+
+        while (res.moveToNext()) {
+
+
+            String packageName = res.getString(0);
+            long time = res.getLong(1);
+            Drawable icon = null;
+            String appName = "";
+            try {
+                ApplicationInfo ai = packageManager.getApplicationInfo(packageName, 0);
+                appName = ai.loadLabel(packageManager).toString();
+                icon = ai.loadIcon(packageManager);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            used.add(new UserUsageInfo(packageName, appName, icon, time));
+
+        }
+
+
+        res.close();
+        return used;
+    }
+
+
+    /**
+     * Get a list of categories based on a particular column that were used on a specific day
+     *
+     * @param date the date to retrieve
+     * @param col  the column to retrieve
+     * @return a list of strings with the categories
      */
     public ArrayList<String> categoryUsed(String date, String col) {
         ArrayList<String> used = new ArrayList<>();
@@ -669,31 +705,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     /**
-     * @param date
-     * @param col
-     * @return a list of the top three rows (package names) for a specified column
-     */
-    public ArrayList<String> getTopThreeRankings(String date, String col) {
-        ArrayList<String> top = new ArrayList<>();
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + " FROM " + TABLE_NAME +
-                " GROUP BY " + PACKAGE_NAME +
-                " HAVING " + DATE + " =\"" + date + "\"" +
-                " ORDER BY SUM(" + col + ") DESC LIMIT 3", null);
-
-        //READ LINES FROM CURSOR INTO BUFFER
-
-        while (res.moveToNext()) {
-            top.add(res.getString(0));
-        }
-
-
-        res.close();
-        return top;
-    }
-
-    /**
      * gets all data from table
      *
      * @return Cursor of all data in table
@@ -704,6 +715,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Get the number of rows in the database
+     *
      * @return the number of rows in the database
      */
     public int getRowCount() {
