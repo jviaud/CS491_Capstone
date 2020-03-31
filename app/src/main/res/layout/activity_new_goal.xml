@@ -90,13 +90,6 @@
                 android:text="Phone" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chip_byCategory"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Category" />
-
-            <com.google.android.material.chip.Chip
                 android:id="@+id/chip_byApp"
                 style="@style/Widget.MaterialComponents.Chip.Filter"
                 android:layout_width="wrap_content"
@@ -160,85 +153,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group_filter2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/app_card"
-            app:singleSelection="true">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_cat_game"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Game" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_cat_audio"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Audio" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_cat_video"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Video" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_cat_image"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Image" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_cat_social"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Social" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_cat_news"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="News" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_cat_maps"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Maps" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_cat_productivity"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Productivity" />
-
-        </com.google.android.material.chip.ChipGroup>
-
 
         <TextView
             android:id="@+id/stat_title"
@@ -251,7 +165,7 @@
             android:textSize="28sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chip_group_filter2" />
+            app:layout_constraintTop_toBottomOf="@+id/app_card" />
         <ImageView
             android:id="@+id/imageView5"
             android:layout_width="20dp"

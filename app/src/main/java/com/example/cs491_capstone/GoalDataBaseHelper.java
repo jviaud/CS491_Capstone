@@ -7,10 +7,22 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.cs491_capstone.ui.goal.Goal;
+
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GoalDataBaseHelper extends SQLiteOpenHelper {
 
+    /**
+     * if goals are for a specific app the package name of the app is recorded else 0
+     */
+    public static final String GOAL_APP = "GOAL_APP";
+    /**
+     *
+     */
+    public static final String GOAL_PHONE = "GOAL_PHONE";
     /**
      * THE NAME OF THE DRAWABLE AS IT APPEARS IN THE  RES/DRAWABLES FOLDER e.g R.DRAWABLES.##
      */
@@ -20,14 +32,6 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
      */
     private static final String GOAL_TYPE = "GOAL_TYPE";
     /**
-     * if goals are for a specific app the package name of the app is recorded else 0
-     */
-    public static final String GOAL_APP = "GOAL_APP";
-    /**
-     * if goals are for a specific category then the category is recorded else 0
-     */
-    public static final String GOAL_CATEGORY = "GOAL_CATEGORY";
-    /**
      * if the goal is usage based then the time is recorded in milli
      */
     private static final String GOAL_USAGE = "GOAL_USAGE";
@@ -35,10 +39,6 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
      * if the goal is unlocks based then the number of unlocks is recorded
      */
     private static final String GOAL_UNLOCKS = "GOAL_UNLOCKS";
-    /**
-     *
-     */
-    public static final String GOAL_PHONE = "GOAL_PHONE";
     /**
      * THE NAME OF THE TABLE
      */
@@ -51,6 +51,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
      * THE NAME OF THIS DATABASE
      */
     private static final String DATABASE_NAME = "Goal.db";
+    private static final String PACKAGE_NAME = "PACKAGE_NAME";
     private final Context context;
 
     /**
@@ -67,11 +68,10 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(" CREATE TABLE " + TABLE_NAME + " (" + ENTRY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + GOAL_DATE + " TEXT,"
                 + GOAL_TYPE + " TEXT,"
-                + GOAL_PHONE + " TEXT DEFAULT \"0\","
-                + GOAL_APP + " TEXT DEFAULT \"0\","
-                + GOAL_CATEGORY + " TEXT DEFAULT \"0\","
                 + GOAL_USAGE + " REAL,"
-                + GOAL_UNLOCKS + " INTEGER" + ")");
+                + GOAL_UNLOCKS + " INTEGER,"
+                + PACKAGE_NAME + " TEXT DEFAULT \"0\""
+                + ")");
     }
 
     @Override
@@ -96,21 +96,22 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(GOAL_DATE, date);
         contentValues.put(GOAL_TYPE, type);
 
-        switch (type) {
-            case GOAL_PHONE:
-                contentValues.put(GOAL_PHONE, "1");
+        contentValues.put(GOAL_USAGE, usage);
+        contentValues.put(GOAL_UNLOCKS, unlocks);
+        db.insertOrThrow(TABLE_NAME, null, contentValues);
+    }
 
-                break;
-            case GOAL_APP:
-                contentValues.put(GOAL_APP, "1");
-                break;
-            case GOAL_CATEGORY:
-                contentValues.put(GOAL_CATEGORY, "1");
-                break;
-        }
+    public void insert(String date, String type, long usage, int unlocks, String packageName) throws SQLException {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+
+        contentValues.put(GOAL_DATE, date);
+        contentValues.put(GOAL_TYPE, type);
 
         contentValues.put(GOAL_USAGE, usage);
         contentValues.put(GOAL_UNLOCKS, unlocks);
+        contentValues.put(PACKAGE_NAME, packageName);
         db.insertOrThrow(TABLE_NAME, null, contentValues);
     }
 
@@ -181,6 +182,57 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         } else {
             return result;
         }
+    }
+
+    public List<Goal> getGoal(String date, String type) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<Goal> goals = new ArrayList<>();
+        //
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME +
+                " WHERE " + GOAL_DATE + ">= date(\"" + date + "\")" + " AND " + GOAL_TYPE + " =\"" + type + "\"", null);
+        StringBuilder buffer = new StringBuilder();
+
+        //READ LINES FROM CURSOR INTO BUFFER
+        while (res.moveToNext()) {
+            String id = res.getString(0);
+            String goalDate = res.getString(1);
+            String goalType = res.getString(2);
+            long usage = res.getLong(3);
+            int unlocks = res.getInt(4);
+            String packageName = res.getString(5);
+
+            goals.add(new Goal(id, goalDate, goalType, usage, unlocks, packageName));
+
+            //buffer.append(res.getLong(0));
+        }
+
+
+        res.close();
+        return goals;
+    }
+
+    public List<Goal> getAllActiveGoals(String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<Goal> goals = new ArrayList<>();
+        //
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME +
+                " WHERE " + GOAL_DATE + ">= date(\"" + date + "\")", null);
+        StringBuilder buffer = new StringBuilder();
+
+        //READ LINES FROM CURSOR INTO BUFFER
+        while (res.moveToNext()) {
+            String id = res.getString(0);
+            String goalDate = res.getString(1);
+            String goalType = res.getString(2);
+            long usage = res.getLong(3);
+            int unlocks = res.getInt(4);
+            String packageName = res.getString(5);
+            goals.add(new Goal(id, goalDate, goalType, usage, unlocks,packageName));
+        }
+
+
+        res.close();
+        return goals;
     }
 
     public boolean canInsert(String date, String type) {

@@ -50,12 +50,13 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
     private static String date;
     private static String goalType;
     Chip specifyDate, specifyApp, usage, unlocks;
-    ChipGroup type, categoryList, stats;
+    ChipGroup type, stats;
     CardView appInfo, usageCard, unlocksCard;
     EditText hour, minutes, unlock_amount;
     TextView dateTitle, appName, errorMessage, errorUsage, errorUnlocks;
     ImageView appIcon;
     Button done;
+    String selectedApp;
     private InstalledAppsListAdapter listAdapter;
     private List<InstalledAppInfo> trackedApps;
     private boolean[] formCompletion = {false, false, false};
@@ -93,7 +94,6 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         dateTitle = findViewById(R.id.date);
         specifyApp = findViewById(R.id.chip_app);
         type = findViewById(R.id.chip_group_filter);
-        categoryList = findViewById(R.id.chip_group_filter2);
         stats = findViewById(R.id.chip_group_stat);
         appInfo = findViewById(R.id.app_card);
         usage = findViewById(R.id.goal_usage);
@@ -254,7 +254,6 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                     case R.id.chip_byPhone:
                         specifyApp.setVisibility(View.GONE);
                         appInfo.setVisibility(View.GONE);
-                        categoryList.setVisibility(View.GONE);
                         formCompletion[1] = true;
                         goalType = GoalDataBaseHelper.GOAL_PHONE;
                         if (areAllTrue(formCompletion)) {
@@ -263,14 +262,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                             done.setEnabled(false);
                         }
                         break;
-                    case R.id.chip_byCategory:
-                        specifyApp.setVisibility(View.GONE);
-                        appInfo.setVisibility(View.GONE);
-                        categoryList.setVisibility(View.VISIBLE);
-                        goalType = GoalDataBaseHelper.GOAL_CATEGORY;
-                        break;
                     case R.id.chip_byApp:
-                        categoryList.setVisibility(View.GONE);
                         specifyApp.setVisibility(View.VISIBLE);
                         appInfo.setVisibility(View.VISIBLE);
                         goalType = GoalDataBaseHelper.GOAL_APP;
@@ -292,13 +284,13 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        String day;
-        if (dayOfMonth < 10) {
-            day = "0" + dayOfMonth;
+        String month_Formatted;
+        if ((month + 1) < 10) {
+            month_Formatted = "0" + (month + 1);
         } else {
-            day = String.valueOf(dayOfMonth);
+            month_Formatted = String.valueOf((month + 1));
         }
-        date = year + "-" + (month + 1) + "-" + day;
+        date = year + "-" + month_Formatted + "-" + dayOfMonth;
         dateTitle.setText(date);
 
 
@@ -346,6 +338,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 InstalledAppInfo info = trackedApps.get(position);
+                selectedApp = info.getPackageName();
                 appName.setText(info.getSimpleName());
                 appIcon.setImageDrawable(info.getIcon());
                 dialog.dismiss();
@@ -411,9 +404,14 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
 
         }
 
+
         //DUPLICATE CHECKER
         if (App.goalDataBase.canInsert(date, goalType)) {
-            App.goalDataBase.insert(date, goalType, usage, unlocks);
+            if (goalType.equals(GoalDataBaseHelper.GOAL_APP)) {
+                App.goalDataBase.insert(date, goalType, usage, unlocks, selectedApp);
+            } else {
+                App.goalDataBase.insert(date, goalType, usage, unlocks);
+            }
             finish();
         } else {
             String error = "A " + goalType.replace("_", " ") + " has already been set for " + date + ". Please try editing the goal instead.";
