@@ -21,6 +21,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -95,11 +96,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      * List Adapter for the Dialog containing the list of installed apps
      */
     private InstalledAppsListAdapter listAdapter;
+    private InstalledAppsListAdapter2 listAdapter2;
     /**
      * A DeepCopy of the ALL_APPS_LIST so we have the user make changes and cancel if they need to without making those changes permanent or having to reverse them
      */
     private List<InstalledAppInfo> COPY_OF_LIST;
-
+    private List<InstalledAppInfo> COPY_OF_LIST2;
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.settings, rootKey);
@@ -122,6 +124,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 }
             }
         });
+        COPY_OF_LIST2 = new ArrayList<>();
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (InstalledAppInfo info : ALL_APPS_LIST) {
+                    COPY_OF_LIST2.add(new InstalledAppInfo(info.getPackageName(), info.getSimpleName(), info.getIcon()).setTracked(info.isTracked()));
+                }
+            }
+        });
+        listAdapter2 = new InstalledAppsListAdapter2(getContext(), COPY_OF_LIST2);
 
 
         /*
@@ -134,7 +146,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceClick(Preference preference) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 LayoutInflater inflater = requireActivity().getLayoutInflater();
-                View view = inflater.inflate(R.layout.dialog_apps_list_layout, null);
+                View view = inflater.inflate(R.layout.dialog_limit, null);
 
                 listAdapter = new InstalledAppsListAdapter(getContext(), COPY_OF_LIST);
                 final ListView listView = view.findViewById(R.id.dialog_list);
@@ -157,6 +169,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                         trackedAppsChanged = true;
                                     }
                                 });
+                                updateCopyOfList2();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -171,6 +184,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                         }
                                     }
                                 });
+                                updateCopyOfList2();
                                 dialog.dismiss();
                             }
                         }).create().show();
@@ -244,6 +258,42 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
+        Preference appLimit = findPreference(("app_limit"));
+        appLimit.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                LayoutInflater inflater = requireActivity().getLayoutInflater();
+                View view = inflater.inflate(R.layout.dialog_apps_limit, null);
+
+                final ListView listView = view.findViewById(R.id.dialog_list2);
+                listView.setAdapter(listAdapter2);
+
+
+                builder.setView(view)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                //IF USER CLICKS OKAY THEN WE SAVE THE CHANGES TO THE LIST
+                                ALL_APPS_LIST = COPY_OF_LIST2;
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //IF THEY CANCEL WE SET THE COPY BACK TO THE ORIGINAL
+                                COPY_OF_LIST2 = ALL_APPS_LIST;
+                                //TODO BOXES NOT BEING CHECKED BACK
+                                //listAdapter.notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+
+
+                return true;
+            }
+        });
+
 
         //CLICK LISTENER FOR WIFI SWITCH
         SwitchPreference wifiSwitch = findPreference("toggle_wifi");
@@ -286,7 +336,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         ///
 
     }
-
+    public void updateCopyOfList2(){
+        COPY_OF_LIST2 = new ArrayList<InstalledAppInfo>();
+        for(InstalledAppInfo i : COPY_OF_LIST)
+        {
+            if (i.isTracked())
+                COPY_OF_LIST2.add(i);
+        }
+        listAdapter2 = new InstalledAppsListAdapter2(getContext(), COPY_OF_LIST2);
+    }
     /**
      * @param requestCode
      * @param permissions
@@ -682,6 +740,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         CheckBox box;
         ImageView icon;
     }
+    static class InstalledAppsLimitViewHolder
+    {
+        TextView t;
+        ImageView icon;
+    }
 
     private static class InstalledAppsListAdapter extends BaseAdapter {
         private LayoutInflater inflater;
@@ -746,6 +809,103 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             /*Set tag to all checkBox**/
             listHolder.box.setTag(position);
             return convertView;
+        }
+
+    }
+    private  class InstalledAppsListAdapter2 extends BaseAdapter {
+        private LayoutInflater inflater;
+        private List<InstalledAppInfo> installedAppInfoList;
+
+        //CONSTRUCTOR
+        InstalledAppsListAdapter2(Context context, List<InstalledAppInfo> installedAppInfoList) {
+            inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            this.installedAppInfoList = installedAppInfoList;
+        }
+
+
+        @Override
+        public int getCount() {
+            return installedAppInfoList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return installedAppInfoList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView2, ViewGroup parent) {
+            InstalledAppsLimitViewHolder listHolder2;
+
+            if (convertView2 == null) {
+                //CREATE VIEWHOLDER AND INFLATE LAYOUT
+                listHolder2 = new InstalledAppsLimitViewHolder();
+                convertView2 = inflater.inflate(R.layout.dialog_apps_list_layout, parent, false);
+                //ASSIGN VIEW HOLDER CLASS VARIABLE TO LAYOUT
+                listHolder2.icon = convertView2.findViewById(R.id.icon);
+                listHolder2.t = convertView2.findViewById(R.id.text);
+                convertView2.setTag(listHolder2);
+
+            } else {
+                listHolder2 = (InstalledAppsLimitViewHolder) convertView2.getTag();
+            }
+
+            listHolder2.icon.setImageDrawable(installedAppInfoList.get(position).getIcon());
+            listHolder2.t.setText(installedAppInfoList.get(position).getSimpleName());
+
+
+            //CHECK BOXES IN LIST VIEW WILL NOT RETAIN THEIR POSITION AND THUS WILL BECOME UNCHECKED OR CHECKED INCORRECTLY WHEN SCROLLED
+            //SO WE MUST DO THIS TO SAVE THE STATE OF THE CHECKBOX
+            final boolean state = installedAppInfoList.get(position).isTracked();
+            listHolder2.t.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //ESSENTIALLY IT IS EQUAL TOO THE OPPOSITE OF ITSELF WHEN CLICKED, IF TRUE THEN FALSE, IF FALSE THEN TRUE
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    LayoutInflater inflater = requireActivity().getLayoutInflater();
+                    View view = inflater.inflate(R.layout.dialog_limit_layout, null);
+                    final NumberPicker hour = view.findViewById(R.id.hour);
+                    final NumberPicker minutes = view.findViewById(R.id.minutes);
+
+
+                    hour.setMinValue(0);
+                    hour.setMaxValue(23);
+                    hour.setWrapSelectorWheel(false);
+                    //
+                    minutes.setMinValue(0);
+                    minutes.setMaxValue(59);
+                    minutes.setWrapSelectorWheel(false);
+
+
+                    builder.setView(view)
+                            // Add action buttons
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // timeLeft = picker.getValue() * 60000;
+                                    ALL_APPS_LIST = COPY_OF_LIST2;
+                                    timeLeft = (hour.getValue() * 3600000) + (minutes.getValue() * 60000);
+
+
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    COPY_OF_LIST2 = ALL_APPS_LIST;
+                                    dialog.dismiss();
+                                }
+                            }).create().show();
+
+                }
+            });
+            /*Set tag to all checkBox**/
+            return convertView2;
         }
 
     }
