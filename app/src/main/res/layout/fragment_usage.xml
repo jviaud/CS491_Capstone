@@ -14,44 +14,30 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="16dp"
-        android:clipToPadding="false">
-
-        <View
-            android:id="@+id/indicator"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/tab_gradient_bg" />
+        android:clipToPadding="true">
 
         <com.google.android.material.tabs.TabLayout
-            style="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:id="@+id/tabbed_layout"
-            android:layout_width="match_parent"
-            app:tabMode="fixed"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@drawable/tab_layout_background"
+            app:tabBackground="@drawable/tab_layout_selector"
+            app:tabMode="scrollable"
+            app:tabPaddingEnd="16dp"
+            app:tabPaddingStart="16dp"
             app:tabRippleColor="@null"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@null"
-            android:clipToPadding="false"
-            app:tabGravity="center"
-            app:tabIndicatorColor="#ffffff"
+            app:tabSelectedTextColor="@color/colorPrimaryDark"
             app:tabIndicatorHeight="0dp"
-            app:tabPaddingEnd="10dp"
-            app:tabPaddingStart="10dp"
-            app:tabSelectedTextColor="?attr/textcolor"
-
-            />
-
+            app:tabTextColor="?attr/textcolor" />
     </FrameLayout>
 
 
-    <view class="com.example.cs491_capstone.ui_helpers.LockableViewPager"
-        android:layout_marginTop="10dp"
+    <view
         android:id="@+id/viewPager"
+        class="com.example.cs491_capstone.ui_helpers.LockableViewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </view>
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp" />
 
 
 </LinearLayout>

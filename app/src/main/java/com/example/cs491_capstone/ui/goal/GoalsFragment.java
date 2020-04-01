@@ -75,6 +75,8 @@ public class GoalsFragment extends Fragment {
             }
         });
 
+        goalAdapter.notifyDataSetChanged();
+
     }
 
     @Override

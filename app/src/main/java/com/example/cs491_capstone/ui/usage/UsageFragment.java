@@ -5,13 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.R;
@@ -57,40 +55,18 @@ public class UsageFragment extends Fragment {
 
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                indicatorWidth = tabLayout.getWidth() / tabLayout.getTabCount();
-
-                //Assign new width
-                FrameLayout.LayoutParams indicatorParams = (FrameLayout.LayoutParams) indicator.getLayoutParams();
-                indicatorParams.width = indicatorWidth;
-                indicator.setLayoutParams(indicatorParams);
-            }
-        });
-        //
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) indicator.getLayoutParams();
-
-                //Multiply positionOffset with indicatorWidth to get translation
-                float translationOffset = (positionOffset + position) * indicatorWidth;
-                params.leftMargin = (int) translationOffset;
-                indicator.setLayoutParams(params);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+//        tabLayout.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                indicatorWidth = tabLayout.getWidth() / tabLayout.getTabCount();
+//
+//                //Assign new width
+//                FrameLayout.LayoutParams indicatorParams = (FrameLayout.LayoutParams) indicator.getLayoutParams();
+//                indicatorParams.width = indicatorWidth;
+//                indicator.setLayoutParams(indicatorParams);
+//            }
+//        });
+//        //
 
         ///WE TAKE THE LIST OF LIST AND MAKE IT EASIER TO TRAVERSE BY PUTTING IT INTO A SINGLE LIST IN THE REVERSE ORDER
         //ONLY THE ORDER OF THE OUTER LIST IS REVERSED, THE ORDER OF THE STRINGS IN THE INNER LIST IS KEPT
