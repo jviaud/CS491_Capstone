@@ -202,6 +202,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/icon_container" />
 
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/graph_container"
             android:layout_width="match_parent"
@@ -212,8 +213,10 @@
             android:layout_marginBottom="25dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/graph_choice" />
+            app:layout_constraintTop_toBottomOf="@+id/graph_choice"
+            app:layout_constraintVertical_bias="1.0" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

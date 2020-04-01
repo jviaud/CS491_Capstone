@@ -650,6 +650,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + ",SUM(" + USAGE_TIME + ") FROM " + TABLE_NAME +
                 " GROUP BY " + DATE + "," + PACKAGE_NAME +
                 " HAVING " + DATE + " =\"" + date + "\"" +
+                " AND SUM(USAGE_TIME) > 0"+
                 " ORDER BY SUM(" + USAGE_TIME + ") DESC LIMIT 5", null);
 
         while (res.moveToNext()) {
@@ -703,6 +704,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return used;
     }
 
+    public void removePackage(String packageName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        //
+        db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE " + PACKAGE_NAME + "= \"" + packageName + "\"");
+    }
 
     /**
      * gets all data from table

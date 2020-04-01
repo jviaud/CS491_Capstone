@@ -1,10 +1,12 @@
-package com.example.cs491_capstone.ui.home.detailed_graphs;
+package com.example.cs491_capstone.ui.detailed.detailed_graphs;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
-import com.example.cs491_capstone.ui.home.DetailedAppActivity;
+import com.example.cs491_capstone.ui.detailed.DetailedAppActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +34,33 @@ import lecho.lib.hellocharts.view.ColumnChartView;
 import static com.example.cs491_capstone.App.clock;
 import static com.example.cs491_capstone.App.week;
 
-public class DetailedUsageGraphFragment extends Fragment {
+public class DetailedUsageGraphFragment extends Fragment implements View.OnClickListener {
     private ColumnChartView barChartTop;
     private ColumnChartView barChartBottom;
 
-    private ColumnChartData barDataTop;
     private ColumnChartData barDataBottom;
+    private int indexInPeriod = 0;
+    /**
+     * prev button to change graph to prev date
+     */
+    private Button prevButton,
+    /**
+     * next button to change graph to next date
+     */
+    nextButton;
+    /**
+     * automatically goes to today's graph
+     */
+    private TextView showToday;
+    /***
+     * string holding the date of the current graph data
+     */
+    private String graphDate;
+    /**
+     * view showing Today's date
+     */
+    private TextView todayDate;
+
 
     @Nullable
     @Override
@@ -49,8 +72,23 @@ public class DetailedUsageGraphFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+        //indexInPeriod=0;
+        todayDate = view.findViewById(R.id.date);
+        showToday = view.findViewById(R.id.show_today);
+        prevButton = view.findViewById(R.id.backarrow);
+        nextButton = view.findViewById(R.id.nextarrow);
+
+        graphDate = App.currentPeriod.get(indexInPeriod).get(0) + " - " + App.currentPeriod.get(indexInPeriod).get(6);
+        //todayDate.setText(graphDate);
+
+
         barChartTop = view.findViewById(R.id.barchart_top);
         //generateColumnDataTopAsUsage();
+
+        showToday.setOnClickListener(this);
+        prevButton.setOnClickListener(this);
+        nextButton.setOnClickListener(this);
 
         barChartBottom = view.findViewById(R.id.barchart_bottom);
         generateInitialBarDataBottom();
@@ -59,6 +97,7 @@ public class DetailedUsageGraphFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        todayDate.setText(graphDate);
         generateColumnDataTopAsUsage();
     }
 
@@ -83,7 +122,7 @@ public class DetailedUsageGraphFragment extends Fragment {
 
             values = new ArrayList<>();//CREATE NEW LIST OF VALUES
             for (int j = 0; j < numSubcolumns; j++) {
-                long val = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(0).get(i), DatabaseHelper.USAGE_TIME, DetailedAppActivity.packageName)) / 60000;
+                long val = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(indexInPeriod).get(i), DatabaseHelper.USAGE_TIME, DetailedAppActivity.packageName)) / 60000;
 
 
                 if (val == 0) {
@@ -116,7 +155,7 @@ public class DetailedUsageGraphFragment extends Fragment {
             columns.add(new Column(values).setHasLabelsOnlyForSelected(true)); //CREATE VALUES FOR THE COLUMNS
         }
 
-        barDataTop = new ColumnChartData(columns); //PASS THE COLUMNS TO THE BAR DATA
+        ColumnChartData barDataTop = new ColumnChartData(columns); //PASS THE COLUMNS TO THE BAR DATA
 
         //PASS THE LIST OF X-AXIS LABELS TO THE X-AXIS
         Axis axisX = new Axis(axisValues)
@@ -244,7 +283,7 @@ public class DetailedUsageGraphFragment extends Fragment {
                 //THIS WILL ALSO CORRESPOND TO THE DAY OF THE WEEK INSIDE THE LIST OF DAYS OF THE CURRENT WEEK THAT WE GENERATED IN THE App CLASS
                 //NOW WE CAN QUERY THE TABLE USING A SPECIFIC DAY AT A SPECIFIC HOUR USING THE VALUES OF i and columnIndex
                 //AND WE DIVIDE BY 60000 TO GET THE NUMBER OF MINUTES
-                long value = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(0).get(columnIndex), String.valueOf(i), DatabaseHelper.USAGE_TIME, DetailedAppActivity.packageName)) / 60000;
+                long value = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(indexInPeriod).get(columnIndex), String.valueOf(i), DatabaseHelper.USAGE_TIME, DetailedAppActivity.packageName)) / 60000;
 
 
                 subcolumnValue.setTarget(value);
@@ -296,6 +335,105 @@ public class DetailedUsageGraphFragment extends Fragment {
 
         barChartBottom.startDataAnimation(500);
     }
+
+    @Override
+    public void onClick(View v) {
+
+        int id = v.getId();
+
+        switch (id) {
+            case R.id.show_today:
+                showTodayGraph();
+                break;
+            case R.id.nextarrow:
+                nextGraph();
+                break;
+            case R.id.backarrow:
+                prevGraph();
+                break;
+
+        }
+
+    }
+
+    private void showTodayGraph() {
+        //WHEN SHOW TODAY IS PRESSED EVERYTHING HAS TO BE RESET
+        //DATE IS SET TOO TODAY
+        indexInPeriod = 0;
+        graphDate = App.currentPeriod.get(indexInPeriod).get(0) + " - " + App.currentPeriod.get(indexInPeriod).get(6);
+        //DATE TITLE IS SET TO TODAY
+        todayDate.setText(graphDate);
+        //HIDE THE NEXT BUTTON, WE DO NOT SHOW FUTURE GRAPHS BECAUSE WE KNOW THEY ARE BLANK
+        nextButton.setVisibility(View.GONE);
+        //GRAPH IS SHOWING TODAY SO WE DO NOT SHOW THE SKIP TO TODAY BUTTON
+        showToday.setVisibility(View.GONE);
+        //WE SHOW THE PREV BUTTON BECAUSE IT MAY HAVE BEEN SET TO GONE IF WE REACHED THE BEGINNING OF THE LIST
+        prevButton.setVisibility(View.VISIBLE);
+
+
+        //CREATE THE GRAPH
+        generateColumnDataTopAsUsage();
+    }
+
+    private void nextGraph() {
+        //IF THIS HAS BEEN CLICKED AT LEAST ONCE THEN IT MEANS WE ARE NO LONGER AT THE END AND CAN SHOW THE PREV BUTTON
+        prevButton.setVisibility(View.VISIBLE);
+        //GO FORWARD ONE DAY
+        indexInPeriod--;
+
+        //MAX_NEXT IS THE END OF THE LIST, PREVENTS OUT OF BOUNDS EXCEPTION
+        if (indexInPeriod >= 0) {
+            //FIRST CHANGE THE GRAPH DATE TO THE DATE IN THE LIST
+            graphDate = App.currentPeriod.get(indexInPeriod).get(0) + " - " + App.currentPeriod.get(indexInPeriod).get(6);
+            //IF THIS DATE IS EQUAL TO TODAY'S DATE THEN WE HIDE THE BUTTONS
+            if (indexInPeriod == 0) {
+                nextButton.setVisibility(View.GONE);
+                showToday.setVisibility(View.GONE);
+            } else {
+                //ELSE WE SHOW THE BUTTON TOO SKIP TO TODAY'S DATE
+                showToday.setVisibility(View.VISIBLE);
+            }
+            //SET THE DATE TEXT AND GENERATE THE GRAPH
+            todayDate.setText(graphDate);
+            generateColumnDataTopAsUsage();
+        } else {
+            //IF WE ARE AT THE END OOF THE LIST THEN WE HIDE THE NEXT BUTTON
+            nextButton.setVisibility(View.GONE);
+        }
+
+
+    }
+
+    private void prevGraph() {
+        //IF THIS HAS BEEN CLICKED AT LEAST ONCE THEN IT MEANS WE ARE NO LONGER AT THE BEGINNING AND CAN SHOW THE NEXT BUTTON
+        nextButton.setVisibility(View.VISIBLE);
+        //GO BACK ONE DAY
+        indexInPeriod++;
+
+        //ONLY IF WE HAVE NOT PASSED THE BEGINNING OF THE LIST, THIS PREVENTS A NEGATIVE OUT OF BOUNDS EXCEPTION
+        if (indexInPeriod <= 3) {
+            graphDate = App.currentPeriod.get(indexInPeriod).get(0) + " - " + App.currentPeriod.get(indexInPeriod).get(6);
+            if (indexInPeriod == 3) {
+                prevButton.setVisibility(View.GONE);
+            }
+            //AS LONG AS THE GRAPH DATE ISN'T SHOWING TODAY THEN WE SHOW THE SKIP TO TODAY BUTTON
+            if (indexInPeriod != 0) {
+                showToday.setVisibility(View.VISIBLE);
+            } else {
+                //ELSE WE HIDE THE BUTTON
+                showToday.setVisibility(View.GONE);
+            }
+            //SET THE DATE TEXT AND GENERATE THE GRAPH
+            todayDate.setText(graphDate);
+            generateColumnDataTopAsUsage();
+        } else {
+            //IF WE HAVE EXCEEDED THE LIMIT THEN HIDE THE PREV BUTTON
+            prevButton.setVisibility(View.GONE);
+        }
+
+
+    }
+
 
     private class ValueTouchListener implements ColumnChartOnValueSelectListener {
 

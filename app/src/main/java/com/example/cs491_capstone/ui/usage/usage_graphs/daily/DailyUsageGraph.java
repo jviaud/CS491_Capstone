@@ -21,7 +21,7 @@ import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.UserUsageInfo;
-import com.example.cs491_capstone.ui.home.DetailedAppActivity;
+import com.example.cs491_capstone.ui.detailed.DetailedAppActivity;
 import com.example.cs491_capstone.ui.usage.UsageFragment;
 import com.example.cs491_capstone.ui.usage.UsageListViewAdapter;
 
@@ -131,6 +131,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         indexInWeek = weeksSingleFormat.indexOf(App.DATE);
         //TO START THE GRAPH DATE IS TODAY'S DATE
         graphDate = weeksSingleFormat.get(indexInWeek);
+        todayDate.setText(graphDate);
 
         //CREATE A SINGLE ON CLICK LISTENER AND APPLY ALL CLICKABLE VIEWS TO IT
         //THIS WAY I DON'T HAVE TO CREATE SEPARATE ONES AND CLOG THE THIS METHOD
@@ -169,13 +170,13 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         //WEIRD ERRORS CAUSE BY RESUMING WITH THE CATEGORY GRAPH
         //TOO AVOID IT WE JUST SET THE GRAPH BACK TO NORMAL
         //BOOLEAN IS SET BACK TO FALSE
+        todayDate.setText(graphDate);
 
         if (byCategory) {
             //BUTTON TEXT IS SET BACK TO DEFAULT
             changeGraph.setText(R.string.byCategory);
             listTitle.setText(R.string.listApps);
-            //JUST IN CASE WE SET THE DATE TEXT
-            todayDate.setText(graphDate);
+
 
 
             keyContainer.removeAllViewsInLayout();

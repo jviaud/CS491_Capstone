@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.home;
+package com.example.cs491_capstone.ui.detailed;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,11 +16,13 @@ import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.UserUsageInfo;
-import com.example.cs491_capstone.ui.home.detailed_graphs.DetailedNotificationGraphFragment;
-import com.example.cs491_capstone.ui.home.detailed_graphs.DetailedUnlocksGraphFragment;
-import com.example.cs491_capstone.ui.home.detailed_graphs.DetailedUsageGraphFragment;
+import com.example.cs491_capstone.ui.detailed.detailed_graphs.DetailedNotificationGraphFragment;
+import com.example.cs491_capstone.ui.detailed.detailed_graphs.DetailedUnlocksGraphFragment;
+import com.example.cs491_capstone.ui.detailed.detailed_graphs.DetailedUsageGraphFragment;
 import com.example.cs491_capstone.ui_helpers.ViewPageAdapter;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
 
 import static com.example.cs491_capstone.App.DATE;
 
@@ -30,11 +32,13 @@ public class DetailedAppActivity extends AppCompatActivity {
     private TextView usage_val;
     private TextView notification_val;
     private TextView unlocks_val;
+    public static ArrayList<String> weeksSingleFormat;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_app);
+
 
         //INITIALISE ALL OF THE VIEWS
         ImageView appIcon = findViewById(R.id.app_icon);

@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         } else {
-            App.SPECIAL_APPS = prefs.getStringSet("exclusion_list", null);
+            App.INCLUDED_APPS_LIST = prefs.getStringSet("exclusion_list", null);
         }
     }
 }

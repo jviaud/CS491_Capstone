@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -31,6 +32,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
 
 import com.example.cs491_capstone.App;
@@ -92,6 +94,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      */
     private static int dbSize;
     /**
+     * list of apps to be removed from database
+     */
+    private static List<String> toBeRemoved;
+    /**
      * List Adapter for the Dialog containing the list of installed apps
      */
     private InstalledAppsListAdapter listAdapter;
@@ -106,6 +112,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         //Initialise the size of the database
         dbSize = localDatabase.getRowCount();
+
 
         if (App.HOUR.equals("0")) {
             //TODO CLEAR ALL APP AND PHONE LIMITS AT START OPF DAY
@@ -139,6 +146,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 listAdapter = new InstalledAppsListAdapter(getContext(), COPY_OF_LIST);
                 final ListView listView = view.findViewById(R.id.dialog_list);
                 listView.setAdapter(listAdapter);
+                toBeRemoved = new ArrayList<>();
 
                 builder.setView(view)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -150,10 +158,22 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                 AsyncTask.execute(new Runnable() {
                                     @Override
                                     public void run() {
+                                        for (String name : toBeRemoved) {
+                                            localDatabase.removePackage(name);
+                                        }
+
+
                                         for (InstalledAppInfo info : COPY_OF_LIST) {
                                             ALL_APPS_LIST.add(new InstalledAppInfo(info.getPackageName(), info.getSimpleName(), info.getIcon()).setTracked(info.isTracked()));
-                                            INCLUDED_APPS_LIST.add(info.getPackageName());
+                                            if (info.isTracked()) {
+                                                INCLUDED_APPS_LIST.add(info.getPackageName());
+                                            }
                                         }
+                                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                        SharedPreferences.Editor editor = prefs.edit();
+                                        editor.remove("exclusion_list");
+                                        editor.putStringSet("exclusion_list", INCLUDED_APPS_LIST);
+                                        editor.apply();
                                         trackedAppsChanged = true;
                                     }
                                 });
@@ -736,11 +756,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             //SO WE MUST DO THIS TO SAVE THE STATE OF THE CHECKBOX
             final boolean state = installedAppInfoList.get(position).isTracked();
             listHolder.box.setChecked(state);
+            final String packageName = installedAppInfoList.get(position).getPackageName();
             listHolder.box.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //ESSENTIALLY IT IS EQUAL TOO THE OPPOSITE OF ITSELF WHEN CLICKED, IF TRUE THEN FALSE, IF FALSE THEN TRUE
                     installedAppInfoList.get(position).setTracked(!state);
+
+                    //IF IT WAS ORIGINALLY SET TO BE TRACKED BUT IS NOW CHANGED TO NOT BY ON CLICK
+                    if (state) {
+                        toBeRemoved.add(packageName);
+                    } else {
+                        toBeRemoved.remove(packageName);
+                    }
                 }
             });
             /*Set tag to all checkBox**/

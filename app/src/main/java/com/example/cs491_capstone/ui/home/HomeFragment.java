@@ -26,6 +26,7 @@ import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.UserUsageInfo;
+import com.example.cs491_capstone.ui.detailed.DetailedAppActivity;
 import com.example.cs491_capstone.ui.home.home_graphs.HomeNotificationGraphFragment;
 import com.example.cs491_capstone.ui.home.home_graphs.HomeUnlocksGraphFragment;
 import com.example.cs491_capstone.ui.home.home_graphs.HomeUsageGraphFragment;

@@ -17,17 +17,68 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/backarrow"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/barchart_top"
+            app:layout_constraintStart_toStartOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Button.Triangle.Prev" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/nextarrow"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/barchart_top"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Button.Triangle.Next" />
+
+
+        <TextView
+            android:id="@+id/show_today"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="@string/show_today"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/barchart_top"
+            app:layout_constraintEnd_toStartOf="@+id/nextarrow" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@string/date_placeholder"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/show_today"
+            app:layout_constraintStart_toEndOf="@+id/backarrow"
+            app:layout_constraintTop_toBottomOf="@+id/graph_choice" />
+
+
         <lecho.lib.hellocharts.view.ColumnChartView
             android:id="@+id/barchart_top"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/date" />
 
         <View
             android:id="@+id/view"

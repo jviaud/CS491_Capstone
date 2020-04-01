@@ -34,7 +34,7 @@
         <activity
             android:name=".BlockerActivity"
             android:theme="@style/Theme.Transparent" />
-        <activity android:name=".ui.home.DetailedAppActivity" />
+        <activity android:name=".ui.detailed.DetailedAppActivity" />
         <activity android:name=".ui.intro.IntroManager" />
         <activity android:name=".ui.splash.SplashScreen">
             <intent-filter>

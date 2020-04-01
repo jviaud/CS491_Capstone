@@ -89,15 +89,11 @@ public class App extends Application {
      * Used to determine if an app is being tracked, based on this list we get the list of installed apps.
      * We also use this too prevent apps that are not being tracked being added too the database
      */
-    public static List<String> INCLUDED_APPS_LIST;
+    public static Set<String> INCLUDED_APPS_LIST;
     /**
      * This is is used to show all apps that are installed
      */
     public static List<InstalledAppInfo> ALL_APPS_LIST;
-    /**
-     * List of special apps to be ignored from the filter by default, This is a Set because it is easier to save in SharedPreferences
-     */
-    public static Set<String> SPECIAL_APPS;
     /**
      * The BroadCast Receiver that listens for any new or removed apps so a new list of apps can be generated. This is much more efficient than polling for changes ourselves
      */
@@ -131,12 +127,7 @@ public class App extends Application {
 
 
         }
-        // Collections.addAll(INCLUDED_APPS_LIST, SPECIAL_APPS);
         Collections.sort(ALL_APPS_LIST, Collections.<InstalledAppInfo>reverseOrder());
-        Log.i("TRACKED", "INCLUDED" + INCLUDED_APPS_LIST);
-        for (InstalledAppInfo info : ALL_APPS_LIST) {
-            Log.i("TRACKED", "EXCLUDED" + info.getPackageName() + "|" + info.isTracked());
-        }
     }
 
     /**
@@ -164,7 +155,7 @@ public class App extends Application {
         }
 
         //IF THE APPLICATION INFO DOES NOT IDENTIFY THE PACKAGE AS A UPDATED_SYSTEM_APP & A FLAG_SYSTEM APP & IT IS NOT IN THE EXCLUSION LIST THEN RETURN TRUE; ELSE RETURN FALSE;
-        return !(!SPECIAL_APPS.contains(packageName) && ((ai.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 0) & ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0));
+        return !(!INCLUDED_APPS_LIST.contains(packageName) && ((ai.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 0) & ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0));
 
     }
 
@@ -361,23 +352,23 @@ public class App extends Application {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (prefs.getBoolean("firstrun", true)) {
-            SPECIAL_APPS = new HashSet<>();
+            INCLUDED_APPS_LIST = new HashSet<>();
             //THIS IS THE DEFAULT LIST WE KNOW WE WANT TO IGNORE
             String[] apps = {"com.google.android.calender", "com.android.camera2", "com.android.chrome",
                     "com.google.android.deskclock", "com.google.contacts", "com.google.android.apps.docs", "com.android.documentsui",
                     "com.google.android.gm", "com.google.android.videos", "com.google.android.music", "com.google.android.vending", "com.google.android.apps.maps",
                     "com.google.android.apps.messaging", "com.android.phone", "com.google.android.apps.photos", "com.android.storagemanager",
                     "com.google.android.apps.wallpaper", "com.google.android.youtube"};
-            Collections.addAll(SPECIAL_APPS, apps);
+            Collections.addAll(INCLUDED_APPS_LIST, apps);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putStringSet("exclusion_list", SPECIAL_APPS);
+            editor.putStringSet("exclusion_list", INCLUDED_APPS_LIST);
             editor.apply();
         }
-        SPECIAL_APPS = prefs.getStringSet("exclusion_list", SPECIAL_APPS);
+        INCLUDED_APPS_LIST = prefs.getStringSet("exclusion_list", null);
+
 
         //TODO IF THE APP IS TERMINATED WE NEED TO BE ABLE TOO SAVE THE LIST OF APPS THAT SHOULD BE TRACKED, FOR NOW WE CAN IGNORE THIS FOR PRESENTATION PURPOSES
 
-        INCLUDED_APPS_LIST = new ArrayList<>();
         ALL_APPS_LIST = new ArrayList<>();
         getInstalledApps(getApplicationContext());
 
