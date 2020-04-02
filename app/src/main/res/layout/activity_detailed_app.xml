@@ -49,7 +49,7 @@
             android:id="@+id/divider2"
             android:layout_width="195dp"
             android:layout_height="2dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="8dp"
             android:background="?android:attr/listDivider"
             app:layout_constraintStart_toStartOf="@+id/app_category"
             app:layout_constraintTop_toBottomOf="@+id/app_category" />
@@ -198,6 +198,7 @@
             android:layout_marginTop="16dp"
             android:background="?attr/cardbackground"
             android:elevation="6dp"
+            app:tabTextAppearance="@style/MineCustomTabText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/icon_container" />
@@ -206,7 +207,7 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/graph_container"
             android:layout_width="match_parent"
-            android:layout_height="452dp"
+            android:layout_height="500dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"

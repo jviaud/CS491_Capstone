@@ -147,8 +147,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_add" />
-                            <entry key="sourceFile" value="F:\Users\John\Desktop\vectors\category\box.svg" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="ic_menu" />
+                            <entry key="sourceFile" value="F:\Users\John\Desktop\vectors\menu (1).svg" />
                           </map>
                         </option>
                       </PersistentState>

@@ -7,6 +7,7 @@ public class Goal {
     private long usage;
     private int unlocks;
     private String packageName;
+    private boolean expanded;
 
 
     public Goal(String id, String date, String type, long usage, int unlocks, String packageName) {
@@ -16,6 +17,15 @@ public class Goal {
         this.usage = usage;
         this.unlocks = unlocks;
         this.packageName = packageName;
+        expanded = false;
+    }
+
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
     }
 
     public String getId() {

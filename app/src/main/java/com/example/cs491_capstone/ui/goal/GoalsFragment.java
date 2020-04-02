@@ -5,11 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -49,7 +47,7 @@ public class GoalsFragment extends Fragment {
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        adapter.addFragment(new PhoneGoalFragment(), "General");
+        adapter.addFragment(new PhoneGoalFragment(), "Phone");
         adapter.addFragment(new AppGoalFragment(), "Application");
 
         viewPager.setAdapter(adapter);
@@ -67,13 +65,8 @@ public class GoalsFragment extends Fragment {
         goalAdapter = new GoalImageAdapter(getContext(), goalsList);
         goalsRecycler.setAdapter(goalAdapter);
 
-        goalAdapter.setOnItemClickListener(new GoalImageAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, CardView v) {
-                Goal goal = goalsList.get(position);
-                Toast.makeText(getContext(), goal.getId(), Toast.LENGTH_SHORT).show();
-            }
-        });
+
+
 
         goalAdapter.notifyDataSetChanged();
 
@@ -82,7 +75,8 @@ public class GoalsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        goalsList = App.goalDataBase.getAllActiveGoals(App.DATE);
+        goalsList.clear();
+        goalsList.addAll(App.goalDataBase.getAllActiveGoals(App.DATE));
         goalAdapter.notifyDataSetChanged();
     }
 }
