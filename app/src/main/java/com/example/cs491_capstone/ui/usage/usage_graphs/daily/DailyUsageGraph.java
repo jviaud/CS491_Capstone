@@ -3,6 +3,7 @@ package com.example.cs491_capstone.ui.usage.usage_graphs.daily;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -140,7 +141,14 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         prevButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
 
-        createUsageChart(graphDate, byCategory);
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                createUsageChart(graphDate, byCategory);
+            }
+        });
+
     }
 
     @Override
@@ -177,15 +185,17 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
             changeGraph.setText(R.string.byCategory);
             listTitle.setText(R.string.listApps);
 
-
-
             keyContainer.removeAllViewsInLayout();
             //TODO MAKE LAYOUT HEIGHT ZERO
             byCategory = false;
             //AND GENERATE THE NORMAL GRAPH
-            createUsageChart(graphDate, false);
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
 
-
+                    createUsageChart(graphDate, false);
+                }
+            });
         }
     }
 

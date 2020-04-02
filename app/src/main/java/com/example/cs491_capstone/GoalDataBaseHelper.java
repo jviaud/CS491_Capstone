@@ -1,7 +1,6 @@
 package com.example.cs491_capstone;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -34,7 +33,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
     /**
      * if the goal is usage based then the time is recorded in milli
      */
-    private static final String GOAL_USAGE = "GOAL_USAGE";
+    public static final String GOAL_USAGE = "GOAL_USAGE";
     /**
      * if the goal is unlocks based then the number of unlocks is recorded
      */
@@ -52,7 +51,6 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
      */
     private static final String DATABASE_NAME = "Goal.db";
     private static final String PACKAGE_NAME = "PACKAGE_NAME";
-    private final Context context;
 
     /**
      * @param activity this is a reference to the Application. We use to to get the context since Context can't be static
@@ -60,7 +58,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
     public GoalDataBaseHelper(App activity) {
         super(activity, DATABASE_NAME, null, 1);
         new WeakReference<>(activity);
-        context = activity.getApplicationContext();
+
     }
 
     @Override
@@ -190,7 +188,6 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         //
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME +
                 " WHERE " + GOAL_DATE + ">= date(\"" + date + "\")" + " AND " + GOAL_TYPE + " =\"" + type + "\"", null);
-        StringBuilder buffer = new StringBuilder();
 
         //READ LINES FROM CURSOR INTO BUFFER
         while (res.moveToNext()) {
@@ -211,13 +208,13 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         return goals;
     }
 
-    public List<Goal> getAllActiveGoals(String date) {
+    public List<Goal> getAllActiveGoals(String startDate,String endDate) {
         SQLiteDatabase db = this.getWritableDatabase();
         List<Goal> goals = new ArrayList<>();
         //
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME +
-                " WHERE " + GOAL_DATE + ">= date(\"" + date + "\")", null);
-        StringBuilder buffer = new StringBuilder();
+                " WHERE " + GOAL_DATE + ">= date(\"" + startDate + "\")" +
+                " AND " + GOAL_DATE + "<= date(\"" + endDate + "\")", null);
 
         //READ LINES FROM CURSOR INTO BUFFER
         while (res.moveToNext()) {
@@ -227,7 +224,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
             long usage = res.getLong(3);
             int unlocks = res.getInt(4);
             String packageName = res.getString(5);
-            goals.add(new Goal(id, goalDate, goalType, usage, unlocks,packageName));
+            goals.add(new Goal(id, goalDate, goalType, usage, unlocks, packageName));
         }
 
 

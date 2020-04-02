@@ -111,7 +111,7 @@ public class HomeFragment extends Fragment {
         seconds_timer = view.findViewById(R.id.timer_seconds);
 
 
-        //NOW WE FORM A SUBLIST OF THE TOP X APPS AND PASS IT TO THE ADAPTER
+        //NOW WE FORM A LIST OF THE TOP X APPS AND PASS IT TO THE ADAPTER
         listAdapter = new MostUsedAppsListAdapter(getContext(), userInfo);
         mostUsedListView.setAdapter(listAdapter);
         setListViewHeightBasedOnChildren(mostUsedListView);

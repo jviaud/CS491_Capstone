@@ -2,6 +2,7 @@ package com.example.cs491_capstone;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -129,7 +130,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         } else {
-            App.INCLUDED_APPS_LIST = prefs.getStringSet("exclusion_list", null);
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    App.INCLUDED_APPS_LIST = prefs.getStringSet("exclusion_list", null);
+                }
+            });
         }
     }
 }

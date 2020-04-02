@@ -3,6 +3,7 @@ package com.example.cs491_capstone.ui.usage.usage_graphs.daily;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -179,7 +180,12 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
             //TODO MAKE LAYOUT HEIGHT ZERO
             byCategory = false;
             //AND GENERATE THE NORMAL GRAPH
-            createUsageChart(graphDate, false);
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    createUsageChart(graphDate, false);
+                }
+            });
         }
     }
 

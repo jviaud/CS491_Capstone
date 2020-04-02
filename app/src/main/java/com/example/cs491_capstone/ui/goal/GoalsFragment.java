@@ -22,6 +22,8 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.cs491_capstone.App.currentPeriod;
+
 public class GoalsFragment extends Fragment {
 
     List<Goal> goalsList = new ArrayList<>();
@@ -37,7 +39,7 @@ public class GoalsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        goalsList = App.goalDataBase.getAllActiveGoals(App.DATE);
+        goalsList = App.goalDataBase.getAllActiveGoals(currentPeriod.get(0).get(0),currentPeriod.get(0).get(6));
         Log.i("GOAL", "SIZE:" + goalsList.size());
 
         TabLayout tabLayout = view.findViewById(R.id.graph_choice);
@@ -66,6 +68,27 @@ public class GoalsFragment extends Fragment {
         goalsRecycler.setAdapter(goalAdapter);
 
 
+//        goalsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                if (dx > 0 | dx < 0) {
+//                    System.out.println("Scrolled Right");
+//                    for (Goal goal : goalsList) {
+//                        goal.setExpanded(false);
+//                        recyclerView.post(new Runnable() {
+//                            public void run() {
+//                                // There is no need to use notifyDataSetChanged()
+//                                goalAdapter.notifyDataSetChanged();
+//                            }
+//                        });
+//
+//                    }
+//                } else {
+//                    return;
+//                }
+//            }
+//        });
 
 
         goalAdapter.notifyDataSetChanged();
@@ -76,7 +99,7 @@ public class GoalsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         goalsList.clear();
-        goalsList.addAll(App.goalDataBase.getAllActiveGoals(App.DATE));
+        goalsList.addAll(App.goalDataBase.getAllActiveGoals(currentPeriod.get(0).get(0),currentPeriod.get(0).get(6)));
         goalAdapter.notifyDataSetChanged();
     }
 }

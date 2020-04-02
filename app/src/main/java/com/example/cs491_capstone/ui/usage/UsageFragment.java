@@ -41,7 +41,7 @@ public class UsageFragment extends Fragment {
         final View indicator = view.findViewById(R.id.indicator);
         final TabLayout tabLayout = view.findViewById(R.id.tabbed_layout);
         LockableViewPager viewPager = view.findViewById(R.id.viewPager);
-        viewPager.setSwipeable(false);
+        viewPager.setSwipeable(true);
         viewPager.setScrollDuration(200);
         ViewPageAdapter adapter = new ViewPageAdapter(getFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
@@ -78,9 +78,6 @@ public class UsageFragment extends Fragment {
 
 
     }
-
-
-
 
 
 }

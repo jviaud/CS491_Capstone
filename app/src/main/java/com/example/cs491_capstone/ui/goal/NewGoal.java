@@ -38,6 +38,9 @@ import com.example.cs491_capstone.R;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -284,14 +287,11 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        String month_Formatted;
-        if ((month + 1) < 10) {
-            month_Formatted = "0" + (month + 1);
-        } else {
-            month_Formatted = String.valueOf((month + 1));
-        }
-        date = year + "-" + month_Formatted + "-" + dayOfMonth;
-        dateTitle.setText(date);
+        String orgDate = year + "-" + (month + 1) + "-" + dayOfMonth;
+
+        DateTime dt = DateTime.parse(orgDate, DateTimeFormat.forPattern("yyyy-m-d"));
+        date = dt.toString("yyyy-mm-dd");
+
 
 
         formCompletion[0] = true;
@@ -391,7 +391,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         int unlocks = 0;
         if (usageCard.getVisibility() != View.GONE) {
             if (hour.getText().length() > 0) {
-                usage = (Integer.parseInt(hour.getText().toString()) * 36000);
+                usage = (Integer.parseInt(hour.getText().toString()) * 3600000);
             }
             if (minutes.getText().length() > 0) {
                 usage += (Integer.parseInt(minutes.getText().toString()) * 60000);
