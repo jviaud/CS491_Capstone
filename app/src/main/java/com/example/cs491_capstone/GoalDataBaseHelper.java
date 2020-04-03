@@ -37,7 +37,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
     /**
      * if the goal is unlocks based then the number of unlocks is recorded
      */
-    private static final String GOAL_UNLOCKS = "GOAL_UNLOCKS";
+    public static final String GOAL_UNLOCKS = "GOAL_UNLOCKS";
     /**
      * THE NAME OF THE TABLE
      */

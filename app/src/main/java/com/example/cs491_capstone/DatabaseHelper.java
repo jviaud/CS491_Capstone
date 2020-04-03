@@ -355,7 +355,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         res.close();
 
-        if (buffer.toString().equals(""))
+        if (buffer.toString().equals("null"))
             return "0";
         else return buffer.toString();
     }
