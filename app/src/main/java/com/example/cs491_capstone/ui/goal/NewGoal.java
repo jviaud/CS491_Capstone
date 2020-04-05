@@ -319,7 +319,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
     public void setSpecifyApp() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_apps_list_layout, null);
+        View view = inflater.inflate(R.layout.dialog_limit,null);
 
 
         listAdapter = new InstalledAppsListAdapter(this, trackedApps);

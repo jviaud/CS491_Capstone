@@ -75,7 +75,7 @@ public class PhoneGoalFragment extends Fragment {
         unlockPie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                usageCard.setVisibility(View.VISIBLE);
+                unlockCard.setVisibility(View.VISIBLE);
                 usageCard.setVisibility(View.GONE);
             }
         });
@@ -83,7 +83,7 @@ public class PhoneGoalFragment extends Fragment {
         usagePie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                usageCard.setVisibility(View.GONE);
+                unlockCard.setVisibility(View.GONE);
                 usageCard.setVisibility(View.VISIBLE);
 
             }
