@@ -94,7 +94,7 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
     public GoalImageAdapter.ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.goal_card_layout, parent, false);
 
-        return new GoalImageAdapter.ImageViewHolder(v);
+        return new ImageViewHolder(v);
     }
 
     @Override

@@ -45,16 +45,12 @@ public class PhoneGoalFragment extends Fragment {
     private ComboLineColumnChartView usageBarChart;
     private ComboLineColumnChartData usageChartData;
     private PieChartView usagePie;
-    private PieChartData usagePieData;
     private PieChartView unlockPie;
-    private PieChartData unlockPieData;
-
 
     private ComboLineColumnChartView unlockBarChart;
     private ComboLineColumnChartData unlockChartData;
 
     private CardView usageCard, unlockCard;
-
 
     @Nullable
     @Override
@@ -102,6 +98,9 @@ public class PhoneGoalFragment extends Fragment {
 
                 axisX.setName("Day of Week");
                 axisY.setName("Usage vs. Goal Value (minutes)");
+                axisY.setTextColor(Color.BLACK);
+                axisX.setTextColor(Color.BLACK);
+
 
                 List<AxisValue> axisValues = new ArrayList<>(); //THE LIST OF X-AXIS VALUES
                 for (int i = 0; i < week.length; i++) {
@@ -118,11 +117,13 @@ public class PhoneGoalFragment extends Fragment {
 
                 Axis unlockAxisY = new Axis().setHasLines(true);
                 unlockAxisY.setName("Unlock vs. Goal Value");
+                unlockAxisY.setTextColor(Color.BLACK);
 
                 unlockChartData.setAxisXBottom(axisX);
                 unlockChartData.setAxisYLeft(unlockAxisY);
             }
         });
+
 
     }
 
@@ -130,19 +131,38 @@ public class PhoneGoalFragment extends Fragment {
         List<SliceValue> values = new ArrayList<>();
 
 
-        SliceValue goal = new SliceValue(25f, Color.CYAN);
-        SliceValue actual = new SliceValue(75f, Color.LTGRAY);
+        long goalValue = Long.parseLong(App.goalDataBase.get(App.DATE, GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_UNLOCKS)) / 60000;
+        long actualValue = Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.UNLOCKS_COUNT)) / 60000;
+
+        float full = 100;
+        float remaining = 0;
+        String formatRemaining;
+
+        if (actualValue > goalValue & goalValue > 0) {
+            formatRemaining = "100%";
+
+        } else if (goalValue == 0) {
+            formatRemaining = "~%";
+        } else {
+            Log.i("GOAL", "goal:" + goalValue + "| actual:" + actualValue + "|%:" + ((float) actualValue / goalValue * 100));
+            remaining = ((float) actualValue / goalValue * 100);
+            full = 100 - remaining;
+            formatRemaining = String.format(Locale.ENGLISH, "%.1f%%", remaining);
+        }
+
+
+        SliceValue goal = new SliceValue(remaining, Color.CYAN);
+        SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
         values.add(actual);
 
 
-        unlockPieData = new PieChartData(values);
+        PieChartData unlockPieData = new PieChartData(values);
         unlockPieData.setHasLabels(false);
         unlockPieData.setHasCenterCircle(true);
 
-        unlockPieData.setCenterText1("25%");
-//        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), font);
+        unlockPieData.setCenterText1(formatRemaining);
         unlockPieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
         unlockPieData.setCenterText1Color(Color.CYAN);
         unlockPieData.setCenterText1FontSize(25);
@@ -156,20 +176,38 @@ public class PhoneGoalFragment extends Fragment {
     private void generateUsagePie() {
         List<SliceValue> values = new ArrayList<>();
 
-        SliceValue goal = new SliceValue(35f, Color.DKGRAY);
-        SliceValue actual = new SliceValue(65f, Color.LTGRAY);
+        long goalValue = Long.parseLong(App.goalDataBase.get(App.DATE, GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_USAGE)) / 60000;
+        long actualValue = Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)) / 60000;
+
+        float full = 100;
+        float remaining = 0;
+        String formatRemaining;
+
+        if (actualValue > goalValue & goalValue > 0) {
+            formatRemaining = "100%";
+
+        } else if (goalValue == 0) {
+            formatRemaining = "~%";
+        } else {
+            remaining = ((float) actualValue / goalValue * 100);
+            full = 100 - remaining;
+            formatRemaining = String.format(Locale.ENGLISH, "%.1f%%", remaining);
+        }
+
+        SliceValue goal = new SliceValue(remaining, Color.RED);
+        SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
         values.add(actual);
 
 
-        usagePieData = new PieChartData(values);
+        PieChartData usagePieData = new PieChartData(values);
         usagePieData.setHasLabels(false);
         usagePieData.setHasCenterCircle(true);
 
-        usagePieData.setCenterText1("35%");
+        usagePieData.setCenterText1(formatRemaining);
         usagePieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
-        usagePieData.setCenterText1Color(Color.DKGRAY);
+        usagePieData.setCenterText1Color(Color.RED);
         usagePieData.setCenterText1FontSize(25);
 
         usagePie.setChartRotationEnabled(false);
@@ -329,7 +367,7 @@ public class PhoneGoalFragment extends Fragment {
 
             List<PointValue> values = new ArrayList<>();
             for (int j = 0; j < 1; j++) {
-                long value = Long.parseLong(App.goalDataBase.get(currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_UNLOCKS)) / 60000; //Math.random() * 50 + 5;
+                long value = Long.parseLong(App.goalDataBase.get(currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_UNLOCKS)); //Math.random() * 50 + 5;
                 PointValue pointValue = null;
 
                 Log.i("VALUES", "LINE VALUE:" + value);

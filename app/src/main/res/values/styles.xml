@@ -22,7 +22,7 @@
     </style>
 
     <!--  STYLE FOR NEW GOAL ACTIVITY  -->
-    <style name="GoalTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="GoalTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>

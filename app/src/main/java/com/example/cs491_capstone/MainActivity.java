@@ -29,7 +29,6 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
 
 public class MainActivity extends AppCompatActivity {
-    //public static ArrayList<UserUsageInfo> usageInfo;
     SharedPreferences prefs = null;
     FloatingActionButton fab;
     /**

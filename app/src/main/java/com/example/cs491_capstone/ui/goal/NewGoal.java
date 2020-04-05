@@ -60,7 +60,6 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
     ImageView appIcon;
     Button done;
     String selectedApp;
-    private InstalledAppsListAdapter listAdapter;
     private List<InstalledAppInfo> trackedApps;
     private boolean[] formCompletion = {false, false, false};
 
@@ -322,7 +321,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         View view = inflater.inflate(R.layout.dialog_limit,null);
 
 
-        listAdapter = new InstalledAppsListAdapter(this, trackedApps);
+        InstalledAppsListAdapter listAdapter = new InstalledAppsListAdapter(this, trackedApps);
         final ListView listView = view.findViewById(R.id.dialog_list);
         listView.setAdapter(listAdapter);
 
