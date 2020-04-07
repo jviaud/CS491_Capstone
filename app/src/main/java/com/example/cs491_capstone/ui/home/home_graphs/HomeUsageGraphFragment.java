@@ -60,7 +60,6 @@ public class HomeUsageGraphFragment extends Fragment {
         barChart.setZoomEnabled(false);
         barChart.setInteractive(true);
         barChart.setContainerScrollEnabled(true, ContainerScrollType.VERTICAL);
-        boolean lessThanTen = true;
         float maxValue = 0;
         //
 

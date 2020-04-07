@@ -24,8 +24,6 @@ import com.example.cs491_capstone.ui.detailed.detailed_graphs.DetailedUsageGraph
 import com.example.cs491_capstone.ui_helpers.ViewPageAdapter;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
-
 import static com.example.cs491_capstone.App.DATE;
 
 public class DetailedAppActivity extends AppCompatActivity {
@@ -34,7 +32,6 @@ public class DetailedAppActivity extends AppCompatActivity {
     private TextView usage_val;
     private TextView notification_val;
     private TextView unlocks_val;
-    public static ArrayList<String> weeksSingleFormat;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

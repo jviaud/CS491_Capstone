@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.cs491_capstone.ui.goal.Goal;
 
@@ -185,7 +186,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
     public String get(String date, String type, String packageName, String col) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT " + col + " FROM " + TABLE_NAME +
-                " WHERE " + GOAL_DATE + " = \"" + date + "\"" + " AND " + GOAL_TYPE + "=\"" + type + "\""+ " AND " + PACKAGE_NAME + "=\"" + packageName + "\"", null);
+                " WHERE " + GOAL_DATE + " = \"" + date + "\"" + " AND " + GOAL_TYPE + "=\"" + type + "\"" + " AND " + PACKAGE_NAME + "=\"" + packageName + "\"", null);
 
 
         StringBuilder buffer = new StringBuilder();
@@ -210,31 +211,17 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Goal> getGoal(String date, String type) {
+    public void remove(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        List<Goal> goals = new ArrayList<>();
-        //
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME +
-                " WHERE " + GOAL_DATE + ">= date(\"" + date + "\")" + " AND " + GOAL_TYPE + " =\"" + type + "\"", null);
 
-        //READ LINES FROM CURSOR INTO BUFFER
-        while (res.moveToNext()) {
-            String id = res.getString(0);
-            String goalDate = res.getString(1);
-            String goalType = res.getString(2);
-            long usage = res.getLong(3);
-            int unlocks = res.getInt(4);
-            String packageName = res.getString(5);
+        //UPDATE TABLE_NAME SET COL = VALUE WHERE DATE = CURRENT_DATE AND HOUR_OF_DAY = CURRENT_HOUR
+        //UPDATE THE CURRENT COL TO A NEW VALUE
 
-            goals.add(new Goal(id, goalDate, goalType, usage, unlocks, packageName));
-
-            //buffer.append(res.getLong(0));
-        }
-
-
-        res.close();
-        return goals;
+        db.execSQL("DELETE FROM " + TABLE_NAME +
+                " WHERE " + ENTRY_ID + "= " + id + "");
     }
+
+    //public String get
 
     public List<Goal> getAllActiveGoals(String startDate, String endDate) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -242,7 +229,8 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         //
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME +
                 " WHERE " + GOAL_DATE + ">= date(\"" + startDate + "\")" +
-                " AND " + GOAL_DATE + "<= date(\"" + endDate + "\")", null);
+                " AND " + GOAL_DATE + "<= date(\"" + endDate + "\")"
+                + " AND GOAL_TYPE = \"GOAL_PHONE\" ", null);
 
         //READ LINES FROM CURSOR INTO BUFFER
         while (res.moveToNext()) {
@@ -252,6 +240,34 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
             long usage = res.getLong(3);
             int unlocks = res.getInt(4);
             String packageName = res.getString(5);
+            goals.add(new Goal(id, goalDate, goalType, usage, unlocks, packageName));
+        }
+
+
+        res.close();
+        return goals;
+    }
+
+    public List<Goal> getUniquePackageGoals(String startDate, String endDate) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<Goal> goals = new ArrayList<>();
+        //
+        Cursor res = db.rawQuery("SELECT DISTINCT * FROM " + TABLE_NAME +
+                " WHERE " + GOAL_DATE + ">= date(\"" + startDate + "\")" +
+                " AND " + GOAL_DATE + "<= date(\"" + endDate + "\")"
+                + " AND GOAL_TYPE = \"GOAL_APP\" "
+                + " GROUP BY PACKAGE_NAME"
+                + " ORDER BY date(\"GOAL_DATE\") DESC", null);
+
+        //READ LINES FROM CURSOR INTO BUFFER
+        while (res.moveToNext()) {
+            String id = res.getString(0);
+            String goalDate = res.getString(1);
+            String goalType = res.getString(2);
+            long usage = res.getLong(3);
+            int unlocks = res.getInt(4);
+            String packageName = res.getString(5);
+            Log.i("GOALS", "DB: " + packageName);
             goals.add(new Goal(id, goalDate, goalType, usage, unlocks, packageName));
         }
 
@@ -264,6 +280,24 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_NAME +
                 " WHERE " + GOAL_DATE + " = \"" + date + "\"" + " AND " + GOAL_TYPE + "='" + type + "'", null);
+
+
+        StringBuilder buffer = new StringBuilder();
+        while (res.moveToNext()) {
+            buffer.append(res.getString(0));
+        }
+        String result = buffer.toString();
+
+        return result.equals("0");
+    }
+
+    public boolean canInsertApp(String date, String type, String packageName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_NAME +
+                " WHERE " + GOAL_DATE + " = \"" + date + "\""
+                + " AND " + GOAL_TYPE + "='" + type + "'"
+                + " AND " + PACKAGE_NAME + "=\"" + packageName + "\"", null);
+
 
         StringBuilder buffer = new StringBuilder();
         while (res.moveToNext()) {

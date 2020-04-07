@@ -4,26 +4,30 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.R;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.ImageViewHolder> {
+    private static List<ImageViewHolder> holderList;
     private Context context;
     private List<Goal> goals;
     private PackageManager packageManager;
@@ -33,6 +37,7 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         this.context = context;
         this.goals = goals;
         packageManager = context.getPackageManager();
+        holderList = new ArrayList<>();
     }
 
     private static void expand(final View v) {
@@ -89,6 +94,15 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         v.startAnimation(a);
     }
 
+    public static void collapseAll() {
+        //expandableLayout
+        // collapse(holder.expandableLayout);
+        for (ImageViewHolder holder : holderList) {
+            collapse(holder.expandableLayout);
+        }
+
+    }
+
     @NonNull
     @Override
     public GoalImageAdapter.ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -98,7 +112,8 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ImageViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ImageViewHolder holder, final int position) {
+        holderList.add(holder);
         final Goal goal = goals.get(position);
         holder.id.setText(goal.getId());
         holder.date.setText(goal.getDate());
@@ -113,6 +128,11 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
                 e.printStackTrace();
             }
 
+        } else {
+            String name = "Phone Goal";
+
+            holder.appName.setText(name);
+            holder.icon.setImageResource(R.drawable.ic_goal_default);
         }
 
 
@@ -132,13 +152,42 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
             holder.usage.setText(formattedVal);
         }
 
-       holder.unlocks.setText(String.valueOf(goal.getUnlocks()));
+        holder.unlocks.setText(String.valueOf(goal.getUnlocks()));
 
 
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "MENU CLICK", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context, "MENU CLICK", Toast.LENGTH_SHORT).show();
+                PopupMenu popupMenu = new PopupMenu(context, holder.menu);
+                popupMenu.inflate(R.menu.card_options);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        switch (item.getItemId()) {
+                            case R.id.edit_card:
+                                //Toast.makeText(context, "DELETE", Toast.LENGTH_SHORT).show();
+                                //TODO START EDIT ACTIVITY
+                                break;
+                            case R.id.delete_card:
+                                //Toast.makeText(context, "EDIT", Toast.LENGTH_SHORT).show();
+                                goals.remove(position);
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, getItemCount());
+                                //TODO REMOVE FROM DATABASE SHOW UNDO LOGIC
+                                App.goalDataBase.remove(goal.getId());
+                                break;
+                            case R.id.show_all_card:
+                                //Toast.makeText(context, "SHOW ALL", Toast.LENGTH_SHORT).show();
+                                break;
+                            default:
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
             }
         });
 

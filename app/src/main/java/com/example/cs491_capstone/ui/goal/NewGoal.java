@@ -292,7 +292,6 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         date = dt.toString("yyyy-mm-dd");
 
 
-
         formCompletion[0] = true;
         Log.i("GOALS", "" + Arrays.toString(formCompletion));
         if (areAllTrue(formCompletion)) {
@@ -318,7 +317,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
     public void setSpecifyApp() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_limit,null);
+        View view = inflater.inflate(R.layout.dialog_limit, null);
 
 
         InstalledAppsListAdapter listAdapter = new InstalledAppsListAdapter(this, trackedApps);
@@ -403,19 +402,28 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
 
         }
 
-
         //DUPLICATE CHECKER
-        if (App.goalDataBase.canInsert(date, goalType)) {
-            if (goalType.equals(GoalDataBaseHelper.GOAL_APP)) {
+        if (goalType.equals(GoalDataBaseHelper.GOAL_APP)) {
+            if (App.goalDataBase.canInsertApp(date, goalType, selectedApp)) {
                 App.goalDataBase.insert(date, goalType, usage, unlocks, selectedApp);
+                finish();
             } else {
-                App.goalDataBase.insert(date, goalType, usage, unlocks);
+                String error = "An App Goal has already been set for " + selectedApp + " on " + date + ". Please try editing the goal instead.";
+                errorMessage.setText(error);
+                errorMessage.setVisibility(View.VISIBLE);
             }
-            finish();
+
         } else {
-            String error = "A " + goalType.replace("_", " ") + " has already been set for " + date + ". Please try editing the goal instead.";
-            errorMessage.setText(error);
-            errorMessage.setVisibility(View.VISIBLE);
+            if (App.goalDataBase.canInsert(date, goalType)) {
+                App.goalDataBase.insert(date, goalType, usage, unlocks);
+                finish();
+
+            } else {
+                String error = "A Phone Goal has already been set for " + date + ". Please try editing the goal instead.";
+                errorMessage.setText(error);
+                errorMessage.setVisibility(View.VISIBLE);
+            }
+
         }
     }
 

@@ -10,6 +10,7 @@ public class Goal {
     private boolean expanded;
 
 
+
     public Goal(String id, String date, String type, long usage, int unlocks, String packageName) {
         this.id = id;
         this.date = date;

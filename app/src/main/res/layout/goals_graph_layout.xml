@@ -147,13 +147,25 @@
                 android:id="@+id/graph_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="Goals Vs Usage"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/graph_app"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hello_world"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/graph_title"
+                app:layout_constraintStart_toStartOf="@+id/graph_title"
+                app:layout_constraintTop_toBottomOf="@+id/graph_title" />
 
             <lecho.lib.hellocharts.view.ComboLineColumnChartView
                 android:id="@+id/graph"
@@ -164,7 +176,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/graph_title" />
+                app:layout_constraintTop_toBottomOf="@+id/graph_app" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
