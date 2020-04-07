@@ -162,7 +162,8 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/backarrow"
-            android:layout_width="10dp"
+            android:layout_width="20dp"
+            android:elevation="3dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             app:layout_constraintBottom_toTopOf="@+id/graph_card_container"
@@ -171,7 +172,8 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/nextarrow"
-            android:layout_width="10dp"
+            android:layout_width="20dp"
+            android:elevation="3dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:visibility="gone"

@@ -39,6 +39,7 @@ import androidx.preference.SwitchPreference;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.InstalledAppInfo;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.intro.IntroManager;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.opencsv.CSVReader;
@@ -56,6 +57,9 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
 import static com.example.cs491_capstone.App.ALL_APPS_LIST;
 import static com.example.cs491_capstone.App.INCLUDED_APPS_LIST;
 import static com.example.cs491_capstone.App.localDatabase;
@@ -343,6 +347,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
         ///
+
+        Preference permissionsActivity = findPreference("permissions");
+        permissionsActivity.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(getContext(), IntroManager.class);
+                intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
+                getActivity().finish();
+                return true;
+            }
+        });
 
     }
 

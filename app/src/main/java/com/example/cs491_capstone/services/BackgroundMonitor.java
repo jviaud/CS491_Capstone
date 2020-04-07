@@ -378,8 +378,8 @@ public class BackgroundMonitor extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_1_ID_SERVICE)
-                .setContentTitle("App Tracker")
-                .setContentText("")
+                .setContentTitle("Usage Tracker")
+                .setContentText("App is running in background to track usage data")
                 .setSmallIcon(R.drawable.ic_notification_service)
                 .setContentIntent(pendingIntent)
                 .build();

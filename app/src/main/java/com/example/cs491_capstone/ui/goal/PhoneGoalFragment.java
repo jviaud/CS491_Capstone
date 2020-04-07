@@ -1,15 +1,16 @@
 package com.example.cs491_capstone.ui.goal;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.cs491_capstone.App;
@@ -29,18 +30,29 @@ import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.ComboLineColumnChartData;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
+import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.PointValue;
+import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.model.SubcolumnValue;
+import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ComboLineColumnChartView;
+import lecho.lib.hellocharts.view.PieChartView;
 
 import static com.example.cs491_capstone.App.currentPeriod;
 import static com.example.cs491_capstone.App.week;
 
 public class PhoneGoalFragment extends Fragment {
-    private ComboLineColumnChartView chart;
-    private ComboLineColumnChartData data;
-    private int maxUnlocks;
-    private long maxUsage, maxValue = 0L;
+    private ComboLineColumnChartView usageComboChart;
+    private ComboLineColumnChartData usageComboData;
+    private PieChartView usagePie;
+    private PieChartView unlockPie;
+
+    private ComboLineColumnChartView unlockComboChart;
+    private ComboLineColumnChartData unlockComboData;
+
+    private CardView usageCard, unlockCard;
+
+    private float maxUsageValue, maxUnlockValue;
 
     @Nullable
     @Override
@@ -51,7 +63,118 @@ public class PhoneGoalFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        chart = view.findViewById(R.id.graph);
+        usageComboChart = view.findViewById(R.id.graph);
+        unlockComboChart = view.findViewById(R.id.unlock_graph);
+        usagePie = view.findViewById(R.id.usage_pie);
+        unlockPie = view.findViewById(R.id.unlock_pie);
+        usageCard = view.findViewById(R.id.usage_card);
+        unlockCard = view.findViewById(R.id.unlock_card);
+
+        unlockPie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                unlockCard.setVisibility(View.VISIBLE);
+                usageCard.setVisibility(View.GONE);
+            }
+        });
+
+        usagePie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                unlockCard.setVisibility(View.GONE);
+                usageCard.setVisibility(View.VISIBLE);
+
+            }
+
+        });
+
+
+    }
+
+    private void generateUnlockPie() {
+        List<SliceValue> values = new ArrayList<>();
+
+
+        long goalValue = Long.parseLong(App.goalDataBase.get(App.DATE, GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_UNLOCKS)) / 60000;
+        long actualValue = Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.UNLOCKS_COUNT)) / 60000;
+
+        float full = 100;
+        float remaining = 0;
+        String formatRemaining;
+
+        if (actualValue > goalValue & goalValue > 0) {
+            formatRemaining = "100%";
+
+        } else if (goalValue == 0) {
+            formatRemaining = "~%";
+        } else {
+            remaining = ((float) actualValue / goalValue * 100);
+            full = 100 - remaining;
+            formatRemaining = String.format(Locale.ENGLISH, "%.1f%%", remaining);
+        }
+
+
+        SliceValue goal = new SliceValue(remaining, R.color.gold);
+        SliceValue actual = new SliceValue(full, Color.LTGRAY);
+
+        values.add(goal);
+        values.add(actual);
+
+
+        PieChartData unlockPieData = new PieChartData(values);
+        unlockPieData.setHasLabels(false);
+        unlockPieData.setHasCenterCircle(true);
+
+        unlockPieData.setCenterText1(formatRemaining);
+        unlockPieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
+        unlockPieData.setCenterText1Color(R.color.gold);
+        unlockPieData.setCenterText1FontSize(25);
+
+
+        unlockPie.setChartRotationEnabled(false);
+        unlockPie.setPieChartData(unlockPieData);
+
+    }
+
+    private void generateUsagePie() {
+        List<SliceValue> values = new ArrayList<>();
+
+        long goalValue = Long.parseLong(App.goalDataBase.get(App.DATE, GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_USAGE)) / 60000;
+        long actualValue = Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)) / 60000;
+
+        float full = 100;
+        float remaining = 0;
+        String formatRemaining;
+
+        if (actualValue > goalValue & goalValue > 0) {
+            formatRemaining = "100%";
+
+        } else if (goalValue == 0) {
+            formatRemaining = "~%";
+        } else {
+            remaining = ((float) actualValue / goalValue * 100);
+            full = 100 - remaining;
+            formatRemaining = String.format(Locale.ENGLISH, "%.1f%%", remaining);
+        }
+
+        SliceValue goal = new SliceValue(remaining, R.color.gold);
+        SliceValue actual = new SliceValue(full, Color.LTGRAY);
+
+        values.add(goal);
+        values.add(actual);
+
+
+        PieChartData usagePieData = new PieChartData(values);
+        usagePieData.setHasLabels(false);
+        usagePieData.setHasCenterCircle(true);
+
+        usagePieData.setCenterText1(formatRemaining);
+        usagePieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
+        usagePieData.setCenterText1Color(R.color.gold);
+        usagePieData.setCenterText1FontSize(25);
+
+        usagePie.setChartRotationEnabled(false);
+        usagePie.setPieChartData(usagePieData);
     }
 
     @Override
@@ -61,48 +184,128 @@ public class PhoneGoalFragment extends Fragment {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
+                //PIE CHARTS
+                generateUsagePie();
+                generateUnlockPie();
 
-                data = new ComboLineColumnChartData(generateColumnData(), generateLineData());
-
-                Axis axisX = new Axis();
-                Axis axisY = new Axis().setHasLines(true);
-
-                axisX.setName("Day of Week");
-                axisY.setName("Actual vs. Goal Value (minutes)");
-
-                List<AxisValue> axisValues = new ArrayList<>(); //THE LIST OF X-AXIS VALUES
-                for (int i = 0; i < week.length; i++) {
-                    axisValues.add(new AxisValue(i).setLabel(week[i]));
-                }
-                axisX.setValues(axisValues);
-
-                data.setAxisXBottom(axisX);
-                data.setAxisYLeft(axisY);
-
-                chart.setValueSelectionEnabled(true);
-                chart.setZoomEnabled(false);
-                chart.setInteractive(true);
-                chart.setContainerScrollEnabled(true, ContainerScrollType.VERTICAL);
+                ///USAGE
+                usageComboData = new ComboLineColumnChartData(generateUsageColumnData(), generateUsageLineData());
+                labelUsageAxis();
+                usageComboChart.setComboLineColumnChartData(usageComboData);
+                setUsageViewPortWidth(usageComboChart);
 
 
-                chart.setComboLineColumnChartData(data);
+
+                ///UNLOCKS
+                unlockComboData = new ComboLineColumnChartData(generateUnlockColumnData(), generateUnlockLineData());
+                labelUnlockAxis();
+                unlockComboChart.setComboLineColumnChartData(unlockComboData);
+                setUnlockViewPortWidth(unlockComboChart);
+
             }
         });
     }
 
-    private ColumnChartData generateColumnData() {
+    private void labelUsageAxis() {
+        Axis axisX = new Axis();
+        Axis axisY = new Axis().setHasLines(true);
+
+        axisX.setName("Day of Week");
+        axisY.setName("Usage vs. Goal Value (minutes)");
+        axisY.setTextColor(R.color.black);
+        axisX.setTextColor(R.color.black);
+
+
+        List<AxisValue> axisValues = new ArrayList<>(); //THE LIST OF X-AXIS VALUES
+        for (int i = 0; i < week.length; i++) {
+            axisValues.add(new AxisValue(i).setLabel(week[i]));
+        }
+        axisX.setValues(axisValues);
+
+        usageComboData.setAxisXBottom(axisX);
+        usageComboData.setAxisYLeft(axisY);
+
+    }
+
+    private void setUsageViewPortWidth(ComboLineColumnChartView chart) {
+        if (maxUsageValue < 10) {
+            Viewport v = new Viewport(chart.getMaximumViewport());
+            v.top = 10;
+            chart.setMaximumViewport(v);
+            chart.setCurrentViewport(v);
+            chart.setViewportCalculationEnabled(false);
+        } else {
+            Viewport v = new Viewport(chart.getMaximumViewport());
+            v.top = ((maxUsageValue + 4) / 5) * 5; //NEXT MULTIPLE OF 5;
+            chart.setMaximumViewport(v);
+            chart.setCurrentViewport(v);
+            chart.setViewportCalculationEnabled(false);
+        }
+
+
+        chart.setValueSelectionEnabled(true);
+        chart.setZoomEnabled(false);
+        chart.setInteractive(true);
+        chart.setContainerScrollEnabled(true, ContainerScrollType.VERTICAL);
+    }
+
+    private void labelUnlockAxis() {
+        Axis axisX = new Axis();
+        Axis axisY = new Axis().setHasLines(true);
+
+        axisX.setName("Day of Week");
+        axisY.setName("Unlocks vs. Goal Value");
+        axisY.setTextColor(R.color.black);
+        axisX.setTextColor(R.color.black);
+        String black = "black";
+
+
+        List<AxisValue> axisValues = new ArrayList<>(); //THE LIST OF X-AXIS VALUES
+        for (int i = 0; i < week.length; i++) {
+            axisValues.add(new AxisValue(i).setLabel(week[i]));
+        }
+        axisX.setValues(axisValues);
+
+        unlockComboData.setAxisXBottom(axisX);
+        unlockComboData.setAxisYLeft(axisY);
+
+    }
+
+    private void setUnlockViewPortWidth(ComboLineColumnChartView chart) {
+        if (maxUnlockValue < 10) {
+            Viewport v = new Viewport(chart.getMaximumViewport());
+            v.top = 10;
+            chart.setMaximumViewport(v);
+            chart.setCurrentViewport(v);
+            chart.setViewportCalculationEnabled(false);
+        } else {
+            Viewport v = new Viewport(chart.getMaximumViewport());
+            v.top = ((maxUsageValue + 4) / 5) * 5; //NEXT MULTIPLE OF 5;
+            chart.setMaximumViewport(v);
+            chart.setCurrentViewport(v);
+            chart.setViewportCalculationEnabled(false);
+        }
+
+
+        chart.setValueSelectionEnabled(true);
+        chart.setZoomEnabled(false);
+        chart.setInteractive(true);
+        chart.setContainerScrollEnabled(true, ContainerScrollType.VERTICAL);
+    }
+
+    private ColumnChartData generateUsageColumnData() {
         int numColumns = week.length;
         // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
         List<Column> columns = new ArrayList<>();
         List<SubcolumnValue> values;
+        maxUsageValue = 0;
         for (int i = 0; i < numColumns; i++) {
 
             values = new ArrayList<>();
             for (int j = 0; j < 1; j++) {
                 long value = Long.parseLong(App.localDatabase.getSumTotalStat(currentPeriod.get(0).get(i), DatabaseHelper.USAGE_TIME)) / 60000; //Math.random() * 50 + 5;
-                //SubcolumnValue subcolumnValue = new SubcolumnValue(value, ChartUtils.COLOR_GREEN);
 
-                Log.i("VALUES", " BAR VALUES:" + value);
+
 
                 if (value == 0) {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
@@ -123,8 +326,8 @@ public class PhoneGoalFragment extends Fragment {
                     values.add(subcolumnValue);
                 }
 
-                if (maxValue < value) {
-                    maxValue = value;
+                if (maxUsageValue < value) {
+                    maxUsageValue = value;
                 }
             }
 
@@ -134,7 +337,7 @@ public class PhoneGoalFragment extends Fragment {
         return new ColumnChartData(columns);
     }
 
-    private LineChartData generateLineData() {
+    private LineChartData generateUsageLineData() {
 
         List<Line> lines = new ArrayList<>();
         for (int i = 0; i < week.length; i++) {
@@ -142,14 +345,11 @@ public class PhoneGoalFragment extends Fragment {
             List<PointValue> values = new ArrayList<>();
             for (int j = 0; j < 1; j++) {
                 long value = Long.parseLong(App.goalDataBase.get(currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_USAGE)) / 60000; //Math.random() * 50 + 5;
-                PointValue pointValue = null;
-
-                Log.i("VALUES", "LINE VALUE:" + value);
-
+                PointValue pointValue;
 
                 if (value == 0) {
-                    pointValue = new PointValue(i, -1);
-                    break;
+                    pointValue = new PointValue(i, 0);
+                    pointValue.setLabel("n/a");
                 } else {
                     pointValue = new PointValue(i, value);
 
@@ -165,12 +365,16 @@ public class PhoneGoalFragment extends Fragment {
 
                 }
 
+                if (maxUsageValue < value) {
+                    maxUsageValue = value;
+                }
+
                 values.add(pointValue);
 
             }
 
             Line line = new Line(values).setHasLabelsOnlyForSelected(true);
-            line.setColor(Color.CYAN);
+            line.setColor(R.color.gold);
             line.setHasLines(false);
             line.setHasPoints(true);
             lines.add(line);
@@ -179,4 +383,80 @@ public class PhoneGoalFragment extends Fragment {
         return new LineChartData(lines);
 
     }
+
+    private ColumnChartData generateUnlockColumnData() {
+        int numColumns = week.length;
+        List<Column> columns = new ArrayList<>();
+        List<SubcolumnValue> values;
+        maxUnlockValue = 0;
+        for (int i = 0; i < numColumns; i++) {
+
+            values = new ArrayList<>();
+            for (int j = 0; j < 1; j++) {
+                long value = Long.parseLong(App.localDatabase.getSumTotalStat(currentPeriod.get(0).get(i), DatabaseHelper.UNLOCKS_COUNT));
+
+
+                if (value == 0) {
+                    values.add(new SubcolumnValue(value, Color.TRANSPARENT));
+                    break;
+                } else {
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, R.color.gold);
+
+                    subcolumnValue.setLabel(String.valueOf(value));
+
+                    values.add(subcolumnValue);
+                }
+
+                if (maxUnlockValue < value) {
+                    maxUnlockValue = value;
+                }
+            }
+
+            columns.add(new Column(values).setHasLabelsOnlyForSelected(true));
+        }
+
+        return new ColumnChartData(columns);
+    }
+
+    private LineChartData generateUnlockLineData() {
+
+        List<Line> lines = new ArrayList<>();
+        for (int i = 0; i < week.length; i++) {
+
+            List<PointValue> values = new ArrayList<>();
+            for (int j = 0; j < 1; j++) {
+                long value = Long.parseLong(App.goalDataBase.get(currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_UNLOCKS)); //Math.random() * 50 + 5;
+                PointValue pointValue;
+
+
+
+
+                if (value == 0) {
+                    pointValue = new PointValue(i, 0);
+                    pointValue.setLabel("n/a");
+                } else {
+                    pointValue = new PointValue(i, value);
+
+                    pointValue.setLabel(String.valueOf(value));
+
+                }
+                if (maxUnlockValue < value) {
+                    maxUnlockValue = value;
+                }
+
+                values.add(pointValue);
+
+            }
+
+            Line line = new Line(values).setHasLabelsOnlyForSelected(true);
+            line.setColor(R.color.gold);
+            line.setHasLines(false);
+            line.setHasPoints(true);
+            lines.add(line);
+        }
+
+        return new LineChartData(lines);
+
+    }
+
 }

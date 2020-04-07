@@ -77,5 +77,13 @@
             android:summary=""
             android:title="Import from csv"
             app:summary="Produce visuals based on imported data" />
+
+        <Preference
+            android:key="permissions"
+            android:summary=""
+            android:title="Request Special Permissions"
+            app:summary="Start activity to request special permissions.
+            \nUseful if data is not being collected or graphs are missing" />
+
     </PreferenceCategory>
 </PreferenceScreen>

@@ -29,7 +29,6 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
 
 public class MainActivity extends AppCompatActivity {
-    //public static ArrayList<UserUsageInfo> usageInfo;
     SharedPreferences prefs = null;
     FloatingActionButton fab;
     /**
@@ -121,13 +120,11 @@ public class MainActivity extends AppCompatActivity {
         //CHECK IF THIS IS THE FIRST TIME THE APP IS BEING RUN, IF IT IS THEN START THE INITIALIZER ACTIVITY TO SET THE REQUIRED PERMISSIONS
         if (prefs.getBoolean("firstrun", true)) {
 
-
             Intent intent = new Intent(this, IntroManager.class);
             prefs.edit().putBoolean("firstrun", false).apply();
             intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             finish();
-
 
         } else {
             AsyncTask.execute(new Runnable() {

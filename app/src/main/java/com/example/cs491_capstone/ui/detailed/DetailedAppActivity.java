@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -22,8 +24,6 @@ import com.example.cs491_capstone.ui.detailed.detailed_graphs.DetailedUsageGraph
 import com.example.cs491_capstone.ui_helpers.ViewPageAdapter;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
-
 import static com.example.cs491_capstone.App.DATE;
 
 public class DetailedAppActivity extends AppCompatActivity {
@@ -32,12 +32,12 @@ public class DetailedAppActivity extends AppCompatActivity {
     private TextView usage_val;
     private TextView notification_val;
     private TextView unlocks_val;
-    public static ArrayList<String> weeksSingleFormat;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_app);
+
 
 
         //INITIALISE ALL OF THE VIEWS
@@ -88,6 +88,15 @@ public class DetailedAppActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

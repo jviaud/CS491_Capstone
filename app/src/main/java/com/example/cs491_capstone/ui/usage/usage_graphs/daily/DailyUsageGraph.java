@@ -233,15 +233,12 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
                     String category = UsageFragment.category[j];
                     long value = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(date, i + "", DatabaseHelper.USAGE_TIME, category)) / 60000;
 
-                    if (value == 0) {
-                        //  values.add(new SubcolumnValue(value, Color.TRANSPARENT));
-                    } else {
+                    if (value != 0) {
                         //THE SUB COLUMNS COLOR IS CHOSEN FROM A LIST OF COLORS SO IT WILL ALWAYS BE THE SAME COLOR
                         SubcolumnValue subcolumnValue = new SubcolumnValue(value, categoryKey[j]);
 
                         subcolumnValue.setLabel("");
                         values.add(subcolumnValue);
-
                     }
 
                     if (maxValue < value) {

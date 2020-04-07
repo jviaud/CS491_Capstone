@@ -34,7 +34,13 @@
         <activity
             android:name=".BlockerActivity"
             android:theme="@style/Theme.Transparent" />
-        <activity android:name=".ui.detailed.DetailedAppActivity" />
+        <activity android:name=".ui.detailed.DetailedAppActivity"
+            android:parentActivityName="com.example.cs491_capstone.ui.goal.GoalsFragment"
+            android:theme="@style/GoalTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.cs491_capstone.ui.goal.GoalsFragment" />
+        </activity>
         <activity android:name=".ui.intro.IntroManager" />
         <activity android:name=".ui.splash.SplashScreen">
             <intent-filter>
@@ -46,11 +52,11 @@
         <activity
             android:name=".ui.goal.NewGoal"
             android:label="New Goal"
-            android:parentActivityName="com.example.cs491_capstone.ui.goal.GoalsFragment"
+            android:parentActivityName="com.example.cs491_capstone.MainActivity"
             android:theme="@style/GoalTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.cs491_capstone.ui.goal.GoalsFragment" />
+                android:value="com.example.cs491_capstone.MainActivity" />
         </activity>
 
 
