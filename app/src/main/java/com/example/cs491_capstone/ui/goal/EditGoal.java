@@ -1,9 +1,11 @@
 package com.example.cs491_capstone.ui.goal;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,10 +47,11 @@ import java.util.List;
 
 import static com.example.cs491_capstone.App.ALL_APPS_LIST;
 
-public class NewGoal extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+public class EditGoal extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+
     private static String date;
     private static String goalType;
-    Chip specifyDate, specifyApp, usage, unlocks;
+    Chip specifyDate, specifyApp, usage, unlocks, byPhone, byApp;
     ChipGroup type, stats;
     CardView appInfo, usageCard, unlocksCard;
     EditText hour, minutes, unlock_amount;
@@ -64,6 +67,8 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         return true;
     }
 
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +112,11 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         errorMessage = findViewById(R.id.error_message);
         errorUsage = findViewById(R.id.error_usage);
         errorUnlocks = findViewById(R.id.error_unlocks);
+        byPhone = findViewById(R.id.chip_byPhone);
+        byApp = findViewById(R.id.chip_byApp);
+
+
+        done.setText("SAVE");
 
 
         //MIN AND MAX VALUES FOR EDIT TEXT
@@ -268,6 +278,67 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                 }
             }
         });
+
+
+        //POPULATE VIEWS
+        Intent intent = getIntent();
+        Goal editGoal = intent.getParcelableExtra("GOAL");
+        checkCurrentGoal(editGoal);
+
+
+    }
+
+    private void checkCurrentGoal(Goal goal) {
+        formCompletion = new boolean[]{true, true, true};
+
+        specifyDate.setEnabled(false);
+
+        date = App.dateFormater(goal.getDate(), "EEEE, MMMM dd, yyyy");
+        dateTitle.setText(date);
+
+
+        if (goal.getType().equals(GoalDataBaseHelper.GOAL_PHONE)) {
+            type.check(R.id.chip_byPhone);
+        } else {
+            type.check(R.id.chip_byApp);
+            specifyApp.setEnabled(false);
+
+            Drawable icon;
+            String name;
+            String packageName = goal.getPackageName();
+            for (InstalledAppInfo info : trackedApps) {
+                if (info.getPackageName().equals(packageName)) {
+                    name = info.getSimpleName();
+                    icon = info.getIcon();
+
+                    appName.setText(name);
+                    appIcon.setImageDrawable(icon);
+                }
+            }
+
+        }
+        byPhone.setEnabled(false);
+        byApp.setEnabled(false);
+
+        if (goal.getUnlocks() != 0) {
+            int unlock = goal.getUnlocks();
+            unlock_amount.setText(String.valueOf(unlock));
+
+            unlocks.setChecked(true);
+            unlocksCard.setVisibility(View.VISIBLE);
+
+        }
+
+        if (goal.getUsage() != 0) {
+            long usageAmount = goal.getUsage();
+
+            hour.setText(String.valueOf(((usageAmount / (1000 * 60 * 60)) % 24)));
+
+            minutes.setText(String.valueOf((usageAmount / (1000 * 60)) % 60));
+
+            usage.setChecked(true);
+            usageCard.setVisibility(View.VISIBLE);
+        }
 
     }
 

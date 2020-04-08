@@ -1,6 +1,9 @@
 package com.example.cs491_capstone.ui.goal;
 
-public class Goal implements Comparable<Goal> {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Goal  implements Comparable<Goal>, Parcelable {
     private String id;
     private String date;
     private String type;
@@ -20,11 +23,33 @@ public class Goal implements Comparable<Goal> {
         expanded = false;
     }
 
-    public boolean isExpanded() {
+    public static final Creator<Goal> CREATOR = new Creator<Goal>() {
+        @Override
+        public Goal createFromParcel(Parcel in) {
+            return new Goal(in);
+        }
+
+        @Override
+        public Goal[] newArray(int size) {
+            return new Goal[size];
+        }
+    };
+
+    protected Goal(Parcel in) {
+        id = in.readString();
+        date = in.readString();
+        type = in.readString();
+        usage = in.readLong();
+        unlocks = in.readInt();
+        packageName = in.readString();
+        expanded = in.readByte() != 0;
+    }
+
+    boolean isExpanded() {
         return expanded;
     }
 
-    public void setExpanded(boolean expanded) {
+    void setExpanded(boolean expanded) {
         this.expanded = expanded;
     }
 
@@ -81,5 +106,21 @@ public class Goal implements Comparable<Goal> {
         Integer a = Integer.parseInt(o.getId());
         Integer b = Integer.parseInt(getId());
         return a.compareTo(b);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(date);
+        dest.writeString(type);
+        dest.writeLong(usage);
+        dest.writeInt(unlocks);
+        dest.writeString(packageName);
+        dest.writeByte((byte) (expanded ? 1 : 0));
     }
 }

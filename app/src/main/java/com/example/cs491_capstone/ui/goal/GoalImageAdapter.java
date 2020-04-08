@@ -1,6 +1,7 @@
 package com.example.cs491_capstone.ui.goal;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
@@ -118,7 +119,7 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         holderList.add(holder);
         final Goal goal = goals.get(position);
         holder.id.setText(goal.getId());
-        holder.date.setText(App.dateFormater(goal.getDate(),"EEEE, MMMM dd, yyyy"));
+        holder.date.setText(App.dateFormater(goal.getDate(), "EEEE, MMMM dd, yyyy"));
 
         if (goal.getType().equals(GoalDataBaseHelper.GOAL_APP)) {
             String packageName = goal.getPackageName();
@@ -169,8 +170,10 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
 
                         switch (item.getItemId()) {
                             case R.id.edit_card:
-                                //Toast.makeText(context, "DELETE", Toast.LENGTH_SHORT).show();
                                 //TODO START EDIT ACTIVITY
+                                Intent intent = new Intent(context, EditGoal.class);
+                                intent.putExtra("GOAL", goals.get(position));
+                                context.startActivity(intent);
                                 break;
                             case R.id.delete_card:
                                 //Toast.makeText(context, "EDIT", Toast.LENGTH_SHORT).show();
