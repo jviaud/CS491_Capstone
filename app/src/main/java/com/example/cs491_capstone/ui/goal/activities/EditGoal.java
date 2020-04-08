@@ -123,7 +123,7 @@ public class EditGoal extends AppCompatActivity implements View.OnClickListener,
 
 
         //MIN AND MAX VALUES FOR EDIT TEXT
-        hour.setFilters(new InputFilter[]{new InputFilterMinMax("0","23")});
+        hour.setFilters(new InputFilter[]{new InputFilterMinMax("0", "23")});
         minutes.setFilters(new InputFilter[]{new InputFilterMinMax("0", "59")});
 
         //REGISTER CLICK LISTENERS

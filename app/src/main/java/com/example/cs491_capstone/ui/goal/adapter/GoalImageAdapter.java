@@ -24,6 +24,7 @@ import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui.goal.Goal;
 import com.example.cs491_capstone.ui.goal.activities.EditGoal;
+import com.example.cs491_capstone.ui.goal.activities.ShowAllRelatedGoals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,9 +182,9 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
                         switch (item.getItemId()) {
                             case R.id.edit_card:
                                 //Toast.makeText(context, "DELETE", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(context, EditGoal.class);
-                                intent.putExtra("GOAL", goal);
-                                context.startActivity(intent);
+                                Intent editIntent = new Intent(context, EditGoal.class);
+                                editIntent.putExtra("GOAL", goal);
+                                context.startActivity(editIntent);
                                 break;
                             case R.id.delete_card:
                                 //Toast.makeText(context, "EDIT", Toast.LENGTH_SHORT).show();
@@ -194,7 +195,9 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
                                 App.goalDataBase.remove(goal.getId());
                                 break;
                             case R.id.show_all_card:
-                                //Toast.makeText(context, "SHOW ALL", Toast.LENGTH_SHORT).show();
+                                Intent showAllIntent = new Intent(context, ShowAllRelatedGoals.class);
+                                showAllIntent.putExtra("GOAL_TYPE", goal);
+                                context.startActivity(showAllIntent);
                                 break;
                             default:
                                 break;
