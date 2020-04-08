@@ -50,6 +50,12 @@
             android:title="App Limits"
             app:summary="Specify usage limit for an app" />
 
+        <Preference
+            android:dependency="parental_controls"
+            android:key="time_limit_apps"
+            android:title="Time Limit Apps"
+            app:summary="List of apps with a time limit" />
+
         <SwitchPreference
             android:dependency="parental_controls"
             android:key="toggle_wifi"
