@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.goal;
+package com.example.cs491_capstone.ui.goal.tabs;
 
 import android.graphics.Color;
 import android.graphics.Typeface;

@@ -25,5 +25,8 @@
     <string name="notifications">Notifications</string>
     <string name="unlocks">Unlocks</string>
     <string name="done">Done</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="show_all">Show All</string>
 
 </resources>

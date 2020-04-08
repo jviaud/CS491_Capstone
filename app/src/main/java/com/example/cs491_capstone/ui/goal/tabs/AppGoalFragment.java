@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.goal;
+package com.example.cs491_capstone.ui.goal.tabs;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -25,6 +25,7 @@ import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.goal.Goal;
 
 import java.util.ArrayList;
 import java.util.List;

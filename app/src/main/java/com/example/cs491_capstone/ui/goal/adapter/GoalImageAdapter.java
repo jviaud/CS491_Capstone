@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.goal;
+package com.example.cs491_capstone.ui.goal.adapter;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -21,19 +21,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.goal.Goal;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.ImageViewHolder> {
-    List<ImageViewHolder> holderList;
+    public List<ImageViewHolder> holderList;
     private Context context;
     private List<Goal> goals;
     private PackageManager packageManager;
 
 
-    GoalImageAdapter(Context context, List<Goal> goals) {
+    public GoalImageAdapter(Context context, List<Goal> goals) {
         this.context = context;
         this.goals = goals;
         packageManager = context.getPackageManager();
@@ -96,7 +97,7 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         v.startAnimation(a);
     }
 
-    void collapseAll() {
+    public void collapseAll() {
         //expandableLayout
         // collapse(holder.expandableLayout);
         for (ImageViewHolder holder : holderList) {
@@ -118,7 +119,7 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         holderList.add(holder);
         final Goal goal = goals.get(position);
         holder.id.setText(goal.getId());
-        holder.date.setText(App.dateFormater(goal.getDate(),"EEEE, MMMM dd, yyyy"));
+        holder.date.setText(App.dateFormater(goal.getDate(), "EEEE, MMMM dd, yyyy"));
 
         if (goal.getType().equals(GoalDataBaseHelper.GOAL_APP)) {
             String packageName = goal.getPackageName();

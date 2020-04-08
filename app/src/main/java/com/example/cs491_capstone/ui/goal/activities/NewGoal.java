@@ -1,24 +1,20 @@
-package com.example.cs491_capstone.ui.goal;
+package com.example.cs491_capstone.ui.goal.activities;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -35,6 +31,8 @@ import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.InstalledAppInfo;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.goal.InputFilterMinMax;
+import com.example.cs491_capstone.ui.goal.adapter.InstalledAppsListAdapter;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -450,91 +448,5 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         }
     }
 
-    static class InstalledAppsViewHolder {
-        TextView name;
-        ImageView icon;
-    }
 
-    private static class InstalledAppsListAdapter extends BaseAdapter {
-        private LayoutInflater inflater;
-        private List<InstalledAppInfo> installedAppInfoList;
-
-        //CONSTRUCTOR
-        InstalledAppsListAdapter(Context context, List<InstalledAppInfo> installedAppInfoList) {
-            inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            this.installedAppInfoList = installedAppInfoList;
-        }
-
-
-        @Override
-        public int getCount() {
-            return installedAppInfoList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return installedAppInfoList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            InstalledAppsViewHolder listHolder;
-
-            if (convertView == null) {
-                //CREATE VIEWHOLDER AND INFLATE LAYOUT
-                listHolder = new InstalledAppsViewHolder();
-                convertView = inflater.inflate(R.layout.new_goal_app_card, parent, false);
-
-                //ASSIGN VIEW HOLDER CLASS VARIABLE TO LAYOUT
-                listHolder.icon = convertView.findViewById(R.id.icon);
-                listHolder.name = convertView.findViewById(R.id.name);
-
-                convertView.setTag(listHolder);
-
-            } else {
-                listHolder = (InstalledAppsViewHolder) convertView.getTag();
-            }
-
-            listHolder.icon.setImageDrawable(installedAppInfoList.get(position).getIcon());
-            listHolder.name.setText(installedAppInfoList.get(position).getSimpleName());
-
-            return convertView;
-        }
-
-    }
-
-    public static class InputFilterMinMax implements InputFilter {
-
-        private int min, max;
-
-        public InputFilterMinMax(int min, int max) {
-            this.min = min;
-            this.max = max;
-        }
-
-        public InputFilterMinMax(String min, String max) {
-            this.min = Integer.parseInt(min);
-            this.max = Integer.parseInt(max);
-        }
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            try {
-                int input = Integer.parseInt(dest.toString() + source.toString());
-                if (isInRange(min, max, input))
-                    return null;
-            } catch (NumberFormatException nfe) {
-            }
-            return "";
-        }
-
-        private boolean isInRange(int a, int b, int c) {
-            return b > a ? c >= a && c <= b : c >= b && c <= a;
-        }
-    }
 }

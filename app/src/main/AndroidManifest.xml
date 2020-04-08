@@ -50,7 +50,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.goal.NewGoal"
+            android:name=".ui.goal.activities.NewGoal"
             android:label="New Goal"
             android:parentActivityName="com.example.cs491_capstone.MainActivity"
             android:theme="@style/GoalTheme">
