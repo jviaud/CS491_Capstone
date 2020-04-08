@@ -290,6 +290,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
 
         DateTime dt = DateTime.parse(orgDate, DateTimeFormat.forPattern("yyyy-m-d"));
         date = dt.toString("yyyy-mm-dd");
+        dateTitle.setText(date);
 
 
         formCompletion[0] = true;

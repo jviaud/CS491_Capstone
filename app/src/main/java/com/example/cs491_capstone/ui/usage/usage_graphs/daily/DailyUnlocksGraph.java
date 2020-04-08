@@ -174,7 +174,7 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
         //WEIRD ERRORS CAUSE BY RESUMING WITH THE CATEGORY GRAPH
         //TOO AVOID IT WE JUST SET THE GRAPH BACK TO NORMAL
         //BOOLEAN IS SET BACK TO FALSE
-        todayDate.setText(graphDate);
+        todayDate.setText(App.dateFormater(graphDate,"mm/dd/yyyy"));
 
         if (byCategory) {
             //BUTTON TEXT IS SET BACK TO DEFAULT
@@ -393,7 +393,7 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
         //DATE IS SET TOO TODAY
         graphDate = App.DATE;
         //DATE TITLE IS SET TO TODAY
-        todayDate.setText(graphDate);
+        todayDate.setText(App.dateFormater(graphDate,"mm/dd/yyyy"));
         //HIDE THE NEXT BUTTON, WE DO NOT SHOW FUTURE GRAPHS BECAUSE WE KNOW THEY ARE BLANK
         nextButton.setVisibility(View.GONE);
         //GRAPH IS SHOWING TODAY SO WE DO NOT SHOW THE SKIP TO TODAY BUTTON
@@ -427,7 +427,7 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
                 showToday.setVisibility(View.VISIBLE);
             }
             //SET THE DATE TEXT AND GENERATE THE GRAPH
-            todayDate.setText(graphDate);
+            todayDate.setText(App.dateFormater(graphDate,"mm/dd/yyyy"));
             createUsageChart(graphDate, byCategory);
         } else {
             //IF WE ARE AT THE END OOF THE LIST THEN WE HIDE THE NEXT BUTTON
@@ -457,7 +457,7 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
                 showToday.setVisibility(View.GONE);
             }
             //SET THE DATE TEXT AND GENERATE THE GRAPH
-            todayDate.setText(graphDate);
+            todayDate.setText(App.dateFormater(graphDate,"mm/dd/yyyy"));
             createUsageChart(graphDate, byCategory);
         } else {
             //IF WE HAVE EXCEEDED THE LIMIT THEN HIDE THE PREV BUTTON

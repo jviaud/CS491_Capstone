@@ -1,6 +1,5 @@
 package com.example.cs491_capstone.ui.usage;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +22,7 @@ public class UsageFragment extends Fragment {
 
 
     public final static String[] category = new String[]{"Maps", "Social", "Movies & Video", "Audio", "Game", "Image", "News", "Productivity", "Other"};
-    public final static int[] categoryKey = new int[]{Color.BLUE, Color.GREEN, Color.LTGRAY, Color.RED, Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.DKGRAY, Color.BLACK};
+    public final static int[] categoryKey = new int[]{R.color.maps, R.color.social, R.color.video, R.color.audio, R.color.game, R.color.image, R.color.news, R.color.productivity,R.color.other,};
     public static ArrayList<String> weeksSingleFormat;
     private int indicatorWidth;
 

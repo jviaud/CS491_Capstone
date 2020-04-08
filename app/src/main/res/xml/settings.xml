@@ -41,7 +41,7 @@
             android:key="phone_limit"
             android:title="Limit Time"
             app:allowDividerBelow="true"
-            app:summary="Specify usage limit for phone"/>
+            app:summary="Specify usage limit for phone" />
 
 
         <Preference
@@ -72,11 +72,7 @@
             android:key="export_csv"
             android:summary="Produce a usage report based on specified parameters"
             android:title="Export to csv" />
-        <Preference
-            android:key="import_csv"
-            android:summary=""
-            android:title="Import from csv"
-            app:summary="Produce visuals based on imported data" />
+
 
         <Preference
             android:key="permissions"

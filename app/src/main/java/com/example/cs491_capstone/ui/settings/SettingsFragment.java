@@ -338,14 +338,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
         //CLICK LISTENER FOR IMPORTING FROM CSV OPTION
-        Preference importCSV = findPreference("import_csv");
-        importCSV.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                getCSV();
-                return true;
-            }
-        });
+//        Preference importCSV = findPreference("import_csv");
+//        importCSV.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+//            @Override
+//            public boolean onPreferenceClick(Preference preference) {
+//                getCSV();
+//                return true;
+//            }
+//        });
         ///
 
         Preference permissionsActivity = findPreference("permissions");

@@ -1,7 +1,7 @@
 package com.example.cs491_capstone.ui.goal;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +26,11 @@ import static com.example.cs491_capstone.App.currentPeriod;
 
 public class GoalsFragment extends Fragment {
 
-    public static String startDate = currentPeriod.get(0).get(0);
-    public static String endDate = currentPeriod.get(0).get(6);
+    public static GoalImageAdapter goalAdapter;
+    static String startDate = currentPeriod.get(0).get(0);
+    static String endDate = currentPeriod.get(0).get(6);
     private List<Goal> goalsList = new ArrayList<>();
     private boolean pageStart = true;
-    private GoalImageAdapter goalAdapter;
 
     @Nullable
     @Override
@@ -43,7 +43,6 @@ public class GoalsFragment extends Fragment {
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         goalsList = App.goalDataBase.getAllActiveGoals(startDate, endDate);
-        Log.i("GOAL", "SIZE:" + goalsList.size());
 
         TabLayout tabLayout = view.findViewById(R.id.graph_choice);
         ViewPager viewPager = view.findViewById(R.id.graph_container);
@@ -58,7 +57,7 @@ public class GoalsFragment extends Fragment {
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        RecyclerView goalsRecycler = view.findViewById(R.id.goals_list);
+        final RecyclerView goalsRecycler = view.findViewById(R.id.goals_list);
 
         LinearLayoutManager layoutManagerWeek = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
 
@@ -68,6 +67,8 @@ public class GoalsFragment extends Fragment {
         goalsRecycler.setHasFixedSize(true);
 
         goalAdapter = new GoalImageAdapter(getContext(), goalsList);
+
+
         goalsRecycler.setAdapter(goalAdapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -89,6 +90,7 @@ public class GoalsFragment extends Fragment {
                     goalsList.addAll(App.goalDataBase.getUniquePackageGoals(startDate, endDate));
 
                 }
+                goalAdapter.holderList.clear();
                 goalAdapter.notifyDataSetChanged();
             }
 
@@ -105,7 +107,7 @@ public class GoalsFragment extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dx > 0 | dx < 0) {
-                    GoalImageAdapter.collapseAll();
+                    goalAdapter.collapseAll();
                 }
             }
         });
@@ -115,15 +117,25 @@ public class GoalsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         goalsList.clear();
-        if (pageStart) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
 
-            goalsList.addAll(App.goalDataBase.getAllActiveGoals(startDate, endDate));
+                if (pageStart) {
 
-        } else {
+                    goalsList.addAll(App.goalDataBase.getAllActiveGoals(startDate, endDate));
 
-            goalsList.addAll(App.goalDataBase.getUniquePackageGoals(startDate, endDate));
+                } else {
 
-        }
+                    goalsList.addAll(App.goalDataBase.getUniquePackageGoals(startDate, endDate));
+
+                }
+
+
+            }
+        });
+        goalAdapter.holderList.clear();
         goalAdapter.notifyDataSetChanged();
+
     }
 }

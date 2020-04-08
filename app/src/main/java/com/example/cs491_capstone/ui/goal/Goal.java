@@ -1,6 +1,6 @@
 package com.example.cs491_capstone.ui.goal;
 
-public class Goal {
+public class Goal implements Comparable<Goal> {
     private String id;
     private String date;
     private String type;
@@ -8,7 +8,6 @@ public class Goal {
     private int unlocks;
     private String packageName;
     private boolean expanded;
-
 
 
     public Goal(String id, String date, String type, long usage, int unlocks, String packageName) {
@@ -75,5 +74,12 @@ public class Goal {
 
     public void setUnlocks(int unlocks) {
         this.unlocks = unlocks;
+    }
+
+    @Override
+    public int compareTo(Goal o) {
+        Integer a = Integer.parseInt(o.getId());
+        Integer b = Integer.parseInt(getId());
+        return a.compareTo(b);
     }
 }

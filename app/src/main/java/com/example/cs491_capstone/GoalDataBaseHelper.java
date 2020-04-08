@@ -257,7 +257,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
                 " AND " + GOAL_DATE + "<= date(\"" + endDate + "\")"
                 + " AND GOAL_TYPE = \"GOAL_APP\" "
                 + " GROUP BY PACKAGE_NAME"
-                + " ORDER BY date(\"GOAL_DATE\") DESC", null);
+                + " ORDER BY ENTRY_ID ASC", null);
 
         //READ LINES FROM CURSOR INTO BUFFER
         while (res.moveToNext()) {

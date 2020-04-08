@@ -8,7 +8,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,10 +51,10 @@ import static com.example.cs491_capstone.ui.goal.GoalsFragment.endDate;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.startDate;
 
 public class AppGoalFragment extends Fragment {
+    static RecyclerView appsRecycler;
+    static List<Goal> goals;
+    public ImageAdapter adapter;
     String packageName;
-    private RecyclerView appsRecycler;
-    private ImageAdapter adapter;
-    private List<Goal> goals;
     private ComboLineColumnChartView usageComboChart;
     private ComboLineColumnChartData usageComboData;
     private PieChartView usagePie;
@@ -110,7 +109,9 @@ public class AppGoalFragment extends Fragment {
         ///
         if (goals.isEmpty()) {
             appsRecycler.setVisibility(View.GONE);
+            graph_app.setVisibility(View.GONE);
         } else {
+            graph_app.setVisibility(View.VISIBLE);
             appsRecycler.setVisibility(View.VISIBLE);
         }
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -128,7 +129,7 @@ public class AppGoalFragment extends Fragment {
         } catch (IndexOutOfBoundsException ibe) {
             packageName = "null";
         }
-        graph_app.setText(packageName);
+        graph_app.setText(getProperName(packageName));
 
         //PIE CHARTS
         generateUsagePie(packageName);
@@ -142,7 +143,7 @@ public class AppGoalFragment extends Fragment {
             @Override
             public void onItemClick(int position, ImageView v) {
                 final String packageName = goals.get(position).getPackageName();
-                graph_app.setText(packageName);
+                graph_app.setText(getProperName(packageName));
 
                 AsyncTask.execute(new Runnable() {
                     @Override
@@ -152,6 +153,7 @@ public class AppGoalFragment extends Fragment {
                     }
                 });
 
+                adapter.getSelected(position);
 
                 usageComboData = new ComboLineColumnChartData(generateUsageColumnData(packageName), generateUsageLineData(packageName));
                 labelUsageAxis();
@@ -166,6 +168,7 @@ public class AppGoalFragment extends Fragment {
 
             }
         });
+
 
     }
 
@@ -173,14 +176,14 @@ public class AppGoalFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         goals.clear();
         goals.addAll(App.goalDataBase.getUniquePackageGoals(startDate, endDate));
-        adapter.notifyDataSetChanged();
-
-
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
+
+
                 usageComboData = new ComboLineColumnChartData(generateUsageColumnData(packageName), generateUsageLineData(packageName));
                 labelUsageAxis();
                 usageComboChart.setComboLineColumnChartData(usageComboData);
@@ -191,9 +194,36 @@ public class AppGoalFragment extends Fragment {
                 labelUnlockAxis();
                 unlockComboChart.setComboLineColumnChartData(unlockComboData);
                 setUnlockViewPortWidth(unlockComboChart);
+
             }
         });
+        adapter.imageList.clear();
+        adapter.notifyDataSetChanged();
 
+        appsRecycler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    appsRecycler.findViewHolderForAdapterPosition(0).itemView.performClick();
+                } catch (NullPointerException ignored) {
+                }
+            }
+        }, 100);
+
+
+    }
+
+    private String getProperName(String packageName) {
+        String name = "null";
+        PackageManager packageManager = getContext().getPackageManager();
+        try {
+            ApplicationInfo ai = packageManager.getApplicationInfo(packageName, 0);
+            name = ai.loadLabel(packageManager).toString();
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return name;
     }
 
     private void labelUsageAxis() {
@@ -468,7 +498,6 @@ public class AppGoalFragment extends Fragment {
         } else if (goalValue == 0) {
             formatRemaining = "~%";
         } else {
-            Log.i("GOAL", "goal:" + goalValue + "| actual:" + actualValue + "|%:" + ((float) actualValue / goalValue * 100));
             remaining = ((float) actualValue / goalValue * 100);
             full = 100 - remaining;
             formatRemaining = String.format(Locale.ENGLISH, "%.1f%%", remaining);
@@ -540,6 +569,7 @@ public class AppGoalFragment extends Fragment {
     }
 
     public static class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
+        List<ImageAdapter.ImageViewHolder> imageList;
         private ImageAdapter.OnItemClickListener mListener;//CUSTOM ON CLICK LISTENER
         private Context context;
         private List<Goal> subscriptions;
@@ -550,8 +580,17 @@ public class AppGoalFragment extends Fragment {
             this.context = context;
             this.subscriptions = subscriptions;
             packageManager = context.getPackageManager();
+            imageList = new ArrayList<>();
 
 
+        }
+
+        void getSelected(int position) {
+            for (ImageViewHolder holder : imageList) {
+                holder.icon.setAlpha(.4f);
+            }
+
+            imageList.get(position).icon.setAlpha(1f);
         }
 
         @NonNull
@@ -562,16 +601,18 @@ public class AppGoalFragment extends Fragment {
             return new ImageViewHolder(v, mListener);
         }
 
+
         @Override
         public void onBindViewHolder(@NonNull ImageAdapter.ImageViewHolder holder, int position) {
             Goal goal = subscriptions.get(position);
+            imageList.add(holder);
 
 
             try {
                 ApplicationInfo ai = packageManager.getApplicationInfo(goal.getPackageName(), 0);
                 Drawable icon = ai.loadIcon(packageManager);
                 holder.icon.setImageDrawable(icon);
-                Log.i("GOALS", "APP: " + goal.getPackageName());
+                holder.icon.setAlpha(.4f);
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }

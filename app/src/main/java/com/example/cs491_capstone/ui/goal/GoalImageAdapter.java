@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.ImageViewHolder> {
-    private static List<ImageViewHolder> holderList;
+    List<ImageViewHolder> holderList;
     private Context context;
     private List<Goal> goals;
     private PackageManager packageManager;
@@ -38,6 +38,8 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         this.goals = goals;
         packageManager = context.getPackageManager();
         holderList = new ArrayList<>();
+
+
     }
 
     private static void expand(final View v) {
@@ -94,7 +96,7 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         v.startAnimation(a);
     }
 
-    public static void collapseAll() {
+    void collapseAll() {
         //expandableLayout
         // collapse(holder.expandableLayout);
         for (ImageViewHolder holder : holderList) {
@@ -116,7 +118,7 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         holderList.add(holder);
         final Goal goal = goals.get(position);
         holder.id.setText(goal.getId());
-        holder.date.setText(goal.getDate());
+        holder.date.setText(App.dateFormater(goal.getDate(),"EEEE, MMMM dd, yyyy"));
 
         if (goal.getType().equals(GoalDataBaseHelper.GOAL_APP)) {
             String packageName = goal.getPackageName();
