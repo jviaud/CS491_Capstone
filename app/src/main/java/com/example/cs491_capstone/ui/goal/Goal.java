@@ -3,26 +3,9 @@ package com.example.cs491_capstone.ui.goal;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Goal  implements Comparable<Goal>, Parcelable {
-    private String id;
-    private String date;
-    private String type;
-    private long usage;
-    private int unlocks;
-    private String packageName;
-    private boolean expanded;
+import com.example.cs491_capstone.App;
 
-
-    public Goal(String id, String date, String type, long usage, int unlocks, String packageName) {
-        this.id = id;
-        this.date = date;
-        this.type = type;
-        this.usage = usage;
-        this.unlocks = unlocks;
-        this.packageName = packageName;
-        expanded = false;
-    }
-
+public class Goal implements Parcelable, Comparable<Goal> {
     public static final Creator<Goal> CREATOR = new Creator<Goal>() {
         @Override
         public Goal createFromParcel(Parcel in) {
@@ -34,6 +17,23 @@ public class Goal  implements Comparable<Goal>, Parcelable {
             return new Goal[size];
         }
     };
+    private String id;
+    private String date;
+    private String type;
+    private long usage;
+    private int unlocks;
+    private String packageName;
+    private boolean expanded;
+
+    public Goal(String id, String date, String type, long usage, int unlocks, String packageName) {
+        this.id = id;
+        this.date = date;
+        this.type = type;
+        this.usage = usage;
+        this.unlocks = unlocks;
+        this.packageName = packageName;
+        expanded = false;
+    }
 
     protected Goal(Parcel in) {
         id = in.readString();
@@ -45,11 +45,36 @@ public class Goal  implements Comparable<Goal>, Parcelable {
         expanded = in.readByte() != 0;
     }
 
-    boolean isExpanded() {
+    public boolean isPassed() {
+        return App.goalDataBase.getStatus(id);
+    }
+
+    public void setPassed(boolean passed) {
+        App.goalDataBase.setStatus(id, passed ? "0" : "1");
+    }
+
+    public boolean isUsagePassed() {
+        return App.goalDataBase.getUsageStatus(id);
+    }
+
+    public void setUsagePassed(boolean passed) {
+        App.goalDataBase.setUsageStatus(id, passed ? "0" : "1");
+    }
+
+    public boolean isUnlockPassed() {
+        return App.goalDataBase.getUnlockStatus(id);
+    }
+
+    public void setUnlockPassed(boolean passed) {
+        App.goalDataBase.setUnlockStatus(id, passed ? "0" : "1");
+    }
+
+
+    public boolean isExpanded() {
         return expanded;
     }
 
-    void setExpanded(boolean expanded) {
+    public void setExpanded(boolean expanded) {
         this.expanded = expanded;
     }
 

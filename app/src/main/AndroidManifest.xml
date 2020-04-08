@@ -59,6 +59,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.cs491_capstone.MainActivity" />
         </activity>
+        <activity
+            android:name=".ui.goal.activities.EditGoal"
+            android:label="Edit Goal"
+            android:parentActivityName="com.example.cs491_capstone.MainActivity"
+            android:theme="@style/GoalTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.cs491_capstone.MainActivity" />
+        </activity>
 
         <activity
             android:name=".ui.goal.EditGoal"

@@ -31,8 +31,8 @@ public class GoalsFragment extends Fragment {
 
     public static String startDate = currentPeriod.get(0).get(0);
     public static String endDate = currentPeriod.get(0).get(6);
+    private static List<Goal> goalsList = new ArrayList<>();
     private GoalImageAdapter goalAdapter;
-    private List<Goal> goalsList = new ArrayList<>();
     private boolean pageStart = true;
 
     @Nullable
@@ -40,7 +40,6 @@ public class GoalsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_goals, container, false);
     }
-
 
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
@@ -115,6 +114,9 @@ public class GoalsFragment extends Fragment {
             }
         });
     }
+
+
+
 
     @Override
     public void onResume() {
