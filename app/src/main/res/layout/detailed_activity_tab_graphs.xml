@@ -23,6 +23,7 @@
             android:layout_width="20dp"
             android:elevation="3dp"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/highlight"
             android:layout_marginStart="16dp"
             app:layout_constraintBottom_toTopOf="@+id/barchart_top"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,6 +34,7 @@
             android:id="@+id/nextarrow"
             android:layout_width="20dp"
             android:elevation="3dp"
+            android:backgroundTint="@color/highlight"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:visibility="gone"
@@ -52,6 +54,7 @@
             android:text="@string/show_today"
             android:textAllCaps="true"
             android:textStyle="bold"
+            android:textColor="@color/textcolor"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/barchart_top"
             app:layout_constraintEnd_toStartOf="@+id/nextarrow" />
@@ -60,14 +63,15 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="@string/date_placeholder"
+            android:textColor="@color/textcolor"
             android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/show_today"
             app:layout_constraintStart_toEndOf="@+id/backarrow"
-            app:layout_constraintTop_toBottomOf="@+id/graph_choice" />
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <lecho.lib.hellocharts.view.ColumnChartView
@@ -77,6 +81,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
+            android:background="@color/cardbackground"
             android:layout_weight="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -103,6 +108,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
+            android:background="@color/cardbackground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

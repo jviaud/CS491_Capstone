@@ -63,6 +63,7 @@ public class EditGoal extends AppCompatActivity implements View.OnClickListener,
     Button done;
     String selectedApp;
     private List<InstalledAppInfo> trackedApps;
+    private Goal goal;
     private boolean[] formCompletion = {false, false, false};
 
     public static boolean areAllTrue(boolean[] array) {
@@ -285,8 +286,8 @@ public class EditGoal extends AppCompatActivity implements View.OnClickListener,
 
         //POPULATE VIEWS
         Intent intent = getIntent();
-        Goal editGoal = intent.getParcelableExtra("GOAL");
-        checkCurrentGoal(editGoal);
+        goal = intent.getParcelableExtra("GOAL");
+        checkCurrentGoal(goal);
 
 
     }
@@ -477,29 +478,10 @@ public class EditGoal extends AppCompatActivity implements View.OnClickListener,
 
         }
 
-        //DUPLICATE CHECKER
-        if (goalType.equals(GoalDataBaseHelper.GOAL_APP)) {
-            if (App.goalDataBase.canInsertApp(date, goalType, selectedApp)) {
-                App.goalDataBase.insert(date, goalType, usage, unlocks, selectedApp);
-                finish();
-            } else {
-                String error = "An App Goal has already been set for " + selectedApp + " on " + date + ". Please try editing the goal instead.";
-                errorMessage.setText(error);
-                errorMessage.setVisibility(View.VISIBLE);
-            }
+        Log.i("EDIT","USAGE:"+usage+"|UNLOCK:"+unlocks);
+        App.goalDataBase.update(goal.getId(), usage, unlocks);
 
-        } else {
-            if (App.goalDataBase.canInsert(date, goalType)) {
-                App.goalDataBase.insert(date, goalType, usage, unlocks);
-                finish();
-
-            } else {
-                String error = "A Phone Goal has already been set for " + date + ". Please try editing the goal instead.";
-                errorMessage.setText(error);
-                errorMessage.setVisibility(View.VISIBLE);
-            }
-
-        }
+        finish();
     }
 
     @Override

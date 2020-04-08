@@ -23,7 +23,7 @@
 
     <!--  STYLE FOR NEW GOAL ACTIVITY  -->
     <style name="GoalTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/bottomnav</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
@@ -31,15 +31,19 @@
 
     <!--  STYLE FOR TAB LAYOUT  -->
     <style name="MineCustomTabText" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">12sp</item>
+        <item name="tabIndicatorColor">@color/highlight</item>
+        <item name="tabBackground">@color/cardbackground</item>
+        <item name="tabSelectedTextColor">@color/highlight</item>
+        <item name="background">@color/cardbackground</item>
+        <item name="tabTextColor">@color/textcolor</item>
     </style>
 
-<!--    <style name="UsageTabText" parent="TextAppearance.Design.Tab">-->
-<!--        <item name="android:textSize">14sp</item>-->
-<!--        <item name="android:textColor">#FFFFFF</item>-->
-<!--        <item name="android:textStyle">bold</item>-->
-<!--        <item name="tabSelectedTextColor">#000000</item>-->
-<!--    </style>-->
+    <style name="TabText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
     <!---->
 
 

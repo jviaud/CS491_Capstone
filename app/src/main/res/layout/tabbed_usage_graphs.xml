@@ -25,7 +25,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/cardbackground">
 
                 <TextView
                     android:id="@+id/date"
@@ -35,6 +36,7 @@
                     android:text="@string/date_placeholder"
                     android:textSize="22sp"
                     android:textStyle="bold"
+                    android:textColor="@color/textcolor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -47,6 +49,7 @@
                     android:layout_margin="8dp"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="2dp"
+                    android:background="@color/cardbackground"
                     android:layout_marginEnd="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -56,8 +59,8 @@
                     android:id="@+id/keycontainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_gravity="fill_horizontal"
+                    android:layout_marginTop="10dp"
                     android:columnCount="2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +90,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/cardbackground">
 
                 <TextView
                     android:id="@+id/listlabel"
@@ -96,6 +100,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="10dp"
                     android:text="@string/listApps"
+                    android:textColor="@color/textcolor"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -138,6 +143,7 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
+            android:textColor="@color/textcolor"
             android:text="@string/show_today"
             android:textAllCaps="true"
             android:textStyle="bold"
@@ -155,6 +161,8 @@
             android:text="@string/byCategory"
             android:textAllCaps="true"
             android:textSize="12sp"
+            android:backgroundTint="@color/highlight"
+            android:textColor="@color/textcolor_alt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/graph_card_container"
             tools:ignore="HardcodedText" />
@@ -163,9 +171,10 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/backarrow"
             android:layout_width="20dp"
-            android:elevation="3dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
+            android:elevation="3dp"
+            app:backgroundTint="@color/highlight"
             app:layout_constraintBottom_toTopOf="@+id/graph_card_container"
             app:layout_constraintStart_toStartOf="@+id/graph_card_container"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Button.Triangle.Prev" />
@@ -173,10 +182,11 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/nextarrow"
             android:layout_width="20dp"
-            android:elevation="3dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
+            android:elevation="3dp"
             android:visibility="gone"
+            app:backgroundTint="@color/highlight"
             app:layout_constraintBottom_toTopOf="@+id/graph_card_container"
             app:layout_constraintEnd_toEndOf="@+id/graph_card_container"
             app:layout_constraintTop_toTopOf="parent"

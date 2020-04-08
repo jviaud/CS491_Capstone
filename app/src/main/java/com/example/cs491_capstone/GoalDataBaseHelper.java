@@ -120,6 +120,14 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         db.insertOrThrow(TABLE_NAME, null, contentValues);
     }
 
+    public void update(String id, long usage, int unlocks) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE " + TABLE_NAME +
+                " SET " + GOAL_UNLOCKS + "=" + unlocks +
+                "," + GOAL_USAGE + "=" + usage +
+                " WHERE " + ENTRY_ID + "= \"" + id + "\"");
+    }
+
 
     /**
      * @param date
