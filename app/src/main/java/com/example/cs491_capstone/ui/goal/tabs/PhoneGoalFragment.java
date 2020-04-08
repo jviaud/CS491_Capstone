@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 import lecho.lib.hellocharts.view.PieChartView;
 
 import static com.example.cs491_capstone.App.currentPeriod;
+import static com.example.cs491_capstone.App.goalDataBase;
 import static com.example.cs491_capstone.App.week;
 
 public class PhoneGoalFragment extends Fragment {
@@ -54,8 +56,13 @@ public class PhoneGoalFragment extends Fragment {
 
     private float maxUsageValue, maxUnlockValue;
 
+    private long[][] usageStatusValues = new long[week.length][2];
+
+    private long[][] unlockStatusValues = new long[week.length][2];
+
     @Nullable
     @Override
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.goals_graph_layout, container, false);
     }
@@ -91,11 +98,46 @@ public class PhoneGoalFragment extends Fragment {
 
     }
 
+    private void setStatusChecker() {
+        boolean[][] goalStatusFailed = new boolean[7][2];
+        Log.i("VALUES", "TRIGGERED:" + usageStatusValues.length);
+        for (int i = 0; i < 7; i++) {
+            Log.i("VALUES", "USAGE:" + i + "|" + usageStatusValues[i][0] + "|" + usageStatusValues[i][1]);
+
+            if (usageStatusValues[i][0] > usageStatusValues[i][1]) {
+                String id = goalDataBase.getPhoneGoalId(currentPeriod.get(0).get(i));
+                goalDataBase.setUsageStatus(id, "1");
+                goalStatusFailed[i][0] = true;
+            }
+        }
+
+        for (int i = 0; i < 7; i++) {
+            Log.i("VALUES", "UNLOCK:" + i + "|" + unlockStatusValues[i][0] + "|" + unlockStatusValues[i][1]);
+
+            if (unlockStatusValues[i][0] > unlockStatusValues[i][1]) {
+                String id = goalDataBase.getPhoneGoalId(currentPeriod.get(0).get(i));
+                goalDataBase.setUnlockStatus(id, "1");
+                goalStatusFailed[i][1] = true;
+            }
+        }
+
+        for (int i = 0; i < 7; i++) {
+            Log.i("VALUES", "STATUS:" + i + "|" + goalStatusFailed[i][1] + "|" + goalStatusFailed[i][0]);
+
+            if (goalStatusFailed[i][1] || goalStatusFailed[i][0]) {
+                String id = goalDataBase.getPhoneGoalId(currentPeriod.get(0).get(i));
+                Log.i("VALUES", "STATUS:" + i + "|FAILED");
+                goalDataBase.setStatus(id, "1");
+            }
+        }
+
+    }
+
     private void generateUnlockPie() {
         List<SliceValue> values = new ArrayList<>();
 
 
-        long goalValue = Long.parseLong(App.goalDataBase.get(App.DATE, GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_UNLOCKS)) / 60000;
+        long goalValue = Long.parseLong(goalDataBase.get(App.DATE, GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_UNLOCKS)) / 60000;
         long actualValue = Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.UNLOCKS_COUNT)) / 60000;
 
         float full = 100;
@@ -139,7 +181,7 @@ public class PhoneGoalFragment extends Fragment {
     private void generateUsagePie() {
         List<SliceValue> values = new ArrayList<>();
 
-        long goalValue = Long.parseLong(App.goalDataBase.get(App.DATE, GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_USAGE)) / 60000;
+        long goalValue = Long.parseLong(goalDataBase.get(App.DATE, GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_USAGE)) / 60000;
         long actualValue = Long.parseLong(App.localDatabase.getSumTotalStat(App.DATE, DatabaseHelper.USAGE_TIME)) / 60000;
 
         float full = 100;
@@ -195,15 +237,16 @@ public class PhoneGoalFragment extends Fragment {
                 setUsageViewPortWidth(usageComboChart);
 
 
-
                 ///UNLOCKS
                 unlockComboData = new ComboLineColumnChartData(generateUnlockColumnData(), generateUnlockLineData());
                 labelUnlockAxis();
                 unlockComboChart.setComboLineColumnChartData(unlockComboData);
                 setUnlockViewPortWidth(unlockComboChart);
 
+                setStatusChecker();
             }
         });
+
     }
 
     private void labelUsageAxis() {
@@ -294,17 +337,16 @@ public class PhoneGoalFragment extends Fragment {
     }
 
     private ColumnChartData generateUsageColumnData() {
-        int numColumns = week.length;
-        // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
         List<Column> columns = new ArrayList<>();
         List<SubcolumnValue> values;
         maxUsageValue = 0;
-        for (int i = 0; i < numColumns; i++) {
+        for (int i = 0; i < week.length; i++) {
 
             values = new ArrayList<>();
             for (int j = 0; j < 1; j++) {
                 long value = Long.parseLong(App.localDatabase.getSumTotalStat(currentPeriod.get(0).get(i), DatabaseHelper.USAGE_TIME)) / 60000; //Math.random() * 50 + 5;
 
+                usageStatusValues[i][0] = value;
 
 
                 if (value == 0) {
@@ -344,9 +386,11 @@ public class PhoneGoalFragment extends Fragment {
 
             List<PointValue> values = new ArrayList<>();
             for (int j = 0; j < 1; j++) {
-                long value = Long.parseLong(App.goalDataBase.get(currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_USAGE)) / 60000; //Math.random() * 50 + 5;
+                long value = Long.parseLong(goalDataBase.get(currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_USAGE)) / 60000; //Math.random() * 50 + 5;
                 PointValue pointValue;
 
+                usageStatusValues[i][1] = value;
+                //Log.i("VALUES", "SET:" + i +" | " + usageStatusValues[i][0] + "|" + usageStatusValues[i][1]);
                 if (value == 0) {
                     pointValue = new PointValue(i, 0);
                     pointValue.setLabel("n/a");
@@ -380,21 +424,22 @@ public class PhoneGoalFragment extends Fragment {
             lines.add(line);
         }
 
+        // Log.i("VALUES", "" + usageStatus.get(0)[3][0]);
         return new LineChartData(lines);
 
     }
 
     private ColumnChartData generateUnlockColumnData() {
-        int numColumns = week.length;
         List<Column> columns = new ArrayList<>();
         List<SubcolumnValue> values;
         maxUnlockValue = 0;
-        for (int i = 0; i < numColumns; i++) {
+        for (int i = 0; i < week.length; i++) {
 
             values = new ArrayList<>();
             for (int j = 0; j < 1; j++) {
                 long value = Long.parseLong(App.localDatabase.getSumTotalStat(currentPeriod.get(0).get(i), DatabaseHelper.UNLOCKS_COUNT));
 
+                unlockStatusValues[i][0] = value;
 
                 if (value == 0) {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
@@ -425,10 +470,10 @@ public class PhoneGoalFragment extends Fragment {
 
             List<PointValue> values = new ArrayList<>();
             for (int j = 0; j < 1; j++) {
-                long value = Long.parseLong(App.goalDataBase.get(currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_UNLOCKS)); //Math.random() * 50 + 5;
+                long value = Long.parseLong(goalDataBase.get(currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_UNLOCKS)); //Math.random() * 50 + 5;
                 PointValue pointValue;
 
-
+                unlockStatusValues[i][1] = value;
 
 
                 if (value == 0) {

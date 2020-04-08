@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,8 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 import lecho.lib.hellocharts.view.PieChartView;
 
+import static com.example.cs491_capstone.App.currentPeriod;
+import static com.example.cs491_capstone.App.goalDataBase;
 import static com.example.cs491_capstone.App.week;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.endDate;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.startDate;
@@ -65,6 +68,10 @@ public class AppGoalFragment extends Fragment {
     private CardView usageCard, unlockCard;
     private TextView graph_app;
     private float maxUsageValue, maxUnlockValue;
+
+    private long[][] usageStatusValues = new long[week.length][2];
+
+    private long[][] unlockStatusValues = new long[week.length][2];
 
     @Nullable
     @Override
@@ -167,6 +174,8 @@ public class AppGoalFragment extends Fragment {
                 unlockComboChart.setComboLineColumnChartData(unlockComboData);
                 setUnlockViewPortWidth(unlockComboChart);
 
+                setStatusChecker(packageName);
+
             }
         });
 
@@ -196,6 +205,7 @@ public class AppGoalFragment extends Fragment {
                 unlockComboChart.setComboLineColumnChartData(unlockComboData);
                 setUnlockViewPortWidth(unlockComboChart);
 
+
             }
         });
         adapter.imageList.clear();
@@ -211,6 +221,41 @@ public class AppGoalFragment extends Fragment {
             }
         }, 100);
 
+
+    }
+
+    private void setStatusChecker(String packageName) {
+        boolean[][] goalStatusFailed = new boolean[7][2];
+        Log.i("VALUES", "TRIGGERED:" + usageStatusValues.length);
+        for (int i = 0; i < 7; i++) {
+            Log.i("VALUES", "USAGE:" + i + "|" + usageStatusValues[i][0] + "|" + usageStatusValues[i][1]);
+
+            if (usageStatusValues[i][0] > usageStatusValues[i][1]) {
+                String id = goalDataBase.getAppGoalId(currentPeriod.get(0).get(i), packageName);
+                goalDataBase.setUsageStatus(id, "1");
+                goalStatusFailed[i][0] = true;
+            }
+        }
+
+        for (int i = 0; i < 7; i++) {
+            Log.i("VALUES", "UNLOCK:" + i + "|" + unlockStatusValues[i][0] + "|" + unlockStatusValues[i][1]);
+
+            if (unlockStatusValues[i][0] > unlockStatusValues[i][1]) {
+                String id = goalDataBase.getAppGoalId(currentPeriod.get(0).get(i), packageName);
+                goalDataBase.setUnlockStatus(id, "1");
+                goalStatusFailed[i][1] = true;
+            }
+        }
+
+        for (int i = 0; i < 7; i++) {
+            Log.i("VALUES", "STATUS:" + i + "|" + goalStatusFailed[i][1] + "|" + goalStatusFailed[i][0]);
+
+            if (goalStatusFailed[i][1] || goalStatusFailed[i][0]) {
+                String id = goalDataBase.getAppGoalId(currentPeriod.get(0).get(i), packageName);
+                Log.i("VALUES", "STATUS:" + i + "|FAILED");
+                goalDataBase.setStatus(id, "1");
+            }
+        }
 
     }
 
@@ -326,6 +371,8 @@ public class AppGoalFragment extends Fragment {
                 long val = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(0).get(i), DatabaseHelper.USAGE_TIME, packageName)) / 60000;
                 //long val = 10L;
 
+                usageStatusValues[i][0] = val;
+
                 if (val == 0) {
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
@@ -354,10 +401,7 @@ public class AppGoalFragment extends Fragment {
         }
 
 
-        ColumnChartData columnChartData = new ColumnChartData(columns);
-
-
-        return columnChartData;
+        return new ColumnChartData(columns);
     }
 
     private LineChartData generateUsageLineData(String packageName) {
@@ -368,6 +412,8 @@ public class AppGoalFragment extends Fragment {
             for (int j = 0; j < week.length; ++j) {
 
                 long val = Long.parseLong(App.goalDataBase.get(App.currentPeriod.get(0).get(j), GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_USAGE)) / 60000;
+
+                usageStatusValues[i][1] = val;
 
                 PointValue pointValue;
                 if (val == 0) {
@@ -420,7 +466,7 @@ public class AppGoalFragment extends Fragment {
             for (int j = 0; j < 1; ++j) {
                 long val = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(0).get(i), DatabaseHelper.UNLOCKS_COUNT, packageName));
                 //long val = 10L;
-
+                unlockStatusValues[i][0] = val;
                 if (val == 0) {
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
@@ -452,6 +498,8 @@ public class AppGoalFragment extends Fragment {
 
                 long val = Long.parseLong(App.goalDataBase.get(App.currentPeriod.get(0).get(j), GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_UNLOCKS));
                 PointValue pointValue;
+
+                unlockStatusValues[i][1] = val;
                 if (val == 0) {
                     pointValue = new PointValue(j, 0);
                     pointValue.setLabel("n/a");

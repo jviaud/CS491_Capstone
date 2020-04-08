@@ -1,6 +1,7 @@
 package com.example.cs491_capstone.ui.goal.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui.goal.Goal;
+import com.example.cs491_capstone.ui.goal.activities.EditGoal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,6 +159,14 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
 
         holder.unlocks.setText(String.valueOf(goal.getUnlocks()));
 
+        boolean passed = goal.isPassed();
+        holder.topPanel.setBackgroundResource(passed ? R.color.passed : R.color.failed);
+        holder.status.setText(passed ? "PASSED" : "FAILED");
+
+        holder.usageStatus.setImageResource(goal.isUsagePassed() ? R.drawable.ic_tick : R.drawable.ic_close);
+
+        holder.unlockStatus.setImageResource(goal.isUnlockPassed() ? R.drawable.ic_tick : R.drawable.ic_close);
+
 
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +181,9 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
                         switch (item.getItemId()) {
                             case R.id.edit_card:
                                 //Toast.makeText(context, "DELETE", Toast.LENGTH_SHORT).show();
-                                //TODO START EDIT ACTIVITY
+                                Intent intent = new Intent(context, EditGoal.class);
+                                intent.putExtra("GOAL", goal);
+                                context.startActivity(intent);
                                 break;
                             case R.id.delete_card:
                                 //Toast.makeText(context, "EDIT", Toast.LENGTH_SHORT).show();
@@ -203,14 +215,10 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
     }
 
     class ImageViewHolder extends RecyclerView.ViewHolder {
-        TextView id;
-        TextView date;
-        TextView appName;
-        TextView usage;
-        TextView unlocks;
-        ImageView icon;
+        TextView id, date, appName, usage, unlocks, status;
+        ImageView icon, usageStatus, unlockStatus;
         CardView card;
-        ConstraintLayout expandableLayout;
+        ConstraintLayout expandableLayout, topPanel;
         ImageView menu;
 
 
@@ -225,6 +233,10 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
             card = itemView.findViewById(R.id.card);
             expandableLayout = itemView.findViewById(R.id.expandableLayout);
             menu = itemView.findViewById(R.id.menu);
+            topPanel = itemView.findViewById(R.id.topPanel);
+            status = itemView.findViewById(R.id.status);
+            usageStatus = itemView.findViewById(R.id.usage_status);
+            unlockStatus = itemView.findViewById(R.id.unlock_status);
 
             card.setOnClickListener(new View.OnClickListener() {
                 @Override

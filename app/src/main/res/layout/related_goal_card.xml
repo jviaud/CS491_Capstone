@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
@@ -185,7 +186,7 @@
                     android:layout_height="15dp"
                     app:layout_constraintBottom_toTopOf="@+id/usage_label"
                     app:layout_constraintEnd_toEndOf="@+id/usage_label"
-                    app:layout_constraintHorizontal_bias="0.41"
+                    app:layout_constraintHorizontal_bias="0.4"
                     app:layout_constraintStart_toStartOf="@+id/usage_label"
                     app:srcCompat="@drawable/ic_tick" />
 

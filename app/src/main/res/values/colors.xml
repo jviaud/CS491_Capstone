@@ -7,6 +7,9 @@
     <color name="gold">#E4A85A</color>
     <color name="silver">#C0C0C0</color>
 
+    <color name="passed">#224770</color>
+    <color name="failed">#702222</color>
+
     <color name="maps">#ED0909</color>
     <color name="social">#0030E3</color>
     <color name="video">#00FFCE</color>
