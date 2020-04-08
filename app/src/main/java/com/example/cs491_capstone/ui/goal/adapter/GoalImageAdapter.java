@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.goal;
+package com.example.cs491_capstone.ui.goal.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,19 +22,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.goal.Goal;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.ImageViewHolder> {
-    List<ImageViewHolder> holderList;
+    public List<ImageViewHolder> holderList;
     private Context context;
     private List<Goal> goals;
     private PackageManager packageManager;
 
 
-    GoalImageAdapter(Context context, List<Goal> goals) {
+    public GoalImageAdapter(Context context, List<Goal> goals) {
         this.context = context;
         this.goals = goals;
         packageManager = context.getPackageManager();
@@ -97,7 +98,7 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         v.startAnimation(a);
     }
 
-    void collapseAll() {
+    public void collapseAll() {
         //expandableLayout
         // collapse(holder.expandableLayout);
         for (ImageViewHolder holder : holderList) {

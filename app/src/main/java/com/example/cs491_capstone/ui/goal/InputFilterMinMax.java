@@ -7,10 +7,11 @@ public class InputFilterMinMax implements InputFilter {
 
     private int min, max;
 
-    InputFilterMinMax(int min, int max) {
+    public InputFilterMinMax(int min, int max) {
         this.min = min;
         this.max = max;
     }
+
 
     public InputFilterMinMax(String min, String max) {
         this.min = Integer.parseInt(min);
@@ -23,7 +24,7 @@ public class InputFilterMinMax implements InputFilter {
             int input = Integer.parseInt(dest.toString() + source.toString());
             if (isInRange(min, max, input))
                 return null;
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException ignored) {
         }
         return "";
     }

@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.goal;
+package com.example.cs491_capstone.ui.goal.activities;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -31,6 +31,8 @@ import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.InstalledAppInfo;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.goal.InputFilterMinMax;
+import com.example.cs491_capstone.ui.goal.adapter.InstalledAppsListAdapter;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -285,7 +287,7 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         String orgDate = year + "-" + (month + 1) + "-" + dayOfMonth;
 
         DateTime dt = DateTime.parse(orgDate, DateTimeFormat.forPattern("yyyy-m-d"));
-        date = dt.toString("EEEE, MMMM dd, yyyy");
+        date = dt.toString("yyyy-mm-dd");
         dateTitle.setText(date);
 
 
@@ -361,8 +363,6 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                     formCompletion[2] = false;
                 }
                 break;
-            case View.INVISIBLE:
-                break;
         }
 
     }
@@ -379,8 +379,6 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                 if (usageCard.getVisibility() == View.GONE) {
                     formCompletion[2] = false;
                 }
-                break;
-            case View.INVISIBLE:
                 break;
         }
     }
@@ -449,5 +447,6 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                 break;
         }
     }
+
 
 }

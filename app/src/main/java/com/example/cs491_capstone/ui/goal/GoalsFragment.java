@@ -16,6 +16,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.goal.adapter.GoalImageAdapter;
+import com.example.cs491_capstone.ui.goal.tabs.AppGoalFragment;
+import com.example.cs491_capstone.ui.goal.tabs.PhoneGoalFragment;
 import com.example.cs491_capstone.ui_helpers.ViewPageAdapter;
 import com.google.android.material.tabs.TabLayout;
 
@@ -26,9 +29,9 @@ import static com.example.cs491_capstone.App.currentPeriod;
 
 public class GoalsFragment extends Fragment {
 
-    public static GoalImageAdapter goalAdapter;
-    static String startDate = currentPeriod.get(0).get(0);
-    static String endDate = currentPeriod.get(0).get(6);
+    public static String startDate = currentPeriod.get(0).get(0);
+    public static String endDate = currentPeriod.get(0).get(6);
+    private GoalImageAdapter goalAdapter;
     private List<Goal> goalsList = new ArrayList<>();
     private boolean pageStart = true;
 
