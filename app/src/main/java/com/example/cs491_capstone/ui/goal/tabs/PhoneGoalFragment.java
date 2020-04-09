@@ -13,11 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.goal.Goal;
+import com.example.cs491_capstone.ui.goal.adapter.GoalImageAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,23 +46,22 @@ import lecho.lib.hellocharts.view.PieChartView;
 import static com.example.cs491_capstone.App.currentPeriod;
 import static com.example.cs491_capstone.App.goalDataBase;
 import static com.example.cs491_capstone.App.week;
+import static com.example.cs491_capstone.ui.goal.GoalsFragment.endDate;
+import static com.example.cs491_capstone.ui.goal.GoalsFragment.startDate;
 
 public class PhoneGoalFragment extends Fragment {
+    private static List<Goal> goalsList = new ArrayList<>();
     private ComboLineColumnChartView usageComboChart;
     private ComboLineColumnChartData usageComboData;
     private PieChartView usagePie;
     private PieChartView unlockPie;
-
     private ComboLineColumnChartView unlockComboChart;
     private ComboLineColumnChartData unlockComboData;
-
     private CardView usageCard, unlockCard;
-
     private float maxUsageValue, maxUnlockValue;
-
     private long[][] usageStatusValues = new long[week.length][2];
-
     private long[][] unlockStatusValues = new long[week.length][2];
+    private GoalImageAdapter goalAdapter;
 
     @Nullable
     @Override
@@ -93,6 +96,32 @@ public class PhoneGoalFragment extends Fragment {
 
             }
 
+        });
+
+        goalsList = App.goalDataBase.getAllActiveGoals(startDate, endDate);
+
+        final RecyclerView goalsRecycler = view.findViewById(R.id.goals_list);
+
+        LinearLayoutManager layoutManagerWeek = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+
+
+        //ASSIGN EACH LAYOUT MANAGER TO ITS CORRESPONDING RECYCLER
+        goalsRecycler.setLayoutManager(layoutManagerWeek);
+        goalsRecycler.setHasFixedSize(true);
+
+        goalAdapter = new GoalImageAdapter(getContext(), goalsList);
+
+        goalsRecycler.setAdapter(goalAdapter);
+
+        //COLLAPSES THE VIEWS WHEN SCROLL IS DETECTED, PURELY AESTHETIC
+        goalsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dx > 0 | dx < 0) {
+                    goalAdapter.collapseAll();
+                }
+            }
         });
 
 
@@ -222,10 +251,14 @@ public class PhoneGoalFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        goalsList.clear();
 
+        goalsList.addAll(App.goalDataBase.getAllActiveGoals(startDate, endDate));
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
+
+
                 //PIE CHARTS
                 generateUsagePie();
                 generateUnlockPie();
@@ -246,6 +279,8 @@ public class PhoneGoalFragment extends Fragment {
                 setStatusChecker();
             }
         });
+        goalAdapter.holderList.clear();
+        goalAdapter.notifyDataSetChanged();
 
     }
 

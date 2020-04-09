@@ -9,12 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui.usage.usage_graphs.daily.DailyNotificationGraph;
 import com.example.cs491_capstone.ui.usage.usage_graphs.daily.DailyUnlocksGraph;
 import com.example.cs491_capstone.ui.usage.usage_graphs.daily.DailyUsageGraph;
+import com.example.cs491_capstone.ui_helpers.LockableViewPager;
 import com.example.cs491_capstone.ui_helpers.ViewPageAdapter;
 import com.google.android.material.tabs.TabLayout;
 
@@ -34,7 +34,7 @@ public class UsageDailyFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         TabLayout tabLayout = view.findViewById(R.id.graph_choice);
-        ViewPager viewPager = view.findViewById(R.id.graph_container);
+        LockableViewPager viewPager = view.findViewById(R.id.graph_container);
         ViewPageAdapter adapter = new ViewPageAdapter(getChildFragmentManager(), FragmentPagerAdapter.POSITION_UNCHANGED);
 
         viewPager.setAdapter(adapter);

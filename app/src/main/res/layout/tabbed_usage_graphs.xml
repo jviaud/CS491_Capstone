@@ -128,6 +128,7 @@
                         android:id="@+id/used_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:divider="@drawable/lisview_inset"
                         app:layout_constraintTop_toBottomOf="parent"
                         tools:layout_editor_absoluteX="17dp" />
                 </LinearLayout>

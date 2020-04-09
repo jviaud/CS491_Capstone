@@ -15,7 +15,7 @@
         android:layout_marginTop="16dp"
         app:tabTextAppearance="@style/TabText"/>
 
-    <androidx.viewpager.widget.ViewPager
+    <com.example.cs491_capstone.ui_helpers.LockableViewPager
         android:id="@+id/graph_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

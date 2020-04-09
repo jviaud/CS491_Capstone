@@ -27,6 +27,7 @@ import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui.goal.Goal;
+import com.example.cs491_capstone.ui.goal.adapter.GoalImageAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,10 +56,10 @@ import static com.example.cs491_capstone.ui.goal.GoalsFragment.endDate;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.startDate;
 
 public class AppGoalFragment extends Fragment {
-    static RecyclerView appsRecycler;
-    static List<Goal> goals;
+    private static RecyclerView appsRecycler;
+    private static List<Goal> goals;
     public ImageAdapter adapter;
-    String packageName;
+    private String packageName;
     private ComboLineColumnChartView usageComboChart;
     private ComboLineColumnChartData usageComboData;
     private PieChartView usagePie;
@@ -73,6 +74,10 @@ public class AppGoalFragment extends Fragment {
 
     private long[][] unlockStatusValues = new long[week.length][2];
 
+    private GoalImageAdapter goalAdapter;
+
+    private RecyclerView goalsRecycler;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -84,6 +89,8 @@ public class AppGoalFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         goals = App.goalDataBase.getUniquePackageGoals(startDate, endDate);
+
+
         appsRecycler = view.findViewById(R.id.appsWithGoals);
         usageComboChart = view.findViewById(R.id.graph);
         unlockComboChart = view.findViewById(R.id.unlock_graph);
@@ -130,6 +137,50 @@ public class AppGoalFragment extends Fragment {
         adapter = new ImageAdapter(getContext(), goals);
         appsRecycler.setAdapter(adapter);
         ///
+
+        goalsRecycler = view.findViewById(R.id.goals_list);
+
+        LinearLayoutManager layoutManagerWeek = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+
+
+        //ASSIGN EACH LAYOUT MANAGER TO ITS CORRESPONDING RECYCLER
+        goalsRecycler.setLayoutManager(layoutManagerWeek);
+        goalsRecycler.setHasFixedSize(true);
+
+        goalAdapter = new GoalImageAdapter(getContext(), goals);
+
+        goalsRecycler.setAdapter(goalAdapter);
+
+
+        goalAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                //TREATED AS INSERTED FOR SOME REASON
+                adapter.imageList.clear();
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                //ACTS NORMALLY
+                adapter.imageList.clear();
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+
+        //COLLAPSES THE VIEWS WHEN SCROLL IS DETECTED, PURELY AESTHETIC
+        goalsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dx > 0 | dx < 0) {
+                    goalAdapter.collapseAll();
+                }
+            }
+        });
 
 
         try {
@@ -208,6 +259,9 @@ public class AppGoalFragment extends Fragment {
 
             }
         });
+        goalAdapter.holderList.clear();
+        goalAdapter.notifyDataSetChanged();
+
         adapter.imageList.clear();
         adapter.notifyDataSetChanged();
 
@@ -221,7 +275,7 @@ public class AppGoalFragment extends Fragment {
             }
         }, 100);
 
-
+        goalsRecycler.requestLayout();
     }
 
     private void setStatusChecker(String packageName) {
@@ -377,7 +431,7 @@ public class AppGoalFragment extends Fragment {
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
                 } else {
-                    SubcolumnValue subcolumnValue = new SubcolumnValue(val, Color.LTGRAY );
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(val, Color.LTGRAY);
 
                     int hours = (int) (val / (60) % 24);
                     int minutes = (int) (val % 60);
@@ -471,7 +525,7 @@ public class AppGoalFragment extends Fragment {
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
                 } else {
-                    values.add(new SubcolumnValue(val, Color.LTGRAY ));
+                    values.add(new SubcolumnValue(val, Color.LTGRAY));
                 }
 
                 if (maxUsageValue < val) {

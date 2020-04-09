@@ -53,6 +53,7 @@ public class LockableViewPager extends ViewPager {
     }
 
 
+
     /*
      * Override the Scroller instance with our own class so we can change the
      * duration
