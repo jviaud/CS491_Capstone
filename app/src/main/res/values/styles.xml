@@ -19,13 +19,42 @@
         <item name="android:textColorHint">#E8E8E8</item>
         <item name="devidercolor">#D6D6D6</item>
         <item name="launcher_background">#23DBDC</item>
+        <item name="android:ambientShadowAlpha">.4</item>
+        <item name="android:spotShadowAlpha">.4</item>
+        <item name="android:popupMenuStyle">@style/MyApp.PopupMenu</item>
+        <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme</item>
+        <item name="android:textColor">@color/textcolor_alt</item>
     </style>
+    <!-- Base application theme. -->
+
+
+    <!--  STYLE FOR POPUP MENU  -->
+    <style name="itemTextStyle.AppTheme" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">@color/textcolor</item>
+    </style>
+
+    <style name="MyApp.PopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@color/cardbackground</item>
+    </style>
+    <!--  STYLE FOR POPUP MENU  -->
+
+    <!--    PREFERENCE SETTING FRAGMENT-->
+    <style name="SettingsFragmentStyle" parent="PreferenceFragment">
+        <item name="android:textColor">@color/textcolor</item>
+        <item name="android:textColorSecondary">#CAFFFFFF</item>
+        <item name="colorPrimaryDark">@color/productivity</item>
+        <item name="colorAccent">@color/highlight</item>
+    </style>
+    <!--    -->
+
 
     <!--  STYLE FOR NEW GOAL ACTIVITY  -->
     <style name="GoalTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/bottomnav</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:popupMenuStyle">@style/MyApp.PopupMenu</item>
+        <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme</item>
     </style>
     <!--    -->
 

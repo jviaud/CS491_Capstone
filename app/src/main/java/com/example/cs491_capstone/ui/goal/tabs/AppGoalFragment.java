@@ -278,8 +278,8 @@ public class AppGoalFragment extends Fragment {
 
         axisX.setName("Day of Week");
         axisY.setName("Usage vs. Goal Value (minutes)");
-        axisY.setTextColor(R.color.black);
-        axisX.setTextColor(R.color.black);
+        axisY.setTextColor(Color.WHITE);
+        axisX.setTextColor(Color.WHITE);
 
 
         List<AxisValue> axisValues = new ArrayList<>(); //THE LIST OF X-AXIS VALUES
@@ -321,8 +321,8 @@ public class AppGoalFragment extends Fragment {
 
         axisX.setName("Day of Week");
         axisY.setName("Unlocks vs. Goal Value");
-        axisY.setTextColor(R.color.black);
-        axisX.setTextColor(R.color.black);
+        axisY.setTextColor(Color.WHITE);
+        axisX.setTextColor(Color.WHITE);
         String black = "black";
 
 
@@ -377,7 +377,7 @@ public class AppGoalFragment extends Fragment {
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
                 } else {
-                    SubcolumnValue subcolumnValue = new SubcolumnValue(val, Color.DKGRAY);
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(val, Color.LTGRAY );
 
                     int hours = (int) (val / (60) % 24);
                     int minutes = (int) (val % 60);
@@ -443,7 +443,7 @@ public class AppGoalFragment extends Fragment {
             }
 
             Line line = new Line(values);
-            line.setColor(R.color.gold);
+            line.setColor(Color.CYAN);
             line.setCubic(false);
             line.setHasLabelsOnlyForSelected(true);
             line.setHasLines(false);
@@ -471,7 +471,7 @@ public class AppGoalFragment extends Fragment {
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
                 } else {
-                    values.add(new SubcolumnValue(val, Color.DKGRAY));
+                    values.add(new SubcolumnValue(val, Color.LTGRAY ));
                 }
 
                 if (maxUsageValue < val) {
@@ -516,7 +516,7 @@ public class AppGoalFragment extends Fragment {
             }
 
             Line line = new Line(values);
-            line.setColor(R.color.gold);
+            line.setColor(Color.CYAN);
             line.setCubic(false);
             line.setHasLabelsOnlyForSelected(true);
             line.setHasLines(false);
@@ -553,7 +553,7 @@ public class AppGoalFragment extends Fragment {
         }
 
 
-        SliceValue goal = new SliceValue(remaining, R.color.gold);
+        SliceValue goal = new SliceValue(remaining, Color.CYAN);
         SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
@@ -566,7 +566,7 @@ public class AppGoalFragment extends Fragment {
 
         unlockPieData.setCenterText1(formatRemaining);
         unlockPieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
-        unlockPieData.setCenterText1Color(R.color.gold);
+        unlockPieData.setCenterText1Color(Color.CYAN);
         unlockPieData.setCenterText1FontSize(25);
 
 
@@ -597,7 +597,7 @@ public class AppGoalFragment extends Fragment {
         }
 
 
-        SliceValue goal = new SliceValue(remaining, R.color.gold);
+        SliceValue goal = new SliceValue(remaining, Color.CYAN);
         SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
@@ -610,7 +610,7 @@ public class AppGoalFragment extends Fragment {
 
         usagePieData.setCenterText1(formatRemaining);
         usagePieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
-        usagePieData.setCenterText1Color(R.color.gold);
+        usagePieData.setCenterText1Color(Color.CYAN);
         usagePieData.setCenterText1FontSize(25);
 
         usagePie.setChartRotationEnabled(false);

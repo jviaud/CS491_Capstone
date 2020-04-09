@@ -7,7 +7,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/graph_choice"
-    app:cardBackgroundColor="?attr/cardbackground"
+    app:cardBackgroundColor="@color/cardbackground"
     android:elevation="6dp">
 
 

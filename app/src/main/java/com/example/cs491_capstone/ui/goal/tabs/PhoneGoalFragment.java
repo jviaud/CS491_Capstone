@@ -156,7 +156,7 @@ public class PhoneGoalFragment extends Fragment {
         }
 
 
-        SliceValue goal = new SliceValue(remaining, R.color.gold);
+        SliceValue goal = new SliceValue(remaining, Color.CYAN);
         SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
@@ -169,7 +169,7 @@ public class PhoneGoalFragment extends Fragment {
 
         unlockPieData.setCenterText1(formatRemaining);
         unlockPieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
-        unlockPieData.setCenterText1Color(R.color.gold);
+        unlockPieData.setCenterText1Color(Color.CYAN);
         unlockPieData.setCenterText1FontSize(25);
 
 
@@ -199,7 +199,7 @@ public class PhoneGoalFragment extends Fragment {
             formatRemaining = String.format(Locale.ENGLISH, "%.1f%%", remaining);
         }
 
-        SliceValue goal = new SliceValue(remaining, R.color.gold);
+        SliceValue goal = new SliceValue(remaining, Color.CYAN);
         SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
@@ -212,7 +212,7 @@ public class PhoneGoalFragment extends Fragment {
 
         usagePieData.setCenterText1(formatRemaining);
         usagePieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
-        usagePieData.setCenterText1Color(R.color.gold);
+        usagePieData.setCenterText1Color(Color.CYAN);
         usagePieData.setCenterText1FontSize(25);
 
         usagePie.setChartRotationEnabled(false);
@@ -255,8 +255,8 @@ public class PhoneGoalFragment extends Fragment {
 
         axisX.setName("Day of Week");
         axisY.setName("Usage vs. Goal Value (minutes)");
-        axisY.setTextColor(R.color.black);
-        axisX.setTextColor(R.color.black);
+        axisY.setTextColor(Color.WHITE);
+        axisX.setTextColor(Color.WHITE);
 
 
         List<AxisValue> axisValues = new ArrayList<>(); //THE LIST OF X-AXIS VALUES
@@ -298,8 +298,8 @@ public class PhoneGoalFragment extends Fragment {
 
         axisX.setName("Day of Week");
         axisY.setName("Unlocks vs. Goal Value");
-        axisY.setTextColor(R.color.black);
-        axisX.setTextColor(R.color.black);
+        axisY.setTextColor(Color.WHITE);
+        axisX.setTextColor(Color.WHITE);
         String black = "black";
 
 
@@ -353,7 +353,7 @@ public class PhoneGoalFragment extends Fragment {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     break;
                 } else {
-                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.DKGRAY);
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.LTGRAY);
 
                     int hours = (int) (value / (60) % 24);
                     int minutes = (int) (value % 60);
@@ -418,7 +418,7 @@ public class PhoneGoalFragment extends Fragment {
             }
 
             Line line = new Line(values).setHasLabelsOnlyForSelected(true);
-            line.setColor(R.color.gold);
+            line.setColor(Color.CYAN);
             line.setHasLines(false);
             line.setHasPoints(true);
             lines.add(line);
@@ -445,7 +445,7 @@ public class PhoneGoalFragment extends Fragment {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     break;
                 } else {
-                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, R.color.gold);
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.CYAN);
 
                     subcolumnValue.setLabel(String.valueOf(value));
 
@@ -494,7 +494,7 @@ public class PhoneGoalFragment extends Fragment {
             }
 
             Line line = new Line(values).setHasLabelsOnlyForSelected(true);
-            line.setColor(R.color.gold);
+            line.setColor(Color.CYAN);
             line.setHasLines(false);
             line.setHasPoints(true);
             lines.add(line);

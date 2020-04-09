@@ -75,7 +75,6 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         userInfo = localDatabase.topAppsUsedToday(App.DATE);
 
 
@@ -142,6 +141,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onResume() {
+        getContext().getTheme().applyStyle(R.style.AppTheme, true);
         super.onResume();
         parentalControls = preferences.getBoolean("parental_controls", false);
 

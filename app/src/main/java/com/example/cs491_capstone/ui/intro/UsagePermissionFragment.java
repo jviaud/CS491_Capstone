@@ -47,10 +47,9 @@ public class UsagePermissionFragment extends Fragment {
         permissionView.setText(permissionText);
 
         TextView descriptionView = view.findViewById(R.id.description);
-        String descriptionText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et " +
-                "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea " +
-                "commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla " +
-                "pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+        String descriptionText = "Usage Stats Manager allows our app to poll the system for apps that are being used." +
+                "When polled our app will be able to see what apps were used in a specific time frame. " +
+                "No other information is collected ";
         descriptionView.setText(descriptionText);
 
         animationView = view.findViewById(R.id.animation_view);
@@ -78,7 +77,7 @@ public class UsagePermissionFragment extends Fragment {
           THIS USAGE_TIME MAP IS SOLELY TO TEST FOR THE USAGE_TIME PERMISSION
           IF THE PERMISSION ISN'T GRANTED THEN THIS MAP WILL BE NULL OTHERWISE IT WILL CONTAIN USAGE_TIME STATISTICS
          */
-        Map<String, UsageStats> quick_usage = usm.queryAndAggregateUsageStats(System.currentTimeMillis() - 1000, System.currentTimeMillis());
+        Map<String, UsageStats> quick_usage = usm.queryAndAggregateUsageStats(System.currentTimeMillis() - 100000, System.currentTimeMillis());
 
         //App.PACKAGE_NAME REFERS TO THIS APP SO THIS IS ESSENTIALLY A SELF CHECK
         //App.PACKAGE_NAME

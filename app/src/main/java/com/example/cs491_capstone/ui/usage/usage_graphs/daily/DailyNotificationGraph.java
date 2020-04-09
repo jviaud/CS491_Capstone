@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -251,18 +253,24 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
             //TODO ADD KEY FOR DAY HERE
             ArrayList<String> categories = localDatabase.categoryUsed(date, DatabaseHelper.NOTIFICATIONS_COUNT);
 
-            for (String category : categories) {
-                long val = Long.parseLong(localDatabase.getSumTotalStatByCategory(date, DatabaseHelper.NOTIFICATIONS_COUNT, category));
+            for (final String category : categories) {
+                final long val = Long.parseLong(localDatabase.getSumTotalStatByCategory(date, DatabaseHelper.NOTIFICATIONS_COUNT, category));
 
 
-                TextView key = new TextView(getContext());
-                GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-                lp.setMargins(15, 15, 15, 15);
-                key.setLayoutParams(lp);
-                key.setText(category + " " + val);
-                key.setTextSize(15);
-                //  key.setTextColor(categoryKey[j]);
-                keyContainer.addView(key);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Log.d("UI thread", "I am the UI thread");
+
+                        TextView key = new TextView(getContext());
+                        GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+                        lp.setMargins(15, 15, 15, 15);
+                        key.setLayoutParams(lp);
+                        key.setText(category + " " + val);
+                        key.setTextSize(15);
+                        keyContainer.addView(key);
+                    }
+                });
             }
 
         } else {

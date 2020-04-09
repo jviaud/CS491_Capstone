@@ -8,6 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/backgroundcolor"
         android:orientation="vertical">
 
         <LinearLayout
@@ -53,7 +54,7 @@
                 app:tabPaddingStart="16dp"
                 app:tabRippleColor="@null"
                 app:tabSelectedTextColor="@color/colorPrimaryDark"
-                app:tabTextColor="?attr/textcolor" />
+                app:tabTextColor="@color/textcolor" />
         </FrameLayout>
 
 

@@ -123,7 +123,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        getContext().getTheme().applyStyle(R.style.SettingsFragmentStyle, true);
         setPreferencesFromResource(R.xml.settings, rootKey);
+        // fragment.getRootView().setBackgroundColor(Color.WHITE);
+
+        //getActivity().setTheme(R.style.AppTheme);
 
         //Initialise the size of the database
         dbSize = localDatabase.getRowCount();
@@ -135,7 +139,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         //WE CREATE A COPY OF THE LIST IN CASE THE USER DECIDES TO CANCEL MIDWAY WE WANT TO BE ABLE TO REVERT THE CHANGES
         COPY_OF_LIST = new ArrayList<>();
-        FLAGGED_APPS =new ArrayList<>();
+        FLAGGED_APPS = new ArrayList<>();
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -298,13 +302,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             public void onClick(DialogInterface dialog, int id) {
                                 //TODO IF USER CLICKS OKAY THEN WE SAVE THE CHANGES TO THE HASHMAP, WE THEN TAKE THE KEYS AND VALUES
                                 // AND STORE THEM AS HASH SETS INTO SHARED PREFERENCES
-                                Log.d("clicked","clicked");
+                                Log.d("clicked", "clicked");
 
                                 FLAGGED_APPS = new ArrayList<>();
-                                for(InstalledAppInfo i: ALL_APPS_LIST)
-                                {
-                                    for(Map.Entry mapElement: appsAndTimes.entrySet())
-                                        if(i.getSimpleName().equals(mapElement.getKey()))
+                                for (InstalledAppInfo i : ALL_APPS_LIST) {
+                                    for (Map.Entry mapElement : appsAndTimes.entrySet())
+                                        if (i.getSimpleName().equals(mapElement.getKey()))
                                             FLAGGED_APPS.add(i);
                                 }
                                 appLimitListAdapter2 = new AppLimitListAdapter2(getContext(), FLAGGED_APPS);
@@ -318,8 +321,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                                 Set<String> flaggedAppsSet = new HashSet<String>();
 
-                                for(InstalledAppInfo i: FLAGGED_APPS)
-                                {
+                                for (InstalledAppInfo i : FLAGGED_APPS) {
                                     flaggedAppsSet.add(i.getSimpleName());
                                 }
                                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -344,10 +346,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 return true;
             }
+
             //because android does not accept hashmaps to shared preferences, use this method to convert hashmap to string
-            private void saveMap(Map<String,String> inputMap){
+            private void saveMap(Map<String, String> inputMap) {
                 SharedPreferences pSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-                if (pSharedPref != null){
+                if (pSharedPref != null) {
                     JSONObject jsonObject = new JSONObject(inputMap);
                     String jsonString = jsonObject.toString();
                     SharedPreferences.Editor editor = pSharedPref.edit();
@@ -365,9 +368,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
                 Set<String> flagged_apps_set = prefs.getStringSet("flagged_apps_set", new HashSet<String>());
-                FLAGGED_APPS = new ArrayList<InstalledAppInfo>();
-                for(InstalledAppInfo i: ALL_APPS_LIST)
-                {
+                FLAGGED_APPS = new ArrayList<>();
+                for (InstalledAppInfo i : ALL_APPS_LIST) {
                     if (flagged_apps_set.contains(i.getSimpleName()))
                         FLAGGED_APPS.add(i);
                 }
@@ -381,17 +383,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 listView.setAdapter(appLimitListAdapter2);
 
 
-
-
-
                 builder.setView(view)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
                                 //TODO IF USER CLICKS OKAY THEN WE SAVE THE CHANGES TO THE HASHMAP, WE THEN TAKE THE KEYS AND VALUES
                                 // AND STORE THEM AS HASH SETS INTO SHARED PREFERENCES
-                                Log.d("clicked","clicked");
-
+                                Log.d("clicked", "clicked");
 
 
                                 saveMap(appsAndTimes);
@@ -412,10 +410,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
 
             }
+
             //because android does not accept hashmaps to shared preferences, use this method to convert hashmap to string
-            private void saveMap(Map<String,String> inputMap){
+            private void saveMap(Map<String, String> inputMap) {
                 SharedPreferences pSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-                if (pSharedPref != null){
+                if (pSharedPref != null) {
                     JSONObject jsonObject = new JSONObject(inputMap);
                     String jsonString = jsonObject.toString();
                     SharedPreferences.Editor editor = pSharedPref.edit();
@@ -478,6 +477,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        this.getView().setBackgroundColor(getResources().getColor(R.color.backgroundcolor, null));
     }
 
     /**
@@ -1034,7 +1039,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                     //TODO STORE TIME LEFT IN A HASHMAP ALONG WITH installedAppInfoList.get(position)
                                     // KEY IS installedAppInfoList.get(position), TIME IS VALUE
                                     String time = "";
-                                    time = Integer.toString(hour.getValue()) + " hours. " + Integer.toString(minutes.getValue()) + " minutes.";
+                                    time = hour.getValue() + " hours. " + minutes.getValue() + " minutes.";
                                     Log.d("saving time:", time);
                                     appsAndTimes.put(installedAppInfoList.get(position).getSimpleName(), time);
 
@@ -1052,6 +1057,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
     }
+
     private class AppLimitListAdapter2 extends BaseAdapter {
         private LayoutInflater inflater;
         private List<InstalledAppInfo> installedAppInfoList;
