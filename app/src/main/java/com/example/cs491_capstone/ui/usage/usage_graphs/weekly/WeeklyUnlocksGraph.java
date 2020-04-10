@@ -289,7 +289,7 @@ public class WeeklyUnlocksGraph extends Fragment implements View.OnClickListener
                         values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                         break;
                     } else {
-                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.RED);
+                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.CYAN);
                         values.add(subcolumnValue);
                     }
 
@@ -330,7 +330,7 @@ public class WeeklyUnlocksGraph extends Fragment implements View.OnClickListener
         Axis axisX = new Axis(xAxisValues)
                 .setName("Days of the Week") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -338,7 +338,7 @@ public class WeeklyUnlocksGraph extends Fragment implements View.OnClickListener
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 ;
 
 
@@ -479,15 +479,12 @@ public class WeeklyUnlocksGraph extends Fragment implements View.OnClickListener
         public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
 
 
-            String hour = String.valueOf(columnIndex);
-
-            usedList = localDatabase.appsUsed(graphDate, hour, DatabaseHelper.UNLOCKS_COUNT);
+            usedList = localDatabase.appsUsed(App.currentPeriod.get(Week).get(columnIndex), DatabaseHelper.UNLOCKS_COUNT);
 
 
             listAdapter = new UsageListViewAdapter(getContext(), usedList);
             listAdapter.setByCategory(byCategory);
-            listAdapter.setDay(graphDate);
-            listAdapter.setHour(hour);
+            listAdapter.setDay(App.currentPeriod.get(Week).get(columnIndex));
             listAdapter.setColumn(DatabaseHelper.UNLOCKS_COUNT);
             listView.setAdapter(listAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

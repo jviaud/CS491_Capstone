@@ -325,7 +325,7 @@ public class WeeklyNotificationGraph extends Fragment implements View.OnClickLis
         Axis axisX = new Axis(xAxisValues)
                 .setName("Days of the Week") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -333,7 +333,7 @@ public class WeeklyNotificationGraph extends Fragment implements View.OnClickLis
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 ;
 
 
@@ -474,14 +474,12 @@ public class WeeklyNotificationGraph extends Fragment implements View.OnClickLis
         public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
 
 
-            String hour = String.valueOf(columnIndex);
-            usedList = localDatabase.appsUsed(graphDate, hour, DatabaseHelper.NOTIFICATIONS_COUNT);
+            usedList = localDatabase.appsUsed(App.currentPeriod.get(Week).get(columnIndex), DatabaseHelper.NOTIFICATIONS_COUNT);
 
 
             listAdapter = new UsageListViewAdapter(getContext(), usedList);
             listAdapter.setByCategory(byCategory);
-            listAdapter.setDay(graphDate);
-            listAdapter.setHour(hour);
+            listAdapter.setDay(App.currentPeriod.get(Week).get(columnIndex));
             listAdapter.setColumn(DatabaseHelper.NOTIFICATIONS_COUNT);
             listView.setAdapter(listAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
