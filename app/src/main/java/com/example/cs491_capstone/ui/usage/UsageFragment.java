@@ -103,7 +103,6 @@ public class UsageFragment extends Fragment {
             weeksSingleFormat.addAll(App.currentPeriod.get(i));
         }
 
-
     }
 
 
