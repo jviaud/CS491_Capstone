@@ -119,7 +119,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      */
     private List<InstalledAppInfo> COPY_OF_LIST;
     private List<InstalledAppInfo> FLAGGED_APPS;
-    private HashMap<String, String> appsAndTimes = new HashMap<String, String>();
+    private HashMap<String, Long> appsAndTimes = new HashMap<String, Long>();
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -307,7 +307,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                 FLAGGED_APPS = new ArrayList<>();
                                 for (InstalledAppInfo i : ALL_APPS_LIST) {
                                     for (Map.Entry mapElement : appsAndTimes.entrySet())
-                                        if (i.getSimpleName().equals(mapElement.getKey()))
+                                        if (i.getPackageName().equals(mapElement.getKey()))
                                             FLAGGED_APPS.add(i);
                                 }
                                 appLimitListAdapter2 = new AppLimitListAdapter2(getContext(), FLAGGED_APPS);
@@ -322,7 +322,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                 Set<String> flaggedAppsSet = new HashSet<String>();
 
                                 for (InstalledAppInfo i : FLAGGED_APPS) {
-                                    flaggedAppsSet.add(i.getSimpleName());
+                                    flaggedAppsSet.add(i.getPackageName());
                                 }
                                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                                 SharedPreferences.Editor editor = prefs.edit();
@@ -348,7 +348,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
 
             //because android does not accept hashmaps to shared preferences, use this method to convert hashmap to string
-            private void saveMap(Map<String, String> inputMap) {
+            private void saveMap(Map<String, Long> inputMap) {
                 SharedPreferences pSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
                 if (pSharedPref != null) {
                     JSONObject jsonObject = new JSONObject(inputMap);
@@ -370,7 +370,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 Set<String> flagged_apps_set = prefs.getStringSet("flagged_apps_set", new HashSet<String>());
                 FLAGGED_APPS = new ArrayList<>();
                 for (InstalledAppInfo i : ALL_APPS_LIST) {
-                    if (flagged_apps_set.contains(i.getSimpleName()))
+                    if (flagged_apps_set.contains(i.getPackageName()))
                         FLAGGED_APPS.add(i);
                 }
                 appLimitListAdapter2 = new AppLimitListAdapter2(getContext(), FLAGGED_APPS);
@@ -412,7 +412,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
 
             //because android does not accept hashmaps to shared preferences, use this method to convert hashmap to string
-            private void saveMap(Map<String, String> inputMap) {
+            private void saveMap(Map<String, Long> inputMap) {
                 SharedPreferences pSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
                 if (pSharedPref != null) {
                     JSONObject jsonObject = new JSONObject(inputMap);
@@ -1038,10 +1038,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                     // timeLeft = (hour.getValue() * 3600000) + (minutes.getValue() * 60000);
                                     //TODO STORE TIME LEFT IN A HASHMAP ALONG WITH installedAppInfoList.get(position)
                                     // KEY IS installedAppInfoList.get(position), TIME IS VALUE
-                                    String time = "";
-                                    time = hour.getValue() + " hours. " + minutes.getValue() + " minutes.";
-                                    Log.d("saving time:", time);
-                                    appsAndTimes.put(installedAppInfoList.get(position).getSimpleName(), time);
+                                    long time = 0;
+                                    time = (hour.getValue() * 3600000l)  + (minutes.getValue() * 60000);
+
+                                    appsAndTimes.put(installedAppInfoList.get(position).getPackageName(), time);
+                                    installedAppInfoList.get(position).setTimeLimitMilliseconds(time);
 
 
                                 }
@@ -1102,7 +1103,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
 
             listHolder.icon.setImageDrawable(installedAppInfoList.get(position).getIcon());
-            listHolder.name.setText(installedAppInfoList.get(position).getSimpleName());
+            listHolder.name.setText(installedAppInfoList.get(position).getSimpleName() + " - " + installedAppInfoList.get(position).getTimeLimitString());
             return convertView;
         }
 
