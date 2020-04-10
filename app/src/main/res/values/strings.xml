@@ -28,5 +28,6 @@
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="show_all">Show All</string>
+    <string name="grant">GRANT</string>
 
 </resources>

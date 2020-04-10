@@ -238,7 +238,8 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
     public String getPhoneGoalId(String date) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT " + ENTRY_ID + " FROM " + TABLE_NAME +
-                " WHERE " + GOAL_DATE + " = \"" + date + "\"", null);
+                " WHERE " + GOAL_DATE + " = \"" + date + "\""
+                + " AND GOAL_TYPE = 'GOAL_PHONE'", null);
 
 
         StringBuilder buffer = new StringBuilder();
@@ -335,6 +336,9 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         res.close();
 
         String result = buffer.toString();
+        /*
+        Return true if 0, false if 1
+         */
         return result.equals("0");
     }
 
@@ -373,7 +377,8 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME +
                 " WHERE " + GOAL_DATE + ">= date(\"" + startDate + "\")" +
                 " AND " + GOAL_DATE + "<= date(\"" + endDate + "\")"
-                + " AND GOAL_TYPE = \"GOAL_PHONE\" ", null);
+                + " AND GOAL_TYPE = \"GOAL_PHONE\" "
+                + " ORDER BY date(GOAL_DATE) ASC", null);
 
         //READ LINES FROM CURSOR INTO BUFFER
         while (res.moveToNext()) {
@@ -400,7 +405,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
                 " AND " + GOAL_DATE + "<= date(\"" + endDate + "\")"
                 + " AND GOAL_TYPE = \"GOAL_APP\" "
                 + " GROUP BY PACKAGE_NAME"
-                + " ORDER BY ENTRY_ID ASC", null);
+                + " ORDER BY date(GOAL_DATE) ASC", null);
 
         //READ LINES FROM CURSOR INTO BUFFER
         while (res.moveToNext()) {
@@ -424,7 +429,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         //
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME +
                 " WHERE " + PACKAGE_NAME + "= \"" + name + "\""
-                + " ORDER BY GOAL_DATE ASC", null);
+                + " ORDER BY date(GOAL_DATE) ASC", null);
 
         //READ LINES FROM CURSOR INTO BUFFER
         while (res.moveToNext()) {
@@ -448,7 +453,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         //
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME +
                 " WHERE " + GOAL_TYPE + "= \"" + GOAL_PHONE + "\""
-                + " ORDER BY GOAL_DATE ASC", null);
+                + " ORDER BY date(GOAL_DATE) ASC", null);
 
         //READ LINES FROM CURSOR INTO BUFFER
         while (res.moveToNext()) {

@@ -286,9 +286,12 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         String orgDate = year + "-" + (month + 1) + "-" + dayOfMonth;
 
-        DateTime dt = DateTime.parse(orgDate, DateTimeFormat.forPattern("yyyy-m-d"));
-        date = dt.toString("yyyy-mm-dd");
-        dateTitle.setText(date);
+        DateTime dt = DateTime.parse(orgDate, DateTimeFormat.forPattern("yyyy-M-d"));
+
+        date = dt.toString("yyyy-MM-dd");
+
+
+        dateTitle.setText(dt.toString("EEEE, MMMM dd, yyyy"));
 
 
         formCompletion[0] = true;

@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,38 +127,12 @@ public class PhoneGoalFragment extends Fragment {
     }
 
     private void setStatusChecker() {
-        boolean[][] goalStatusFailed = new boolean[7][2];
-        Log.i("VALUES", "TRIGGERED:" + usageStatusValues.length);
-        for (int i = 0; i < 7; i++) {
-            Log.i("VALUES", "USAGE:" + i + "|" + usageStatusValues[i][0] + "|" + usageStatusValues[i][1]);
-
-            if (usageStatusValues[i][0] > usageStatusValues[i][1]) {
-                String id = goalDataBase.getPhoneGoalId(currentPeriod.get(0).get(i));
-                goalDataBase.setUsageStatus(id, "1");
-                goalStatusFailed[i][0] = true;
-            }
+        String id = goalDataBase.getPhoneGoalId(App.DATE);
+        if ((!goalDataBase.getUsageStatus(id) | !goalDataBase.getUnlockStatus(id))) {
+            goalDataBase.setStatus(id, "1");
         }
 
-        for (int i = 0; i < 7; i++) {
-            Log.i("VALUES", "UNLOCK:" + i + "|" + unlockStatusValues[i][0] + "|" + unlockStatusValues[i][1]);
-
-            if (unlockStatusValues[i][0] > unlockStatusValues[i][1]) {
-                String id = goalDataBase.getPhoneGoalId(currentPeriod.get(0).get(i));
-                goalDataBase.setUnlockStatus(id, "1");
-                goalStatusFailed[i][1] = true;
-            }
-        }
-
-        for (int i = 0; i < 7; i++) {
-            Log.i("VALUES", "STATUS:" + i + "|" + goalStatusFailed[i][1] + "|" + goalStatusFailed[i][0]);
-
-            if (goalStatusFailed[i][1] || goalStatusFailed[i][0]) {
-                String id = goalDataBase.getPhoneGoalId(currentPeriod.get(0).get(i));
-                Log.i("VALUES", "STATUS:" + i + "|FAILED");
-                goalDataBase.setStatus(id, "1");
-            }
-        }
-
+        goalsList.addAll(App.goalDataBase.getAllActiveGoals(startDate, endDate));
     }
 
     private void generateUnlockPie() {
@@ -176,6 +149,9 @@ public class PhoneGoalFragment extends Fragment {
         if (actualValue > goalValue & goalValue > 0) {
             formatRemaining = "100%";
 
+            String id = goalDataBase.getPhoneGoalId(App.DATE);
+            goalDataBase.setUnlockStatus(id, "1");
+
         } else if (goalValue == 0) {
             formatRemaining = "~%";
         } else {
@@ -183,7 +159,6 @@ public class PhoneGoalFragment extends Fragment {
             full = 100 - remaining;
             formatRemaining = String.format(Locale.ENGLISH, "%.1f%%", remaining);
         }
-
 
         SliceValue goal = new SliceValue(remaining, Color.CYAN);
         SliceValue actual = new SliceValue(full, Color.LTGRAY);
@@ -199,7 +174,7 @@ public class PhoneGoalFragment extends Fragment {
         unlockPieData.setCenterText1(formatRemaining);
         unlockPieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
         unlockPieData.setCenterText1Color(Color.CYAN);
-        unlockPieData.setCenterText1FontSize(25);
+        unlockPieData.setCenterText1FontSize(20);
 
 
         unlockPie.setChartRotationEnabled(false);
@@ -219,6 +194,9 @@ public class PhoneGoalFragment extends Fragment {
 
         if (actualValue > goalValue & goalValue > 0) {
             formatRemaining = "100%";
+
+            String id = goalDataBase.getPhoneGoalId(App.DATE);
+            goalDataBase.setUsageStatus(id, "1");
 
         } else if (goalValue == 0) {
             formatRemaining = "~%";
@@ -242,7 +220,7 @@ public class PhoneGoalFragment extends Fragment {
         usagePieData.setCenterText1(formatRemaining);
         usagePieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
         usagePieData.setCenterText1Color(Color.CYAN);
-        usagePieData.setCenterText1FontSize(25);
+        usagePieData.setCenterText1FontSize(20);
 
         usagePie.setChartRotationEnabled(false);
         usagePie.setPieChartData(usagePieData);
@@ -252,8 +230,6 @@ public class PhoneGoalFragment extends Fragment {
     public void onResume() {
         super.onResume();
         goalsList.clear();
-
-        goalsList.addAll(App.goalDataBase.getAllActiveGoals(startDate, endDate));
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -276,9 +252,10 @@ public class PhoneGoalFragment extends Fragment {
                 unlockComboChart.setComboLineColumnChartData(unlockComboData);
                 setUnlockViewPortWidth(unlockComboChart);
 
-                setStatusChecker();
+
             }
         });
+        setStatusChecker();
         goalAdapter.holderList.clear();
         goalAdapter.notifyDataSetChanged();
 
@@ -335,7 +312,6 @@ public class PhoneGoalFragment extends Fragment {
         axisY.setName("Unlocks vs. Goal Value");
         axisY.setTextColor(Color.WHITE);
         axisX.setTextColor(Color.WHITE);
-        String black = "black";
 
 
         List<AxisValue> axisValues = new ArrayList<>(); //THE LIST OF X-AXIS VALUES
@@ -425,7 +401,6 @@ public class PhoneGoalFragment extends Fragment {
                 PointValue pointValue;
 
                 usageStatusValues[i][1] = value;
-                //Log.i("VALUES", "SET:" + i +" | " + usageStatusValues[i][0] + "|" + usageStatusValues[i][1]);
                 if (value == 0) {
                     pointValue = new PointValue(i, 0);
                     pointValue.setLabel("n/a");
@@ -459,7 +434,7 @@ public class PhoneGoalFragment extends Fragment {
             lines.add(line);
         }
 
-        // Log.i("VALUES", "" + usageStatus.get(0)[3][0]);
+
         return new LineChartData(lines);
 
     }

@@ -269,7 +269,7 @@ public class App extends Application {
 
     public static String dateFormater(String date, String newDate) {
 
-        DateTime dt = DateTime.parse(date, DateTimeFormat.forPattern("yyyy-mm-dd"));
+        DateTime dt = DateTime.parse(date, DateTimeFormat.forPattern("yyyy-MM-dd"));
         return dt.toString(newDate);
     }
 

@@ -168,6 +168,9 @@ public class HomeFragment extends Fragment {
         }
 
         setPercentDelta();
+
+
+
     }
 
     private void setPercentDelta() {

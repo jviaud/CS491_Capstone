@@ -49,7 +49,6 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 import lecho.lib.hellocharts.view.PieChartView;
 
-import static com.example.cs491_capstone.App.currentPeriod;
 import static com.example.cs491_capstone.App.goalDataBase;
 import static com.example.cs491_capstone.App.week;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.endDate;
@@ -89,7 +88,6 @@ public class AppGoalFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         goals = App.goalDataBase.getUniquePackageGoals(startDate, endDate);
-
 
         appsRecycler = view.findViewById(R.id.appsWithGoals);
         usageComboChart = view.findViewById(R.id.graph);
@@ -162,6 +160,14 @@ public class AppGoalFragment extends Fragment {
             }
 
             @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                //TREATED AS INSERTED FOR SOME REASON
+                adapter.imageList.clear();
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 super.onItemRangeRemoved(positionStart, itemCount);
                 //ACTS NORMALLY
@@ -224,9 +230,6 @@ public class AppGoalFragment extends Fragment {
                 labelUnlockAxis();
                 unlockComboChart.setComboLineColumnChartData(unlockComboData);
                 setUnlockViewPortWidth(unlockComboChart);
-
-                setStatusChecker(packageName);
-
             }
         });
 
@@ -259,6 +262,7 @@ public class AppGoalFragment extends Fragment {
 
             }
         });
+        setStatusChecker();
         goalAdapter.holderList.clear();
         goalAdapter.notifyDataSetChanged();
 
@@ -269,44 +273,39 @@ public class AppGoalFragment extends Fragment {
             @Override
             public void run() {
                 try {
-                    appsRecycler.findViewHolderForAdapterPosition(0).itemView.performClick();
+                    appsRecycler.findViewHolderForAdapterPosition(0).itemView.callOnClick();
                 } catch (NullPointerException ignored) {
                 }
             }
         }, 100);
-
-        goalsRecycler.requestLayout();
     }
 
-    private void setStatusChecker(String packageName) {
-        boolean[][] goalStatusFailed = new boolean[7][2];
-        Log.i("VALUES", "TRIGGERED:" + usageStatusValues.length);
-        for (int i = 0; i < 7; i++) {
-            Log.i("VALUES", "USAGE:" + i + "|" + usageStatusValues[i][0] + "|" + usageStatusValues[i][1]);
+    private void setStatusChecker() {
+        Log.i("VALUES", "APP SIZE:" + goals.size());
 
-            if (usageStatusValues[i][0] > usageStatusValues[i][1]) {
-                String id = goalDataBase.getAppGoalId(currentPeriod.get(0).get(i), packageName);
+        for (Goal goal : goals) {
+            String packageName = goal.getPackageName();
+            String id = goalDataBase.getAppGoalId(App.DATE, packageName);
+            Log.i("VALUES", "NAME:" + packageName + " | ID:" + id);
+
+            float usageActual = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.DATE, DatabaseHelper.USAGE_TIME, packageName));
+            float usageGoal = Long.parseLong(App.goalDataBase.get(App.DATE, GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_USAGE));
+            Log.i("VALUES", "usageAct:" + usageActual + " | usageGoal:" + usageGoal);
+            if (usageActual > usageGoal & usageGoal > 0) {
                 goalDataBase.setUsageStatus(id, "1");
-                goalStatusFailed[i][0] = true;
+                Log.i("VALUES", "APP USAGE:" + packageName + "|FAILED|" + id);
             }
-        }
 
-        for (int i = 0; i < 7; i++) {
-            Log.i("VALUES", "UNLOCK:" + i + "|" + unlockStatusValues[i][0] + "|" + unlockStatusValues[i][1]);
-
-            if (unlockStatusValues[i][0] > unlockStatusValues[i][1]) {
-                String id = goalDataBase.getAppGoalId(currentPeriod.get(0).get(i), packageName);
+            float unlockActual = Long.parseLong(App.goalDataBase.get(App.DATE, GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_UNLOCKS));
+            float unlockGoal = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.DATE, DatabaseHelper.UNLOCKS_COUNT, packageName));
+            if (unlockActual > unlockGoal & unlockGoal > 0) {
                 goalDataBase.setUnlockStatus(id, "1");
-                goalStatusFailed[i][1] = true;
+                Log.i("VALUES", "APP UNLOCK:" + packageName + "|FAILED|" + id);
             }
-        }
 
-        for (int i = 0; i < 7; i++) {
-            Log.i("VALUES", "STATUS:" + i + "|" + goalStatusFailed[i][1] + "|" + goalStatusFailed[i][0]);
 
-            if (goalStatusFailed[i][1] || goalStatusFailed[i][0]) {
-                String id = goalDataBase.getAppGoalId(currentPeriod.get(0).get(i), packageName);
-                Log.i("VALUES", "STATUS:" + i + "|FAILED");
+            if ((!goalDataBase.getUsageStatus(id) | !goalDataBase.getUnlockStatus(id))) {
+                Log.i("VALUES", "APP STATUS:" + packageName + "|FAILED|" + id);
                 goalDataBase.setStatus(id, "1");
             }
         }
@@ -597,7 +596,6 @@ public class AppGoalFragment extends Fragment {
 
         if (actualValue > goalValue & goalValue > 0) {
             formatRemaining = "100%";
-
         } else if (goalValue == 0) {
             formatRemaining = "~%";
         } else {
@@ -621,7 +619,7 @@ public class AppGoalFragment extends Fragment {
         unlockPieData.setCenterText1(formatRemaining);
         unlockPieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
         unlockPieData.setCenterText1Color(Color.CYAN);
-        unlockPieData.setCenterText1FontSize(25);
+        unlockPieData.setCenterText1FontSize(20);
 
 
         unlockPie.setChartRotationEnabled(false);
@@ -641,7 +639,6 @@ public class AppGoalFragment extends Fragment {
 
         if (actualValue > goalValue & goalValue > 0) {
             formatRemaining = "100%";
-
         } else if (goalValue == 0) {
             formatRemaining = "~%";
         } else {
@@ -665,7 +662,7 @@ public class AppGoalFragment extends Fragment {
         usagePieData.setCenterText1(formatRemaining);
         usagePieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
         usagePieData.setCenterText1Color(Color.CYAN);
-        usagePieData.setCenterText1FontSize(25);
+        usagePieData.setCenterText1FontSize(20);
 
         usagePie.setChartRotationEnabled(false);
         usagePie.setPieChartData(usagePieData);

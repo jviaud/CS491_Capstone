@@ -23,7 +23,8 @@
         <item name="android:spotShadowAlpha">.4</item>
         <item name="android:popupMenuStyle">@style/MyApp.PopupMenu</item>
         <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme</item>
-        <item name="android:textColor">@color/textcolor_alt</item>
+        <item name="android:textColorPrimary">@color/textcolor</item>
+        <item name="android:textColor">@color/textcolor</item>
     </style>
     <!-- Base application theme. -->
 
@@ -42,7 +43,6 @@
     <style name="SettingsFragmentStyle" parent="PreferenceFragment">
         <item name="android:textColor">@color/textcolor</item>
         <item name="android:textColorSecondary">#CAFFFFFF</item>
-        <item name="colorPrimaryDark">@color/productivity</item>
         <item name="colorAccent">@color/highlight</item>
     </style>
     <!--    -->

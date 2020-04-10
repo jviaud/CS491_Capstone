@@ -50,6 +50,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.goal.activities.NewGoal"
             android:label="New Goal"
@@ -59,6 +60,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.cs491_capstone.MainActivity" />
         </activity>
+
         <activity
             android:name=".ui.goal.activities.EditGoal"
             android:label="Edit Goal"
@@ -69,15 +71,6 @@
                 android:value="com.example.cs491_capstone.MainActivity" />
         </activity>
 
-        <activity
-            android:name=".ui.goal.EditGoal"
-            android:label="Edit Goal"
-            android:parentActivityName="com.example.cs491_capstone.MainActivity"
-            android:theme="@style/GoalTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.cs491_capstone.MainActivity" />
-        </activity>
         <activity
             android:name=".ui.goal.activities.ShowAllRelatedGoals"
             android:label="Goals"
