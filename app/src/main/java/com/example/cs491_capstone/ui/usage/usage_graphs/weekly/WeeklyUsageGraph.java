@@ -303,7 +303,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
                         values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                         break;
                     } else {
-                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.DKGRAY);
+                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.LTGRAY);
                         int hours = (int) (value / (60) % 24);
                         int minutes = (int) (value % 60);
                         if (hours == 0) {
@@ -351,7 +351,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
         Axis axisX = new Axis(xAxisValues)
                 .setName("Days of the Week") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -359,7 +359,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 ;
 
 
@@ -500,14 +500,13 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
         public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
 
 
-            String day = String.valueOf(columnIndex);
 
-            usedList = localDatabase.appsUsed(day, DatabaseHelper.USAGE_TIME);
+            usedList = localDatabase.appsUsed(App.currentPeriod.get(Week).get(columnIndex), DatabaseHelper.USAGE_TIME);
 
 
             listAdapter = new UsageListViewAdapter(getContext(), usedList);
             listAdapter.setByCategory(byCategory);
-            listAdapter.setDay(day);
+            listAdapter.setDay(App.currentPeriod.get(Week).get(columnIndex));
             listAdapter.setColumn(DatabaseHelper.USAGE_TIME);
             listView.setAdapter(listAdapter);
 
