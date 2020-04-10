@@ -7,13 +7,14 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/graph_choice"
-    app:cardBackgroundColor="?attr/cardbackground"
+    app:cardBackgroundColor="@color/cardbackground"
     android:elevation="6dp">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/cardbackground">
 
         <lecho.lib.hellocharts.view.ColumnChartView
             android:id="@+id/home_charts"
@@ -22,7 +23,7 @@
             android:layout_margin="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@android:color/transparent"
+            android:background="@color/cardbackground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

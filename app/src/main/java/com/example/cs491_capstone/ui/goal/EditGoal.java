@@ -1,24 +1,22 @@
 package com.example.cs491_capstone.ui.goal;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -49,10 +47,11 @@ import java.util.List;
 
 import static com.example.cs491_capstone.App.ALL_APPS_LIST;
 
-public class NewGoal extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+public class EditGoal extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+
     private static String date;
     private static String goalType;
-    Chip specifyDate, specifyApp, usage, unlocks;
+    Chip specifyDate, specifyApp, usage, unlocks, byPhone, byApp;
     ChipGroup type, stats;
     CardView appInfo, usageCard, unlocksCard;
     EditText hour, minutes, unlock_amount;
@@ -68,6 +67,8 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         return true;
     }
 
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +112,11 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         errorMessage = findViewById(R.id.error_message);
         errorUsage = findViewById(R.id.error_usage);
         errorUnlocks = findViewById(R.id.error_unlocks);
+        byPhone = findViewById(R.id.chip_byPhone);
+        byApp = findViewById(R.id.chip_byApp);
+
+
+        done.setText("SAVE");
 
 
         //MIN AND MAX VALUES FOR EDIT TEXT
@@ -273,6 +279,67 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
             }
         });
 
+
+        //POPULATE VIEWS
+        Intent intent = getIntent();
+        Goal editGoal = intent.getParcelableExtra("GOAL");
+        checkCurrentGoal(editGoal);
+
+
+    }
+
+    private void checkCurrentGoal(Goal goal) {
+        formCompletion = new boolean[]{true, true, true};
+
+        specifyDate.setEnabled(false);
+
+        date = App.dateFormater(goal.getDate(), "EEEE, MMMM dd, yyyy");
+        dateTitle.setText(date);
+
+
+        if (goal.getType().equals(GoalDataBaseHelper.GOAL_PHONE)) {
+            type.check(R.id.chip_byPhone);
+        } else {
+            type.check(R.id.chip_byApp);
+            specifyApp.setEnabled(false);
+
+            Drawable icon;
+            String name;
+            String packageName = goal.getPackageName();
+            for (InstalledAppInfo info : trackedApps) {
+                if (info.getPackageName().equals(packageName)) {
+                    name = info.getSimpleName();
+                    icon = info.getIcon();
+
+                    appName.setText(name);
+                    appIcon.setImageDrawable(icon);
+                }
+            }
+
+        }
+        byPhone.setEnabled(false);
+        byApp.setEnabled(false);
+
+        if (goal.getUnlocks() != 0) {
+            int unlock = goal.getUnlocks();
+            unlock_amount.setText(String.valueOf(unlock));
+
+            unlocks.setChecked(true);
+            unlocksCard.setVisibility(View.VISIBLE);
+
+        }
+
+        if (goal.getUsage() != 0) {
+            long usageAmount = goal.getUsage();
+
+            hour.setText(String.valueOf(((usageAmount / (1000 * 60 * 60)) % 24)));
+
+            minutes.setText(String.valueOf((usageAmount / (1000 * 60)) % 60));
+
+            usage.setChecked(true);
+            usageCard.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -289,7 +356,8 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         String orgDate = year + "-" + (month + 1) + "-" + dayOfMonth;
 
         DateTime dt = DateTime.parse(orgDate, DateTimeFormat.forPattern("yyyy-m-d"));
-        date = dt.toString("yyyy-mm-dd");
+        date = dt.toString("EEEE, MMMM dd, yyyy");
+        dateTitle.setText(date);
 
 
         formCompletion[0] = true;
@@ -364,6 +432,8 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                     formCompletion[2] = false;
                 }
                 break;
+            case View.INVISIBLE:
+                break;
         }
 
     }
@@ -380,6 +450,8 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
                 if (usageCard.getVisibility() == View.GONE) {
                     formCompletion[2] = false;
                 }
+                break;
+            case View.INVISIBLE:
                 break;
         }
     }
@@ -449,91 +521,4 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
         }
     }
 
-    static class InstalledAppsViewHolder {
-        TextView name;
-        ImageView icon;
-    }
-
-    private static class InstalledAppsListAdapter extends BaseAdapter {
-        private LayoutInflater inflater;
-        private List<InstalledAppInfo> installedAppInfoList;
-
-        //CONSTRUCTOR
-        InstalledAppsListAdapter(Context context, List<InstalledAppInfo> installedAppInfoList) {
-            inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            this.installedAppInfoList = installedAppInfoList;
-        }
-
-
-        @Override
-        public int getCount() {
-            return installedAppInfoList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return installedAppInfoList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            InstalledAppsViewHolder listHolder;
-
-            if (convertView == null) {
-                //CREATE VIEWHOLDER AND INFLATE LAYOUT
-                listHolder = new InstalledAppsViewHolder();
-                convertView = inflater.inflate(R.layout.new_goal_app_card, parent, false);
-
-                //ASSIGN VIEW HOLDER CLASS VARIABLE TO LAYOUT
-                listHolder.icon = convertView.findViewById(R.id.icon);
-                listHolder.name = convertView.findViewById(R.id.name);
-
-                convertView.setTag(listHolder);
-
-            } else {
-                listHolder = (InstalledAppsViewHolder) convertView.getTag();
-            }
-
-            listHolder.icon.setImageDrawable(installedAppInfoList.get(position).getIcon());
-            listHolder.name.setText(installedAppInfoList.get(position).getSimpleName());
-
-            return convertView;
-        }
-
-    }
-
-    public static class InputFilterMinMax implements InputFilter {
-
-        private int min, max;
-
-        public InputFilterMinMax(int min, int max) {
-            this.min = min;
-            this.max = max;
-        }
-
-        public InputFilterMinMax(String min, String max) {
-            this.min = Integer.parseInt(min);
-            this.max = Integer.parseInt(max);
-        }
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            try {
-                int input = Integer.parseInt(dest.toString() + source.toString());
-                if (isInRange(min, max, input))
-                    return null;
-            } catch (NumberFormatException nfe) {
-            }
-            return "";
-        }
-
-        private boolean isInRange(int a, int b, int c) {
-            return b > a ? c >= a && c <= b : c >= b && c <= a;
-        }
-    }
 }

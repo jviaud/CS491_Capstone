@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.goal;
+package com.example.cs491_capstone.ui.goal.tabs;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -26,6 +26,8 @@ import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.goal.Goal;
+import com.example.cs491_capstone.ui.goal.adapter.GoalImageAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,15 +49,17 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 import lecho.lib.hellocharts.view.PieChartView;
 
+import static com.example.cs491_capstone.App.currentPeriod;
+import static com.example.cs491_capstone.App.goalDataBase;
 import static com.example.cs491_capstone.App.week;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.endDate;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.startDate;
 
 public class AppGoalFragment extends Fragment {
-    String packageName;
-    private RecyclerView appsRecycler;
-    private ImageAdapter adapter;
-    private List<Goal> goals;
+    private static RecyclerView appsRecycler;
+    private static List<Goal> goals;
+    public ImageAdapter adapter;
+    private String packageName;
     private ComboLineColumnChartView usageComboChart;
     private ComboLineColumnChartData usageComboData;
     private PieChartView usagePie;
@@ -65,6 +69,14 @@ public class AppGoalFragment extends Fragment {
     private CardView usageCard, unlockCard;
     private TextView graph_app;
     private float maxUsageValue, maxUnlockValue;
+
+    private long[][] usageStatusValues = new long[week.length][2];
+
+    private long[][] unlockStatusValues = new long[week.length][2];
+
+    private GoalImageAdapter goalAdapter;
+
+    private RecyclerView goalsRecycler;
 
     @Nullable
     @Override
@@ -77,6 +89,8 @@ public class AppGoalFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         goals = App.goalDataBase.getUniquePackageGoals(startDate, endDate);
+
+
         appsRecycler = view.findViewById(R.id.appsWithGoals);
         usageComboChart = view.findViewById(R.id.graph);
         unlockComboChart = view.findViewById(R.id.unlock_graph);
@@ -110,7 +124,9 @@ public class AppGoalFragment extends Fragment {
         ///
         if (goals.isEmpty()) {
             appsRecycler.setVisibility(View.GONE);
+            graph_app.setVisibility(View.GONE);
         } else {
+            graph_app.setVisibility(View.VISIBLE);
             appsRecycler.setVisibility(View.VISIBLE);
         }
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -122,13 +138,57 @@ public class AppGoalFragment extends Fragment {
         appsRecycler.setAdapter(adapter);
         ///
 
+        goalsRecycler = view.findViewById(R.id.goals_list);
+
+        LinearLayoutManager layoutManagerWeek = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+
+
+        //ASSIGN EACH LAYOUT MANAGER TO ITS CORRESPONDING RECYCLER
+        goalsRecycler.setLayoutManager(layoutManagerWeek);
+        goalsRecycler.setHasFixedSize(true);
+
+        goalAdapter = new GoalImageAdapter(getContext(), goals);
+
+        goalsRecycler.setAdapter(goalAdapter);
+
+
+        goalAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                //TREATED AS INSERTED FOR SOME REASON
+                adapter.imageList.clear();
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                //ACTS NORMALLY
+                adapter.imageList.clear();
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+
+        //COLLAPSES THE VIEWS WHEN SCROLL IS DETECTED, PURELY AESTHETIC
+        goalsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dx > 0 | dx < 0) {
+                    goalAdapter.collapseAll();
+                }
+            }
+        });
+
 
         try {
             packageName = goals.get(0).getPackageName();
         } catch (IndexOutOfBoundsException ibe) {
             packageName = "null";
         }
-        graph_app.setText(packageName);
+        graph_app.setText(getProperName(packageName));
 
         //PIE CHARTS
         generateUsagePie(packageName);
@@ -142,7 +202,7 @@ public class AppGoalFragment extends Fragment {
             @Override
             public void onItemClick(int position, ImageView v) {
                 final String packageName = goals.get(position).getPackageName();
-                graph_app.setText(packageName);
+                graph_app.setText(getProperName(packageName));
 
                 AsyncTask.execute(new Runnable() {
                     @Override
@@ -152,6 +212,7 @@ public class AppGoalFragment extends Fragment {
                     }
                 });
 
+                adapter.getSelected(position);
 
                 usageComboData = new ComboLineColumnChartData(generateUsageColumnData(packageName), generateUsageLineData(packageName));
                 labelUsageAxis();
@@ -164,8 +225,11 @@ public class AppGoalFragment extends Fragment {
                 unlockComboChart.setComboLineColumnChartData(unlockComboData);
                 setUnlockViewPortWidth(unlockComboChart);
 
+                setStatusChecker(packageName);
+
             }
         });
+
 
     }
 
@@ -173,14 +237,14 @@ public class AppGoalFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         goals.clear();
         goals.addAll(App.goalDataBase.getUniquePackageGoals(startDate, endDate));
-        adapter.notifyDataSetChanged();
-
-
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
+
+
                 usageComboData = new ComboLineColumnChartData(generateUsageColumnData(packageName), generateUsageLineData(packageName));
                 labelUsageAxis();
                 usageComboChart.setComboLineColumnChartData(usageComboData);
@@ -191,9 +255,75 @@ public class AppGoalFragment extends Fragment {
                 labelUnlockAxis();
                 unlockComboChart.setComboLineColumnChartData(unlockComboData);
                 setUnlockViewPortWidth(unlockComboChart);
+
+
             }
         });
+        goalAdapter.holderList.clear();
+        goalAdapter.notifyDataSetChanged();
 
+        adapter.imageList.clear();
+        adapter.notifyDataSetChanged();
+
+        appsRecycler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    appsRecycler.findViewHolderForAdapterPosition(0).itemView.performClick();
+                } catch (NullPointerException ignored) {
+                }
+            }
+        }, 100);
+
+        goalsRecycler.requestLayout();
+    }
+
+    private void setStatusChecker(String packageName) {
+        boolean[][] goalStatusFailed = new boolean[7][2];
+        Log.i("VALUES", "TRIGGERED:" + usageStatusValues.length);
+        for (int i = 0; i < 7; i++) {
+            Log.i("VALUES", "USAGE:" + i + "|" + usageStatusValues[i][0] + "|" + usageStatusValues[i][1]);
+
+            if (usageStatusValues[i][0] > usageStatusValues[i][1]) {
+                String id = goalDataBase.getAppGoalId(currentPeriod.get(0).get(i), packageName);
+                goalDataBase.setUsageStatus(id, "1");
+                goalStatusFailed[i][0] = true;
+            }
+        }
+
+        for (int i = 0; i < 7; i++) {
+            Log.i("VALUES", "UNLOCK:" + i + "|" + unlockStatusValues[i][0] + "|" + unlockStatusValues[i][1]);
+
+            if (unlockStatusValues[i][0] > unlockStatusValues[i][1]) {
+                String id = goalDataBase.getAppGoalId(currentPeriod.get(0).get(i), packageName);
+                goalDataBase.setUnlockStatus(id, "1");
+                goalStatusFailed[i][1] = true;
+            }
+        }
+
+        for (int i = 0; i < 7; i++) {
+            Log.i("VALUES", "STATUS:" + i + "|" + goalStatusFailed[i][1] + "|" + goalStatusFailed[i][0]);
+
+            if (goalStatusFailed[i][1] || goalStatusFailed[i][0]) {
+                String id = goalDataBase.getAppGoalId(currentPeriod.get(0).get(i), packageName);
+                Log.i("VALUES", "STATUS:" + i + "|FAILED");
+                goalDataBase.setStatus(id, "1");
+            }
+        }
+
+    }
+
+    private String getProperName(String packageName) {
+        String name = "null";
+        PackageManager packageManager = getContext().getPackageManager();
+        try {
+            ApplicationInfo ai = packageManager.getApplicationInfo(packageName, 0);
+            name = ai.loadLabel(packageManager).toString();
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return name;
     }
 
     private void labelUsageAxis() {
@@ -202,8 +332,8 @@ public class AppGoalFragment extends Fragment {
 
         axisX.setName("Day of Week");
         axisY.setName("Usage vs. Goal Value (minutes)");
-        axisY.setTextColor(R.color.black);
-        axisX.setTextColor(R.color.black);
+        axisY.setTextColor(Color.WHITE);
+        axisX.setTextColor(Color.WHITE);
 
 
         List<AxisValue> axisValues = new ArrayList<>(); //THE LIST OF X-AXIS VALUES
@@ -245,8 +375,8 @@ public class AppGoalFragment extends Fragment {
 
         axisX.setName("Day of Week");
         axisY.setName("Unlocks vs. Goal Value");
-        axisY.setTextColor(R.color.black);
-        axisX.setTextColor(R.color.black);
+        axisY.setTextColor(Color.WHITE);
+        axisX.setTextColor(Color.WHITE);
         String black = "black";
 
 
@@ -295,11 +425,13 @@ public class AppGoalFragment extends Fragment {
                 long val = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(0).get(i), DatabaseHelper.USAGE_TIME, packageName)) / 60000;
                 //long val = 10L;
 
+                usageStatusValues[i][0] = val;
+
                 if (val == 0) {
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
                 } else {
-                    SubcolumnValue subcolumnValue = new SubcolumnValue(val, Color.DKGRAY);
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(val, Color.LTGRAY);
 
                     int hours = (int) (val / (60) % 24);
                     int minutes = (int) (val % 60);
@@ -323,10 +455,7 @@ public class AppGoalFragment extends Fragment {
         }
 
 
-        ColumnChartData columnChartData = new ColumnChartData(columns);
-
-
-        return columnChartData;
+        return new ColumnChartData(columns);
     }
 
     private LineChartData generateUsageLineData(String packageName) {
@@ -337,6 +466,8 @@ public class AppGoalFragment extends Fragment {
             for (int j = 0; j < week.length; ++j) {
 
                 long val = Long.parseLong(App.goalDataBase.get(App.currentPeriod.get(0).get(j), GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_USAGE)) / 60000;
+
+                usageStatusValues[i][1] = val;
 
                 PointValue pointValue;
                 if (val == 0) {
@@ -366,7 +497,7 @@ public class AppGoalFragment extends Fragment {
             }
 
             Line line = new Line(values);
-            line.setColor(R.color.gold);
+            line.setColor(Color.CYAN);
             line.setCubic(false);
             line.setHasLabelsOnlyForSelected(true);
             line.setHasLines(false);
@@ -389,12 +520,12 @@ public class AppGoalFragment extends Fragment {
             for (int j = 0; j < 1; ++j) {
                 long val = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(0).get(i), DatabaseHelper.UNLOCKS_COUNT, packageName));
                 //long val = 10L;
-
+                unlockStatusValues[i][0] = val;
                 if (val == 0) {
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
                 } else {
-                    values.add(new SubcolumnValue(val, Color.DKGRAY));
+                    values.add(new SubcolumnValue(val, Color.LTGRAY));
                 }
 
                 if (maxUsageValue < val) {
@@ -421,6 +552,8 @@ public class AppGoalFragment extends Fragment {
 
                 long val = Long.parseLong(App.goalDataBase.get(App.currentPeriod.get(0).get(j), GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_UNLOCKS));
                 PointValue pointValue;
+
+                unlockStatusValues[i][1] = val;
                 if (val == 0) {
                     pointValue = new PointValue(j, 0);
                     pointValue.setLabel("n/a");
@@ -437,7 +570,7 @@ public class AppGoalFragment extends Fragment {
             }
 
             Line line = new Line(values);
-            line.setColor(R.color.gold);
+            line.setColor(Color.CYAN);
             line.setCubic(false);
             line.setHasLabelsOnlyForSelected(true);
             line.setHasLines(false);
@@ -468,14 +601,13 @@ public class AppGoalFragment extends Fragment {
         } else if (goalValue == 0) {
             formatRemaining = "~%";
         } else {
-            Log.i("GOAL", "goal:" + goalValue + "| actual:" + actualValue + "|%:" + ((float) actualValue / goalValue * 100));
             remaining = ((float) actualValue / goalValue * 100);
             full = 100 - remaining;
             formatRemaining = String.format(Locale.ENGLISH, "%.1f%%", remaining);
         }
 
 
-        SliceValue goal = new SliceValue(remaining, R.color.gold);
+        SliceValue goal = new SliceValue(remaining, Color.CYAN);
         SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
@@ -488,7 +620,7 @@ public class AppGoalFragment extends Fragment {
 
         unlockPieData.setCenterText1(formatRemaining);
         unlockPieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
-        unlockPieData.setCenterText1Color(R.color.gold);
+        unlockPieData.setCenterText1Color(Color.CYAN);
         unlockPieData.setCenterText1FontSize(25);
 
 
@@ -519,7 +651,7 @@ public class AppGoalFragment extends Fragment {
         }
 
 
-        SliceValue goal = new SliceValue(remaining, R.color.gold);
+        SliceValue goal = new SliceValue(remaining, Color.CYAN);
         SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
@@ -532,7 +664,7 @@ public class AppGoalFragment extends Fragment {
 
         usagePieData.setCenterText1(formatRemaining);
         usagePieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
-        usagePieData.setCenterText1Color(R.color.gold);
+        usagePieData.setCenterText1Color(Color.CYAN);
         usagePieData.setCenterText1FontSize(25);
 
         usagePie.setChartRotationEnabled(false);
@@ -540,6 +672,7 @@ public class AppGoalFragment extends Fragment {
     }
 
     public static class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
+        List<ImageAdapter.ImageViewHolder> imageList;
         private ImageAdapter.OnItemClickListener mListener;//CUSTOM ON CLICK LISTENER
         private Context context;
         private List<Goal> subscriptions;
@@ -550,8 +683,17 @@ public class AppGoalFragment extends Fragment {
             this.context = context;
             this.subscriptions = subscriptions;
             packageManager = context.getPackageManager();
+            imageList = new ArrayList<>();
 
 
+        }
+
+        void getSelected(int position) {
+            for (ImageViewHolder holder : imageList) {
+                holder.icon.setAlpha(.4f);
+            }
+
+            imageList.get(position).icon.setAlpha(1f);
         }
 
         @NonNull
@@ -562,16 +704,18 @@ public class AppGoalFragment extends Fragment {
             return new ImageViewHolder(v, mListener);
         }
 
+
         @Override
         public void onBindViewHolder(@NonNull ImageAdapter.ImageViewHolder holder, int position) {
             Goal goal = subscriptions.get(position);
+            imageList.add(holder);
 
 
             try {
                 ApplicationInfo ai = packageManager.getApplicationInfo(goal.getPackageName(), 0);
                 Drawable icon = ai.loadIcon(packageManager);
                 holder.icon.setImageDrawable(icon);
-                Log.i("GOALS", "APP: " + goal.getPackageName());
+                holder.icon.setAlpha(.4f);
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }

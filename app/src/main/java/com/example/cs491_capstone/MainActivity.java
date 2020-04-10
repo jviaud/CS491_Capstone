@@ -16,7 +16,7 @@ import androidx.preference.PreferenceManager;
 
 import com.example.cs491_capstone.services.BackgroundMonitor;
 import com.example.cs491_capstone.ui.goal.GoalsFragment;
-import com.example.cs491_capstone.ui.goal.NewGoal;
+import com.example.cs491_capstone.ui.goal.activities.NewGoal;
 import com.example.cs491_capstone.ui.home.HomeFragment;
 import com.example.cs491_capstone.ui.intro.IntroManager;
 import com.example.cs491_capstone.ui.settings.SettingsFragment;

@@ -38,7 +38,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,11 +49,6 @@ import static com.example.cs491_capstone.ui.settings.SettingsFragment.trackedApp
 
 
 public class HomeFragment extends Fragment {
-    /**
-     * This is the maximum number of apps we want to show total usage time for, because we will allow the user to set the maximum number themselves we have a variable for it here
-     */
-    private int maximumOnDisplay = 5;
-    private ArrayList<UserUsageInfo> topItems = new ArrayList<>();
     private ListView mostUsedListView;
     private MostUsedAppsListAdapter listAdapter;
     //TIMER
@@ -80,7 +74,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
         userInfo = localDatabase.topAppsUsedToday(App.DATE);
 
@@ -148,6 +141,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onResume() {
+        getContext().getTheme().applyStyle(R.style.AppTheme, true);
         super.onResume();
         parentalControls = preferences.getBoolean("parental_controls", false);
 

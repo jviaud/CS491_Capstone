@@ -75,7 +75,7 @@ public class DetailedNotificationGraphFragment extends Fragment implements View.
         prevButton = view.findViewById(R.id.backarrow);
         nextButton = view.findViewById(R.id.nextarrow);
 
-        graphDate = App.currentPeriod.get(indexInPeriod).get(0) + " - " + App.currentPeriod.get(indexInPeriod).get(6);
+        graphDate = App.dateFormater(App.currentPeriod.get(indexInPeriod).get(0), "mm/dd/yyyy") + " - " + App.dateFormater(App.currentPeriod.get(indexInPeriod).get(6), "mm/dd/yyyy");
         //todayDate.setText(graphDate);
 
 
@@ -120,7 +120,7 @@ public class DetailedNotificationGraphFragment extends Fragment implements View.
         //WHEN SHOW TODAY IS PRESSED EVERYTHING HAS TO BE RESET
         //DATE IS SET TOO TODAY
         indexInPeriod = 0;
-        graphDate = App.currentPeriod.get(indexInPeriod).get(0) + " - " + App.currentPeriod.get(indexInPeriod).get(6);
+        graphDate = App.dateFormater(App.currentPeriod.get(indexInPeriod).get(0), "mm/dd/yyyy") + " - " + App.dateFormater(App.currentPeriod.get(indexInPeriod).get(6), "mm/dd/yyyy");
         //DATE TITLE IS SET TO TODAY
         todayDate.setText(graphDate);
         //HIDE THE NEXT BUTTON, WE DO NOT SHOW FUTURE GRAPHS BECAUSE WE KNOW THEY ARE BLANK
@@ -144,7 +144,7 @@ public class DetailedNotificationGraphFragment extends Fragment implements View.
         //MAX_NEXT IS THE END OF THE LIST, PREVENTS OUT OF BOUNDS EXCEPTION
         if (indexInPeriod >= 0) {
             //FIRST CHANGE THE GRAPH DATE TO THE DATE IN THE LIST
-            graphDate = App.currentPeriod.get(indexInPeriod).get(0) + " - " + App.currentPeriod.get(indexInPeriod).get(6);
+            graphDate = App.dateFormater(App.currentPeriod.get(indexInPeriod).get(0), "mm/dd/yyyy") + " - " + App.dateFormater(App.currentPeriod.get(indexInPeriod).get(6), "mm/dd/yyyy");
             //IF THIS DATE IS EQUAL TO TODAY'S DATE THEN WE HIDE THE BUTTONS
             if (indexInPeriod == 0) {
                 nextButton.setVisibility(View.GONE);
@@ -172,7 +172,7 @@ public class DetailedNotificationGraphFragment extends Fragment implements View.
 
         //ONLY IF WE HAVE NOT PASSED THE BEGINNING OF THE LIST, THIS PREVENTS A NEGATIVE OUT OF BOUNDS EXCEPTION
         if (indexInPeriod <= 3) {
-            graphDate = App.currentPeriod.get(indexInPeriod).get(0) + " - " + App.currentPeriod.get(indexInPeriod).get(6);
+            graphDate = App.dateFormater(App.currentPeriod.get(indexInPeriod).get(0), "mm/dd/yyyy") + " - " + App.dateFormater(App.currentPeriod.get(indexInPeriod).get(6), "mm/dd/yyyy");
             if (indexInPeriod == 3) {
                 prevButton.setVisibility(View.GONE);
             }
@@ -221,7 +221,7 @@ public class DetailedNotificationGraphFragment extends Fragment implements View.
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
                 } else {
-                    values.add(new SubcolumnValue(val, Color.DKGRAY));
+                    values.add(new SubcolumnValue(val, Color.RED));
                 }
 
 
@@ -241,7 +241,7 @@ public class DetailedNotificationGraphFragment extends Fragment implements View.
         Axis axisX = new Axis(axisValues)
                 .setName("Day of Week") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -249,7 +249,7 @@ public class DetailedNotificationGraphFragment extends Fragment implements View.
         Axis axisY = new Axis()
                 .setName("Notifications Received")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(3)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -372,7 +372,7 @@ public class DetailedNotificationGraphFragment extends Fragment implements View.
         Axis axisX = new Axis(axisValues)
                 .setName("Hour of Day") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -380,7 +380,7 @@ public class DetailedNotificationGraphFragment extends Fragment implements View.
         Axis axisY = new Axis()
                 .setName("Notifications Received")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(3)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 

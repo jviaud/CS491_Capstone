@@ -267,6 +267,12 @@ public class App extends Application {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)));
     }
 
+    public static String dateFormater(String date, String newDate) {
+
+        DateTime dt = DateTime.parse(date, DateTimeFormat.forPattern("yyyy-mm-dd"));
+        return dt.toString(newDate);
+    }
+
     /**
      * @return A string representing the hour of the day in military time 12AM in 0, 1PM is 13
      */

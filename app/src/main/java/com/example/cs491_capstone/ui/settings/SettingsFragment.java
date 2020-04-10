@@ -45,6 +45,8 @@ import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -52,8 +54,12 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
@@ -107,15 +113,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      */
     private InstalledAppsListAdapter phoneLimitListAdapter;
     private AppLimitListAdapter appLimitListAdapter;
+    private AppLimitListAdapter2 appLimitListAdapter2;
     /**
      * A DeepCopy of the ALL_APPS_LIST so we have the user make changes and cancel if they need to without making those changes permanent or having to reverse them
      */
     private List<InstalledAppInfo> COPY_OF_LIST;
-
+    private List<InstalledAppInfo> FLAGGED_APPS;
+    private HashMap<String, Long> appsAndTimes = new HashMap<String, Long>();
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        getContext().getTheme().applyStyle(R.style.SettingsFragmentStyle, true);
         setPreferencesFromResource(R.xml.settings, rootKey);
+        // fragment.getRootView().setBackgroundColor(Color.WHITE);
+
+        //getActivity().setTheme(R.style.AppTheme);
 
         //Initialise the size of the database
         dbSize = localDatabase.getRowCount();
@@ -127,6 +139,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         //WE CREATE A COPY OF THE LIST IN CASE THE USER DECIDES TO CANCEL MIDWAY WE WANT TO BE ABLE TO REVERT THE CHANGES
         COPY_OF_LIST = new ArrayList<>();
+        FLAGGED_APPS = new ArrayList<>();
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -137,7 +150,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         appLimitListAdapter = new AppLimitListAdapter(getContext(), ALL_APPS_LIST);
-
+        appLimitListAdapter2 = new AppLimitListAdapter2(getContext(), FLAGGED_APPS);
 
         /*
         It would be better too implement the Onclick listener so it isn't so cluttered here but I can't get the click events to trigger the listeners that way
@@ -289,6 +302,34 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             public void onClick(DialogInterface dialog, int id) {
                                 //TODO IF USER CLICKS OKAY THEN WE SAVE THE CHANGES TO THE HASHMAP, WE THEN TAKE THE KEYS AND VALUES
                                 // AND STORE THEM AS HASH SETS INTO SHARED PREFERENCES
+                                Log.d("clicked", "clicked");
+
+                                FLAGGED_APPS = new ArrayList<>();
+                                for (InstalledAppInfo i : ALL_APPS_LIST) {
+                                    for (Map.Entry mapElement : appsAndTimes.entrySet())
+                                        if (i.getPackageName().equals(mapElement.getKey()))
+                                            FLAGGED_APPS.add(i);
+                                }
+                                appLimitListAdapter2 = new AppLimitListAdapter2(getContext(), FLAGGED_APPS);
+                                LayoutInflater inflater = requireActivity().getLayoutInflater();
+                                View view = inflater.inflate(R.layout.dialog_apps_limit, null);
+//                appLimitListAdapter2 = new InstalledAppsListAdapter(getContext(), COPY_OF_LIST);
+                                final ListView listView = view.findViewById(R.id.dialog_list2);
+                                listView.setAdapter(appLimitListAdapter2);
+
+                                saveMap(appsAndTimes);
+
+                                Set<String> flaggedAppsSet = new HashSet<String>();
+
+                                for (InstalledAppInfo i : FLAGGED_APPS) {
+                                    flaggedAppsSet.add(i.getPackageName());
+                                }
+                                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.remove("flagged_apps_set");
+                                editor.putStringSet("flagged_apps_set", flaggedAppsSet);
+
+                                editor.apply();
 
 
                             }
@@ -296,7 +337,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 //TODO IF THEY CANCEL WE SET THE COPY BACK TO THE ORIGINAL TO THE HASHMAP
-
+                                saveMap(appsAndTimes);
 
                                 dialog.dismiss();
                             }
@@ -305,8 +346,84 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 return true;
             }
+
+            //because android does not accept hashmaps to shared preferences, use this method to convert hashmap to string
+            private void saveMap(Map<String, Long> inputMap) {
+                SharedPreferences pSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                if (pSharedPref != null) {
+                    JSONObject jsonObject = new JSONObject(inputMap);
+                    String jsonString = jsonObject.toString();
+                    SharedPreferences.Editor editor = pSharedPref.edit();
+                    editor.remove("app_limit").commit();
+                    editor.putString("app_limit", jsonString);
+                    editor.commit();
+                }
+            }
         });
 
+        Preference timeLimit = findPreference(("time_limit_apps"));
+        timeLimit.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+                Set<String> flagged_apps_set = prefs.getStringSet("flagged_apps_set", new HashSet<String>());
+                FLAGGED_APPS = new ArrayList<>();
+                for (InstalledAppInfo i : ALL_APPS_LIST) {
+                    if (flagged_apps_set.contains(i.getPackageName()))
+                        FLAGGED_APPS.add(i);
+                }
+                appLimitListAdapter2 = new AppLimitListAdapter2(getContext(), FLAGGED_APPS);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                LayoutInflater inflater = requireActivity().getLayoutInflater();
+                View view = inflater.inflate(R.layout.dialog_apps_limit, null);
+//                appLimitListAdapter2 = new InstalledAppsListAdapter(getContext(), COPY_OF_LIST);
+                final ListView listView = view.findViewById(R.id.dialog_list2);
+                listView.setAdapter(appLimitListAdapter2);
+
+
+                builder.setView(view)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                //TODO IF USER CLICKS OKAY THEN WE SAVE THE CHANGES TO THE HASHMAP, WE THEN TAKE THE KEYS AND VALUES
+                                // AND STORE THEM AS HASH SETS INTO SHARED PREFERENCES
+                                Log.d("clicked", "clicked");
+
+
+                                saveMap(appsAndTimes);
+
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //TODO IF THEY CANCEL WE SET THE COPY BACK TO THE ORIGINAL TO THE HASHMAP
+                                saveMap(appsAndTimes);
+
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+
+                return true;
+
+
+            }
+
+            //because android does not accept hashmaps to shared preferences, use this method to convert hashmap to string
+            private void saveMap(Map<String, Long> inputMap) {
+                SharedPreferences pSharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                if (pSharedPref != null) {
+                    JSONObject jsonObject = new JSONObject(inputMap);
+                    String jsonString = jsonObject.toString();
+                    SharedPreferences.Editor editor = pSharedPref.edit();
+                    editor.remove("app_limit").commit();
+                    editor.putString("app_limit", jsonString);
+                    editor.commit();
+                }
+            }
+        });
 
         //CLICK LISTENER FOR WIFI SWITCH
         SwitchPreference wifiSwitch = findPreference("toggle_wifi");
@@ -338,14 +455,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
         //CLICK LISTENER FOR IMPORTING FROM CSV OPTION
-        Preference importCSV = findPreference("import_csv");
-        importCSV.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                getCSV();
-                return true;
-            }
-        });
+//        Preference importCSV = findPreference("import_csv");
+//        importCSV.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+//            @Override
+//            public boolean onPreferenceClick(Preference preference) {
+//                getCSV();
+//                return true;
+//            }
+//        });
         ///
 
         Preference permissionsActivity = findPreference("permissions");
@@ -360,6 +477,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        this.getView().setBackgroundColor(getResources().getColor(R.color.backgroundcolor, null));
     }
 
     /**
@@ -915,6 +1038,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                     // timeLeft = (hour.getValue() * 3600000) + (minutes.getValue() * 60000);
                                     //TODO STORE TIME LEFT IN A HASHMAP ALONG WITH installedAppInfoList.get(position)
                                     // KEY IS installedAppInfoList.get(position), TIME IS VALUE
+                                    long time = 0;
+                                    time = (hour.getValue() * 3600000l)  + (minutes.getValue() * 60000);
+
+                                    appsAndTimes.put(installedAppInfoList.get(position).getPackageName(), time);
+                                    installedAppInfoList.get(position).setTimeLimitMilliseconds(time);
+
 
                                 }
                             })
@@ -925,6 +1054,56 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             }).create().show();
                 }
             });
+            return convertView;
+        }
+
+    }
+
+    private class AppLimitListAdapter2 extends BaseAdapter {
+        private LayoutInflater inflater;
+        private List<InstalledAppInfo> installedAppInfoList;
+
+        //CONSTRUCTOR
+        AppLimitListAdapter2(Context context, List<InstalledAppInfo> installedAppInfoList) {
+            inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            this.installedAppInfoList = installedAppInfoList;
+        }
+
+
+        @Override
+        public int getCount() {
+            return installedAppInfoList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return installedAppInfoList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            AppsLimitViewHolder listHolder;
+
+            if (convertView == null) {
+                //CREATE VIEWHOLDER AND INFLATE LAYOUT
+                listHolder = new AppsLimitViewHolder();
+                convertView = inflater.inflate(R.layout.dialog_apps_list_layout, parent, false);
+                //ASSIGN VIEW HOLDER CLASS VARIABLE TO LAYOUT
+                listHolder.icon = convertView.findViewById(R.id.icon);
+                listHolder.name = convertView.findViewById(R.id.text);
+                convertView.setTag(listHolder);
+
+            } else {
+                listHolder = (AppsLimitViewHolder) convertView.getTag();
+            }
+
+            listHolder.icon.setImageDrawable(installedAppInfoList.get(position).getIcon());
+            listHolder.name.setText(installedAppInfoList.get(position).getSimpleName() + " - " + installedAppInfoList.get(position).getTimeLimitString());
             return convertView;
         }
 

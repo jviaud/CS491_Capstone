@@ -10,14 +10,12 @@
         android:id="@+id/graph_choice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabTextAppearance="@style/MineCustomTabText"
-        android:layout_marginTop="16dp"
-        android:background="?attr/cardbackground"
+        style="@style/MineCustomTabText"
         android:elevation="6dp"
-        app:tabIndicatorColor="#000"
-        app:tabTextColor="?attr/textcolor_alt"/>
+        android:layout_marginTop="16dp"
+        app:tabTextAppearance="@style/TabText"/>
 
-    <androidx.viewpager.widget.ViewPager
+    <com.example.cs491_capstone.ui_helpers.LockableViewPager
         android:id="@+id/graph_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

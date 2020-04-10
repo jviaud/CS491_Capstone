@@ -1,6 +1,7 @@
-package com.example.cs491_capstone.ui.goal;
+package com.example.cs491_capstone.ui.goal.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
@@ -21,23 +22,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.GoalDataBaseHelper;
 import com.example.cs491_capstone.R;
+import com.example.cs491_capstone.ui.goal.Goal;
+import com.example.cs491_capstone.ui.goal.activities.EditGoal;
+import com.example.cs491_capstone.ui.goal.activities.ShowAllRelatedGoals;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.ImageViewHolder> {
-    private static List<ImageViewHolder> holderList;
+    public List<ImageViewHolder> holderList;
     private Context context;
     private List<Goal> goals;
     private PackageManager packageManager;
 
 
-    GoalImageAdapter(Context context, List<Goal> goals) {
+    public GoalImageAdapter(Context context, List<Goal> goals) {
         this.context = context;
         this.goals = goals;
         packageManager = context.getPackageManager();
         holderList = new ArrayList<>();
+
+
     }
 
     private static void expand(final View v) {
@@ -94,7 +100,7 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         v.startAnimation(a);
     }
 
-    public static void collapseAll() {
+    public void collapseAll() {
         //expandableLayout
         // collapse(holder.expandableLayout);
         for (ImageViewHolder holder : holderList) {
@@ -116,7 +122,7 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         holderList.add(holder);
         final Goal goal = goals.get(position);
         holder.id.setText(goal.getId());
-        holder.date.setText(goal.getDate());
+        holder.date.setText(App.dateFormater(goal.getDate(), "EEEE, MMMM dd, yyyy"));
 
         if (goal.getType().equals(GoalDataBaseHelper.GOAL_APP)) {
             String packageName = goal.getPackageName();
@@ -154,6 +160,14 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
 
         holder.unlocks.setText(String.valueOf(goal.getUnlocks()));
 
+        boolean passed = goal.isPassed();
+        holder.topPanel.setBackgroundResource(passed ? R.color.passed : R.color.failed);
+        holder.status.setText(passed ? "PASSED" : "FAILED");
+
+        holder.usageStatus.setImageResource(goal.isUsagePassed() ? R.drawable.ic_tick : R.drawable.ic_close);
+
+        holder.unlockStatus.setImageResource(goal.isUnlockPassed() ? R.drawable.ic_tick : R.drawable.ic_close);
+
 
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +182,9 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
                         switch (item.getItemId()) {
                             case R.id.edit_card:
                                 //Toast.makeText(context, "DELETE", Toast.LENGTH_SHORT).show();
-                                //TODO START EDIT ACTIVITY
+                                Intent editIntent = new Intent(context, EditGoal.class);
+                                editIntent.putExtra("GOAL", goal);
+                                context.startActivity(editIntent);
                                 break;
                             case R.id.delete_card:
                                 //Toast.makeText(context, "EDIT", Toast.LENGTH_SHORT).show();
@@ -179,7 +195,9 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
                                 App.goalDataBase.remove(goal.getId());
                                 break;
                             case R.id.show_all_card:
-                                //Toast.makeText(context, "SHOW ALL", Toast.LENGTH_SHORT).show();
+                                Intent showAllIntent = new Intent(context, ShowAllRelatedGoals.class);
+                                showAllIntent.putExtra("GOAL_TYPE", goal);
+                                context.startActivity(showAllIntent);
                                 break;
                             default:
                                 break;
@@ -200,14 +218,10 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
     }
 
     class ImageViewHolder extends RecyclerView.ViewHolder {
-        TextView id;
-        TextView date;
-        TextView appName;
-        TextView usage;
-        TextView unlocks;
-        ImageView icon;
+        TextView id, date, appName, usage, unlocks, status;
+        ImageView icon, usageStatus, unlockStatus;
         CardView card;
-        ConstraintLayout expandableLayout;
+        ConstraintLayout expandableLayout, topPanel;
         ImageView menu;
 
 
@@ -222,6 +236,10 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
             card = itemView.findViewById(R.id.card);
             expandableLayout = itemView.findViewById(R.id.expandableLayout);
             menu = itemView.findViewById(R.id.menu);
+            topPanel = itemView.findViewById(R.id.topPanel);
+            status = itemView.findViewById(R.id.status);
+            usageStatus = itemView.findViewById(R.id.usage_status);
+            unlockStatus = itemView.findViewById(R.id.unlock_status);
 
             card.setOnClickListener(new View.OnClickListener() {
                 @Override

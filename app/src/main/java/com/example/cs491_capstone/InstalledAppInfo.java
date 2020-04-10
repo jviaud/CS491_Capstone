@@ -8,6 +8,7 @@ public class InstalledAppInfo implements Comparable<InstalledAppInfo> {
     private String simpleName;
     private Drawable icon;
     private boolean isTracked;
+    private long time_limit_milliseconds;
 
     ///CONSTRUCTORS
     public InstalledAppInfo(String packageName, String simpleName, Drawable icon) {
@@ -42,6 +43,22 @@ public class InstalledAppInfo implements Comparable<InstalledAppInfo> {
     @Override
     public int compareTo(InstalledAppInfo o) {
         return o.getSimpleName().compareTo(getSimpleName());
+    }
+    public void setTimeLimitMilliseconds(long ms)
+    {
+        this.time_limit_milliseconds = ms;
+    }
+
+    public String getTimeLimitString()
+    {
+        String hours = "";
+        String minutes = "";
+        String time = "";
+        long minutes_remainder = time_limit_milliseconds%3600000;
+        hours = Integer.toString((int)(time_limit_milliseconds/3600000));
+        minutes = Integer.toString((int)(minutes_remainder/60000));
+        time = hours + "hr " + minutes + "m";
+        return time;
     }
 
 }

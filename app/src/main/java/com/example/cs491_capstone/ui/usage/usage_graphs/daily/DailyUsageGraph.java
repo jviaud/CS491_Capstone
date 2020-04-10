@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,7 +134,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         indexInWeek = weeksSingleFormat.indexOf(App.DATE);
         //TO START THE GRAPH DATE IS TODAY'S DATE
         graphDate = weeksSingleFormat.get(indexInWeek);
-        todayDate.setText(graphDate);
+        todayDate.setText(App.dateFormater(graphDate, "mm/dd/yyyy"));
 
         //CREATE A SINGLE ON CLICK LISTENER AND APPLY ALL CLICKABLE VIEWS TO IT
         //THIS WAY I DON'T HAVE TO CREATE SEPARATE ONES AND CLOG THE THIS METHOD
@@ -178,7 +180,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         //WEIRD ERRORS CAUSE BY RESUMING WITH THE CATEGORY GRAPH
         //TOO AVOID IT WE JUST SET THE GRAPH BACK TO NORMAL
         //BOOLEAN IS SET BACK TO FALSE
-        todayDate.setText(graphDate);
+        todayDate.setText(App.dateFormater(graphDate, "mm/dd/yyyy"));
 
         if (byCategory) {
             //BUTTON TEXT IS SET BACK TO DEFAULT
@@ -257,26 +259,33 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
             }
             ArrayList<String> categories = localDatabase.categoryUsed(date, DatabaseHelper.USAGE_TIME);
 
-            for (String category : categories) {
+            for (final String category : categories) {
                 long val = Long.parseLong(localDatabase.getSumTotalStatByCategory(date, DatabaseHelper.USAGE_TIME, category)) / 60000;
                 int hours = (int) (val / (60) % 24);
                 int minutes = (int) (val % 60);
-                String formattedVal;
+                final String formattedVal;
                 if (hours == 0) {
                     formattedVal = String.format(Locale.ENGLISH, "%d%s", minutes, "m");
                 } else {
                     formattedVal = String.format(Locale.ENGLISH, "%d%s%d%s", hours, "h", minutes, "m");
                 }
 
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Log.d("UI thread", "I am the UI thread");
 
-                TextView key = new TextView(getContext());
-                GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-                lp.setMargins(15, 15, 15, 15);
-                key.setLayoutParams(lp);
-                key.setText(category + " " + formattedVal);
-                key.setTextSize(15);
-//                key.setTextColor(categoryKey[j]);
-                keyContainer.addView(key);
+                        TextView key = new TextView(getContext());
+                        GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+                        lp.setMargins(15, 15, 15, 15);
+                        key.setLayoutParams(lp);
+                        key.setText(category + " " + formattedVal);
+                        key.setTextSize(15);
+                        keyContainer.addView(key);
+                    }
+                });
+
+
             }
 
         } else {
@@ -295,7 +304,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
                         values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                         break;
                     } else {
-                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.DKGRAY);
+                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.LTGRAY);
                         int hours = (int) (value / (60) % 24);
                         int minutes = (int) (value % 60);
                         if (hours == 0) {
@@ -343,7 +352,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         Axis axisX = new Axis(xAxisValues)
                 .setName("Hour of Day") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -351,7 +360,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 ;
 
 
@@ -408,7 +417,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         //DATE IS SET TOO TODAY
         graphDate = App.DATE;
         //DATE TITLE IS SET TO TODAY
-        todayDate.setText(graphDate);
+        todayDate.setText(App.dateFormater(graphDate, "mm/dd/yyyy"));
         //HIDE THE NEXT BUTTON, WE DO NOT SHOW FUTURE GRAPHS BECAUSE WE KNOW THEY ARE BLANK
         nextButton.setVisibility(View.GONE);
         //GRAPH IS SHOWING TODAY SO WE DO NOT SHOW THE SKIP TO TODAY BUTTON
@@ -442,7 +451,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
                 showToday.setVisibility(View.VISIBLE);
             }
             //SET THE DATE TEXT AND GENERATE THE GRAPH
-            todayDate.setText(graphDate);
+            todayDate.setText(App.dateFormater(graphDate, "mm/dd/yyyy"));
             createUsageChart(graphDate, byCategory);
         } else {
             //IF WE ARE AT THE END OOF THE LIST THEN WE HIDE THE NEXT BUTTON
@@ -472,7 +481,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
                 showToday.setVisibility(View.GONE);
             }
             //SET THE DATE TEXT AND GENERATE THE GRAPH
-            todayDate.setText(graphDate);
+            todayDate.setText(App.dateFormater(graphDate, "mm/dd/yyyy"));
             createUsageChart(graphDate, byCategory);
         } else {
             //IF WE HAVE EXCEEDED THE LIMIT THEN HIDE THE PREV BUTTON

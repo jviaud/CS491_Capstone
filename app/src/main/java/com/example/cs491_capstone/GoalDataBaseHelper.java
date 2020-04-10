@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.example.cs491_capstone.ui.goal.Goal;
 
@@ -52,6 +51,9 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
      */
     private static final String DATABASE_NAME = "Goal.db";
     private static final String PACKAGE_NAME = "PACKAGE_NAME";
+    private static final String GOAL_STATUS = "GOAL_STATUS";
+    private static final String USAGE_STATUS = "USAGE_STATUS";
+    private static final String UNLOCK_STATUS = "UNLOCK_STATUS";
 
     /**
      * @param activity this is a reference to the Application. We use to to get the context since Context can't be static
@@ -69,7 +71,10 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
                 + GOAL_TYPE + " TEXT,"
                 + GOAL_USAGE + " REAL,"
                 + GOAL_UNLOCKS + " INTEGER,"
-                + PACKAGE_NAME + " TEXT DEFAULT \"0\""
+                + PACKAGE_NAME + " TEXT DEFAULT \"0\","
+                + GOAL_STATUS + " TEXT DEFAULT \"0\","
+                + USAGE_STATUS + " TEXT DEFAULT \"0\","
+                + UNLOCK_STATUS + " TEXT DEFAULT \"0\""
                 + ")");
     }
 
@@ -111,7 +116,16 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(GOAL_USAGE, usage);
         contentValues.put(GOAL_UNLOCKS, unlocks);
         contentValues.put(PACKAGE_NAME, packageName);
+
         db.insertOrThrow(TABLE_NAME, null, contentValues);
+    }
+
+    public void update(String id, long usage, int unlocks) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE " + TABLE_NAME +
+                " SET " + GOAL_UNLOCKS + "=" + unlocks +
+                "," + GOAL_USAGE + "=" + usage +
+                " WHERE " + ENTRY_ID + "= \"" + id + "\"");
     }
 
 
@@ -221,7 +235,136 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
                 " WHERE " + ENTRY_ID + "= " + id + "");
     }
 
-    //public String get
+    public String getPhoneGoalId(String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT " + ENTRY_ID + " FROM " + TABLE_NAME +
+                " WHERE " + GOAL_DATE + " = \"" + date + "\"", null);
+
+
+        StringBuilder buffer = new StringBuilder();
+
+        while (res.moveToNext()) {
+            buffer.append(res.getString(0));
+
+        }
+
+
+        res.close();
+
+        String result = buffer.toString();
+        if (result.equals("")) {
+            return "0";
+        } else {
+            return result;
+        }
+    }
+
+    public String getAppGoalId(String date, String packageName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT " + ENTRY_ID + " FROM " + TABLE_NAME +
+                " WHERE " + GOAL_DATE + " = \"" + date + "\"" +
+                " AND " + PACKAGE_NAME + " = \"" + packageName + "\"", null);
+
+
+        StringBuilder buffer = new StringBuilder();
+
+        while (res.moveToNext()) {
+            buffer.append(res.getString(0));
+
+        }
+
+
+        res.close();
+
+        String result = buffer.toString();
+        if (result.equals("")) {
+            return "0";
+        } else {
+            return result;
+        }
+    }
+
+    public boolean getStatus(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT " + GOAL_STATUS + " FROM " + TABLE_NAME +
+                " WHERE " + ENTRY_ID + " = \"" + id + "\"", null);
+
+
+        StringBuilder buffer = new StringBuilder();
+        while (res.moveToNext()) {
+            buffer.append(res.getString(0));
+
+        }
+
+
+        res.close();
+
+        String result = buffer.toString();
+        return result.equals("0");
+    }
+
+    public void setStatus(String id, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("UPDATE " + TABLE_NAME +
+                " SET " + GOAL_STATUS + "=" + status +
+                " WHERE " + ENTRY_ID + "= \"" + id + "\"");
+    }
+
+    public void setUsageStatus(String id, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("UPDATE " + TABLE_NAME +
+                " SET " + USAGE_STATUS + "=" + status +
+                " WHERE " + ENTRY_ID + "= \"" + id + "\"");
+    }
+
+    public boolean getUsageStatus(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT " + USAGE_STATUS + " FROM " + TABLE_NAME +
+                " WHERE " + ENTRY_ID + " = \"" + id + "\"", null);
+
+
+        StringBuilder buffer = new StringBuilder();
+        while (res.moveToNext()) {
+            buffer.append(res.getString(0));
+
+        }
+
+
+        res.close();
+
+        String result = buffer.toString();
+        return result.equals("0");
+    }
+
+    public void setUnlockStatus(String id, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("UPDATE " + TABLE_NAME +
+                " SET " + UNLOCK_STATUS + "=" + status +
+                " WHERE " + ENTRY_ID + "= \"" + id + "\"");
+    }
+
+    public boolean getUnlockStatus(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT " + UNLOCK_STATUS + " FROM " + TABLE_NAME +
+                " WHERE " + ENTRY_ID + " = \"" + id + "\"", null);
+
+
+        StringBuilder buffer = new StringBuilder();
+        while (res.moveToNext()) {
+            buffer.append(res.getString(0));
+
+        }
+
+
+        res.close();
+
+        String result = buffer.toString();
+        return result.equals("0");
+    }
+
 
     public List<Goal> getAllActiveGoals(String startDate, String endDate) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -257,7 +400,7 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
                 " AND " + GOAL_DATE + "<= date(\"" + endDate + "\")"
                 + " AND GOAL_TYPE = \"GOAL_APP\" "
                 + " GROUP BY PACKAGE_NAME"
-                + " ORDER BY date(\"GOAL_DATE\") DESC", null);
+                + " ORDER BY ENTRY_ID ASC", null);
 
         //READ LINES FROM CURSOR INTO BUFFER
         while (res.moveToNext()) {
@@ -267,7 +410,6 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
             long usage = res.getLong(3);
             int unlocks = res.getInt(4);
             String packageName = res.getString(5);
-            Log.i("GOALS", "DB: " + packageName);
             goals.add(new Goal(id, goalDate, goalType, usage, unlocks, packageName));
         }
 
@@ -275,6 +417,55 @@ public class GoalDataBaseHelper extends SQLiteOpenHelper {
         res.close();
         return goals;
     }
+
+    public List<Goal> getMatchingAppGoals(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<Goal> goals = new ArrayList<>();
+        //
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME +
+                " WHERE " + PACKAGE_NAME + "= \"" + name + "\""
+                + " ORDER BY GOAL_DATE ASC", null);
+
+        //READ LINES FROM CURSOR INTO BUFFER
+        while (res.moveToNext()) {
+            String id = res.getString(0);
+            String goalDate = res.getString(1);
+            String goalType = res.getString(2);
+            long usage = res.getLong(3);
+            int unlocks = res.getInt(4);
+            String packageName = res.getString(5);
+            goals.add(new Goal(id, goalDate, goalType, usage, unlocks, packageName));
+        }
+
+
+        res.close();
+        return goals;
+    }
+
+    public List<Goal> getMatchingPhoneGoals() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<Goal> goals = new ArrayList<>();
+        //
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME +
+                " WHERE " + GOAL_TYPE + "= \"" + GOAL_PHONE + "\""
+                + " ORDER BY GOAL_DATE ASC", null);
+
+        //READ LINES FROM CURSOR INTO BUFFER
+        while (res.moveToNext()) {
+            String id = res.getString(0);
+            String goalDate = res.getString(1);
+            String goalType = res.getString(2);
+            long usage = res.getLong(3);
+            int unlocks = res.getInt(4);
+            String packageName = res.getString(5);
+            goals.add(new Goal(id, goalDate, goalType, usage, unlocks, packageName));
+        }
+
+
+        res.close();
+        return goals;
+    }
+
 
     public boolean canInsert(String date, String type) {
         SQLiteDatabase db = this.getWritableDatabase();

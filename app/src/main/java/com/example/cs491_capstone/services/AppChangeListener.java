@@ -6,8 +6,12 @@ import android.content.Intent;
 import android.util.Log;
 
 public class AppChangeListener extends BroadcastReceiver {
+
+    private Context context;
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        this.context = context;
         switch (intent.getAction()) {
             case Intent.ACTION_PACKAGE_ADDED:
             case Intent.ACTION_PACKAGE_REMOVED:

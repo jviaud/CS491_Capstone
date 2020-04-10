@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#224770</color>
-    <color name="colorPrimaryDark">#475259</color>
-    <color name="colorAccent">#BFCDE0</color>
+    <color name="colorPrimaryDark">#000</color>
+    <color name="colorAccent">#000</color>
     <color name="black">#000</color>
-    <color name="gold">#E4A85A</color>
     <color name="silver">#C0C0C0</color>
+
+    <color name="passed">#224770</color>
+    <color name="failed">#702222</color>
 
     <color name="maps">#ED0909</color>
     <color name="social">#0030E3</color>
@@ -15,9 +17,13 @@
     <color name="image">#2B2B2B</color>
     <color name="news">#930DE6</color>
     <color name="productivity">#43F602</color>
+    <color name="other">#C0CFBB</color>
 
-    <color name="backgroundcolor">#DDE3EC</color>
-    <color name="cardbackground">#FFFFFF</color>
+    <color name="cardbackground_alt">#475259</color>
+    <color name="backgroundcolor">#303030</color>
+    <color name="cardbackground">#424242</color>
+    <color name="bottomnav">#212121</color>
+    <color name="highlight">#84C9FB</color>
     <color name="textcolor">#eef1f1</color>
     <color name="textcolor_alt">#000000</color>
     <color name="tintcolor">#000000</color>
@@ -27,7 +33,7 @@
     <color name="toolbarcolor">#1F1F1F</color>
     <color name="fabcolor">#225e5e</color>
     <color name="textColorHint">#E8E8E8</color>
-    <color name="devidercolor">#D6D6D6</color>
+    <color name="devidercolor">#1F1F1F</color>
     <color name="launcher_background">#23DBDC</color>
 
 

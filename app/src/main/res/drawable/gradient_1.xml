@@ -3,15 +3,13 @@
     <size
         android:width="250dp"
         android:height="100dp" />
+
     <corners android:radius="10dp" />
-
-
 
     <gradient
         android:angle="-90"
-        android:endColor="?attr/colorPrimary"
-        android:startColor="?attr/colorAccent" />
-
+        android:endColor="@color/colorPrimary"
+        android:startColor="@color/highlight" />
 
 
 </shape>

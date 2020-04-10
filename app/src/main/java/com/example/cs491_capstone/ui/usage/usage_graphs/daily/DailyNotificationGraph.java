@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,7 +171,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
         //TOO AVOID IT WE JUST SET THE GRAPH BACK TO NORMAL
         //BOOLEAN IS SET BACK TO FALSE
 
-        todayDate.setText(graphDate);
+        todayDate.setText(App.dateFormater(graphDate,"mm/dd/yyyy"));
         if (byCategory) {
             //BUTTON TEXT IS SET BACK TO DEFAULT
             changeGraph.setText(R.string.byCategory);
@@ -251,18 +253,24 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
             //TODO ADD KEY FOR DAY HERE
             ArrayList<String> categories = localDatabase.categoryUsed(date, DatabaseHelper.NOTIFICATIONS_COUNT);
 
-            for (String category : categories) {
-                long val = Long.parseLong(localDatabase.getSumTotalStatByCategory(date, DatabaseHelper.NOTIFICATIONS_COUNT, category));
+            for (final String category : categories) {
+                final long val = Long.parseLong(localDatabase.getSumTotalStatByCategory(date, DatabaseHelper.NOTIFICATIONS_COUNT, category));
 
 
-                TextView key = new TextView(getContext());
-                GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-                lp.setMargins(15, 15, 15, 15);
-                key.setLayoutParams(lp);
-                key.setText(category + " " + val);
-                key.setTextSize(15);
-                //  key.setTextColor(categoryKey[j]);
-                keyContainer.addView(key);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Log.d("UI thread", "I am the UI thread");
+
+                        TextView key = new TextView(getContext());
+                        GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+                        lp.setMargins(15, 15, 15, 15);
+                        key.setLayoutParams(lp);
+                        key.setText(category + " " + val);
+                        key.setTextSize(15);
+                        keyContainer.addView(key);
+                    }
+                });
             }
 
         } else {
@@ -322,7 +330,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
         Axis axisX = new Axis(xAxisValues)
                 .setName("Hour of Day") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -330,7 +338,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
                 ;
 
 
@@ -387,7 +395,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
         //DATE IS SET TOO TODAY
         graphDate = App.DATE;
         //DATE TITLE IS SET TO TODAY
-        todayDate.setText(graphDate);
+        todayDate.setText(App.dateFormater(graphDate,"mm/dd/yyyy"));
         //HIDE THE NEXT BUTTON, WE DO NOT SHOW FUTURE GRAPHS BECAUSE WE KNOW THEY ARE BLANK
         nextButton.setVisibility(View.GONE);
         //GRAPH IS SHOWING TODAY SO WE DO NOT SHOW THE SKIP TO TODAY BUTTON
@@ -421,7 +429,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
                 showToday.setVisibility(View.VISIBLE);
             }
             //SET THE DATE TEXT AND GENERATE THE GRAPH
-            todayDate.setText(graphDate);
+            todayDate.setText(App.dateFormater(graphDate,"mm/dd/yyyy"));
             createUsageChart(graphDate, byCategory);
         } else {
             //IF WE ARE AT THE END OOF THE LIST THEN WE HIDE THE NEXT BUTTON
@@ -451,7 +459,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
                 showToday.setVisibility(View.GONE);
             }
             //SET THE DATE TEXT AND GENERATE THE GRAPH
-            todayDate.setText(graphDate);
+            todayDate.setText(App.dateFormater(graphDate,"mm/dd/yyyy"));
             createUsageChart(graphDate, byCategory);
         } else {
             //IF WE HAVE EXCEEDED THE LIMIT THEN HIDE THE PREV BUTTON
