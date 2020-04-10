@@ -8,8 +8,8 @@
 
     <gradient
         android:angle="-90"
-        android:endColor="@color/colorPrimary"
-        android:startColor="@color/highlight" />
+        android:endColor="@color/bottomnav"
+        android:startColor="@color/backgroundcolor" />
 
 
 </shape>

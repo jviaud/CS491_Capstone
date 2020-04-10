@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui.goal.tabs.AppGoalFragment;
@@ -24,6 +26,9 @@ public class GoalsFragment extends Fragment {
     public static String startDate = currentPeriod.get(0).get(0);
     public static String endDate = currentPeriod.get(0).get(6);
 
+
+    private int indicatorWidth;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,8 +40,9 @@ public class GoalsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        TabLayout tabLayout = view.findViewById(R.id.graph_choice);
+        final TabLayout tabLayout = view.findViewById(R.id.graph_choice);
         LockableViewPager viewPager = view.findViewById(R.id.graph_container);
+        viewPager.setScrollDuration(200);
         ViewPageAdapter adapter = new ViewPageAdapter(getChildFragmentManager(), FragmentPagerAdapter.POSITION_UNCHANGED);
 
         viewPager.setAdapter(adapter);
@@ -47,6 +53,45 @@ public class GoalsFragment extends Fragment {
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+
+
+        final View mIndicator = view.findViewById(R.id.indicator);
+
+
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                indicatorWidth = tabLayout.getWidth() / tabLayout.getTabCount();
+
+                //Assign new width
+                FrameLayout.LayoutParams indicatorParams = (FrameLayout.LayoutParams) mIndicator.getLayoutParams();
+                indicatorParams.width = indicatorWidth;
+                mIndicator.setLayoutParams(indicatorParams);
+            }
+        });
+
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float positionOffset, int positionOffsetPx) {
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mIndicator.getLayoutParams();
+
+                //Multiply positionOffset with indicatorWidth to get translation
+                float translationOffset = (positionOffset + i) * indicatorWidth;
+                params.leftMargin = (int) translationOffset;
+                mIndicator.setLayoutParams(params);
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
     }
 
 }

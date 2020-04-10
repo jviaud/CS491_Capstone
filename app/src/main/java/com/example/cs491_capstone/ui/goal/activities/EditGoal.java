@@ -297,7 +297,7 @@ public class EditGoal extends AppCompatActivity implements View.OnClickListener,
 
         specifyDate.setEnabled(false);
 
-        date = App.dateFormater(goal.getDate(), "EEEE, MMMM dd, yyyy");
+        date = App.dateFormatter(goal.getDate(), "EEEE, MMMM dd, yyyy");
         dateTitle.setText(date);
 
 

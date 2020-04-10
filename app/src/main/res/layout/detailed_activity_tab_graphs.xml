@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="6dp"
+    app:cardCornerRadius="8dp"
     app:cardBackgroundColor="@color/cardbackground"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -21,10 +22,10 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/backarrow"
             android:layout_width="20dp"
-            android:elevation="3dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:backgroundTint="@color/highlight"
-            android:layout_marginStart="16dp"
+            android:elevation="3dp"
             app:layout_constraintBottom_toTopOf="@+id/barchart_top"
             app:layout_constraintStart_toStartOf="parent"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Button.Triangle.Prev" />
@@ -33,10 +34,10 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/nextarrow"
             android:layout_width="20dp"
-            android:elevation="3dp"
-            android:backgroundTint="@color/highlight"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/highlight"
+            android:elevation="3dp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/barchart_top"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +55,7 @@
             android:text="@string/show_today"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="@color/textcolor"
+            android:textColor="@color/textcolor_secondary"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/barchart_top"
             app:layout_constraintEnd_toStartOf="@+id/nextarrow" />

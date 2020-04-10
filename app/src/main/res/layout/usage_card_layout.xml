@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:text="@string/hello_world"
-        android:textColor="@color/textcolor"
+        android:textColor="@color/textcolor_secondary"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/icon"
         app:layout_constraintTop_toTopOf="@+id/icon" />
@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_world"
-        android:textColor="@color/textcolor"
+        android:textColor="@color/textcolor_tertiary"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/icon"
         app:layout_constraintStart_toStartOf="@+id/name" />

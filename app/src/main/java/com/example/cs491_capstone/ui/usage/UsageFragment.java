@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.R;
@@ -22,8 +24,9 @@ public class UsageFragment extends Fragment {
 
 
     public final static String[] category = new String[]{"Maps", "Social", "Movies & Video", "Audio", "Game", "Image", "News", "Productivity", "Other"};
-    public final static int[] categoryKey = new int[]{R.color.maps, R.color.social, R.color.video, R.color.audio, R.color.game, R.color.image, R.color.news, R.color.productivity,R.color.other,};
+    public final static int[] categoryKey = new int[]{R.color.maps, R.color.social, R.color.video, R.color.audio, R.color.game, R.color.image, R.color.news, R.color.productivity, R.color.other,};
     public static ArrayList<String> weeksSingleFormat;
+
     private int indicatorWidth;
 
     @Nullable
@@ -36,13 +39,12 @@ public class UsageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //CREATE TABBED LAYOUT FOR WEEK/DAY CONTENT
-        final View indicator = view.findViewById(R.id.indicator);
-        final TabLayout tabLayout = view.findViewById(R.id.tabbed_layout);
-        LockableViewPager viewPager = view.findViewById(R.id.viewPager);
-        viewPager.setSwipeable(true);
+
+
+        final TabLayout tabLayout = view.findViewById(R.id.graph_choice);
+        LockableViewPager viewPager = view.findViewById(R.id.graph_container);
         viewPager.setScrollDuration(200);
-        ViewPageAdapter adapter = new ViewPageAdapter(getFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        ViewPageAdapter adapter = new ViewPageAdapter(getChildFragmentManager(), FragmentPagerAdapter.POSITION_UNCHANGED);
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -51,21 +53,47 @@ public class UsageFragment extends Fragment {
         adapter.addFragment(new UsageWeeklyFragment(), "Week");
 
         viewPager.setAdapter(adapter);
-
         tabLayout.setupWithViewPager(viewPager);
 
-//        tabLayout.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                indicatorWidth = tabLayout.getWidth() / tabLayout.getTabCount();
-//
-//                //Assign new width
-//                FrameLayout.LayoutParams indicatorParams = (FrameLayout.LayoutParams) indicator.getLayoutParams();
-//                indicatorParams.width = indicatorWidth;
-//                indicator.setLayoutParams(indicatorParams);
-//            }
-//        });
-//        //
+
+        final View mIndicator = view.findViewById(R.id.indicator);
+
+
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                indicatorWidth = tabLayout.getWidth() / tabLayout.getTabCount();
+
+                //Assign new width
+                FrameLayout.LayoutParams indicatorParams = (FrameLayout.LayoutParams) mIndicator.getLayoutParams();
+                indicatorParams.width = indicatorWidth;
+                mIndicator.setLayoutParams(indicatorParams);
+            }
+        });
+
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float positionOffset, int positionOffsetPx) {
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mIndicator.getLayoutParams();
+
+                //Multiply positionOffset with indicatorWidth to get translation
+                float translationOffset = (positionOffset + i) * indicatorWidth;
+                params.leftMargin = (int) translationOffset;
+                mIndicator.setLayoutParams(params);
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
 
         ///WE TAKE THE LIST OF LIST AND MAKE IT EASIER TO TRAVERSE BY PUTTING IT INTO A SINGLE LIST IN THE REVERSE ORDER
         //ONLY THE ORDER OF THE OUTER LIST IS REVERSED, THE ORDER OF THE STRINGS IN THE INNER LIST IS KEPT

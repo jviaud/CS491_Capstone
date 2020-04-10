@@ -15,19 +15,27 @@
         android:layout_marginTop="16dp"
         android:clipToPadding="true">
 
+        <View
+            android:id="@+id/indicator"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:background="@drawable/tab_background_selected" />
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/graph_choice"
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="36dp"
-            android:background="@drawable/tab_layout_background"
-            app:tabBackground="@drawable/tab_layout_selector"
-            app:tabIndicatorHeight="0dp"
-            app:tabMode="scrollable"
+            android:background="@null"
+            app:tabGravity="fill"
             app:tabPaddingEnd="16dp"
+            app:tabIndicatorColor="@null"
             app:tabPaddingStart="16dp"
+            app:tabMode="fixed"
+            app:tabTextAppearance="@style/TabText"
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/colorPrimaryDark"
             app:tabTextColor="@color/textcolor" />
+
     </FrameLayout>
 
 
@@ -35,7 +43,7 @@
         android:id="@+id/graph_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp" />
 
 
 </LinearLayout>

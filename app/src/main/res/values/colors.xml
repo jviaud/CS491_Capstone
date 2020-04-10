@@ -22,9 +22,12 @@
     <color name="cardbackground_alt">#475259</color>
     <color name="backgroundcolor">#303030</color>
     <color name="cardbackground">#424242</color>
+    <color name="ripple_26">#42000000</color>
     <color name="bottomnav">#212121</color>
     <color name="highlight">#84C9FB</color>
-    <color name="textcolor">#eef1f1</color>
+    <color name="textcolor">#FFFFFF</color>
+    <color name="textcolor_secondary">#DEFFFFFF</color>
+    <color name="textcolor_tertiary">#99FFFFFF</color>
     <color name="textcolor_alt">#000000</color>
     <color name="tintcolor">#000000</color>
     <color name="buttoncolor_transparent">#A29E9E</color>

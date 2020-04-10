@@ -24,6 +24,7 @@
         <item name="android:popupMenuStyle">@style/MyApp.PopupMenu</item>
         <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme</item>
         <item name="android:textColorPrimary">@color/textcolor</item>
+        <item name="colorControlHighlight">@color/ripple_26</item>
         <item name="android:textColor">@color/textcolor</item>
     </style>
     <!-- Base application theme. -->
@@ -69,6 +70,13 @@
 
     <style name="TabText">
         <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="TabText_alt">
+        <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>
         <item name="textAllCaps">true</item>
         <item name="android:textAllCaps">true</item>

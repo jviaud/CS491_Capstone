@@ -19,7 +19,7 @@
     <string name="show_today">SHOW TODAY</string>
     <string name="byCategory">SHOW CATEGORY</string>
     <string name="byApps">SHOW APPS</string>
-    <string name="listApps">APPS USED</string>
+    <string name="listApps">Apps Used</string>
     <string name="listCategory">CATEGORIES USED</string>
     <string name="usage">Usage</string>
     <string name="notifications">Notifications</string>
@@ -29,5 +29,8 @@
     <string name="edit">Edit</string>
     <string name="show_all">Show All</string>
     <string name="grant">GRANT</string>
+    <string name="unlock_goal">Unlock Goal</string>
+    <string name="usage_goal">Usage Goal</string>
+    <string name="phone_goal">Phone Goal</string>
 
 </resources>

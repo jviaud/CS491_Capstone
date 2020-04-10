@@ -30,7 +30,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/ic_menu"
-                android:tint="#FFFFFFFF"
+                android:tint="@color/textcolor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,6 +41,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/hello_world"
                 android:textColor="@color/textcolor"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -52,6 +53,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/hello_world"
                 android:textColor="@color/textcolor"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/id"
                 app:layout_constraintStart_toStartOf="@+id/id"
                 app:layout_constraintTop_toBottomOf="@+id/id" />
@@ -174,8 +176,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="Usage Goal"
-                    android:textColor="@color/textcolor"
+                    android:text="@string/usage_goal"
+                    android:textColor="@color/textcolor_secondary"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/appName" />
 
@@ -186,7 +188,7 @@
                     android:layout_height="15dp"
                     app:layout_constraintBottom_toTopOf="@+id/usage_label"
                     app:layout_constraintEnd_toEndOf="@+id/usage_label"
-                    app:layout_constraintHorizontal_bias="0.4"
+                    app:layout_constraintHorizontal_bias="0.41"
                     app:layout_constraintStart_toStartOf="@+id/usage_label"
                     app:srcCompat="@drawable/ic_tick" />
 
@@ -196,8 +198,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:text="Unlock Goal"
-                    android:textColor="@color/textcolor"
+                    android:text="@string/unlock_goal"
+                    android:textColor="@color/textcolor_secondary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/appName" />
 
@@ -206,7 +208,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hello_world"
-                    android:textColor="@color/textcolor"
+                    android:textColor="@color/textcolor_tertiary"
                     app:layout_constraintEnd_toEndOf="@+id/usage_label"
                     app:layout_constraintStart_toStartOf="@+id/usage_label"
                     app:layout_constraintTop_toBottomOf="@+id/usage_label" />
@@ -216,7 +218,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hello_world"
-                    android:textColor="@color/textcolor"
+                    android:textColor="@color/textcolor_tertiary"
                     app:layout_constraintEnd_toEndOf="@+id/unlock_label"
                     app:layout_constraintStart_toStartOf="@+id/unlock_label"
                     app:layout_constraintTop_toBottomOf="@+id/unlock_label" />
@@ -227,7 +229,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Phone Goal"
+                    android:text="@string/phone_goal"
                     android:textColor="@color/textcolor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

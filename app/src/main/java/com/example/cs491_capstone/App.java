@@ -267,7 +267,7 @@ public class App extends Application {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time)));
     }
 
-    public static String dateFormater(String date, String newDate) {
+    public static String dateFormatter(String date, String newDate) {
 
         DateTime dt = DateTime.parse(date, DateTimeFormat.forPattern("yyyy-MM-dd"));
         return dt.toString(newDate);

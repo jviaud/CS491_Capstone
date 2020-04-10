@@ -122,7 +122,7 @@ public class GoalImageAdapter extends RecyclerView.Adapter<GoalImageAdapter.Imag
         holderList.add(holder);
         final Goal goal = goals.get(position);
         holder.id.setText(goal.getId());
-        holder.date.setText(App.dateFormater(goal.getDate(), "EEEE, MMMM dd, yyyy"));
+        holder.date.setText(App.dateFormatter(goal.getDate(), "EEEE, MMMM dd, yyyy"));
 
         if (goal.getType().equals(GoalDataBaseHelper.GOAL_APP)) {
             String packageName = goal.getPackageName();

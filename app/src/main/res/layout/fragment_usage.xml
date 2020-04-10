@@ -2,43 +2,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/backgroundcolor"
     android:orientation="vertical">
 
 
     <FrameLayout
-        android:id="@+id/tabbed_fragment_container"
-        android:layout_width="150dp"
+        android:id="@+id/tabbed_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
         android:clipToPadding="true">
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabbed_layout"
-            android:layout_width="wrap_content"
+        <View
+            android:id="@+id/indicator"
+            android:layout_width="0dp"
             android:layout_height="36dp"
-            android:background="@drawable/tab_layout_background"
-            app:tabBackground="@drawable/tab_layout_selector"
-            app:tabMode="scrollable"
+            android:background="@drawable/tab_background_selected" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/graph_choice"
+            android:layout_width="250dp"
+            android:layout_height="36dp"
+            android:background="@null"
+            app:tabGravity="fill"
             app:tabPaddingEnd="16dp"
+            app:tabIndicatorColor="@null"
             app:tabPaddingStart="16dp"
+            app:tabMode="fixed"
+            app:tabTextAppearance="@style/TabText"
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/colorPrimaryDark"
-            app:tabIndicatorHeight="0dp"
-            app:tabTextColor="?attr/textcolor" />
+            app:tabTextColor="@color/textcolor" />
+
     </FrameLayout>
 
 
     <com.example.cs491_capstone.ui_helpers.LockableViewPager
-        android:id="@+id/viewPager"
+        android:id="@+id/graph_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" />
-
+        android:layout_marginTop="8dp" />
 
 
 </LinearLayout>
