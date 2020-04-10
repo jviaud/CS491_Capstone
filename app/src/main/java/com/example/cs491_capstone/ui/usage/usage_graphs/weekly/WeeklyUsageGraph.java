@@ -26,6 +26,7 @@ import com.example.cs491_capstone.UserUsageInfo;
 import com.example.cs491_capstone.ui.detailed.DetailedAppActivity;
 import com.example.cs491_capstone.ui.usage.UsageFragment;
 import com.example.cs491_capstone.ui.usage.UsageListViewAdapter;
+import com.example.cs491_capstone.ui.usage.UsageListViewWeekly;
 import com.example.cs491_capstone.ui.usage.usage_graphs.daily.DailyUsageGraph;
 
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
     /**
      * list adapter for list view
      */
-    private UsageListViewAdapter listAdapter;
+    private UsageListViewWeekly listAdapter;
     /**
      * list view containing either apps used or categories used depending on value of boolean byCategory
      */
@@ -504,7 +505,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
             usedList = localDatabase.appsUsed(App.currentPeriod.get(Week).get(columnIndex), DatabaseHelper.USAGE_TIME);
 
 
-            listAdapter = new UsageListViewAdapter(getContext(), usedList);
+            listAdapter = new UsageListViewWeekly(getContext(), usedList);
             listAdapter.setByCategory(byCategory);
             listAdapter.setDay(App.currentPeriod.get(Week).get(columnIndex));
             listAdapter.setColumn(DatabaseHelper.USAGE_TIME);
@@ -526,7 +527,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
 
         @Override
         public void onValueDeselected() {
-            listAdapter = new UsageListViewAdapter(getContext(), new ArrayList<UserUsageInfo>());
+            listAdapter = new UsageListViewWeekly(getContext(), new ArrayList<UserUsageInfo>());
             listView.setAdapter(listAdapter);
             App.setListViewHeightBasedOnChildren(listView);
         }
