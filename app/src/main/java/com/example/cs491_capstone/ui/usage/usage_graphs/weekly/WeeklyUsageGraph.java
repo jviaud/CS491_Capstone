@@ -46,6 +46,7 @@ import static com.example.cs491_capstone.App.localDatabase;
 import static com.example.cs491_capstone.App.week;
 import static com.example.cs491_capstone.ui.usage.UsageFragment.categoryKey;
 import static com.example.cs491_capstone.ui.usage.UsageFragment.weeksSingleFormat;
+import static com.example.cs491_capstone.ui.usage.UsageFragment.weeksSingleFormat;
 
 public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
     /**
@@ -60,7 +61,8 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
     /**
      * The current index we are on inside the week list
      */
-    private int indexInWeek;
+    private int Week = 0;
+//    private int indexInWeek;
     /**
      * Layout under the graph used to hold keys
      */
@@ -131,10 +133,11 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
 
         //INDEX IN THE ARRAY LIST CONTAINING DATES OF THE LAST 4 WEEKS INCLUSIVE
         //USED TO EITHER MOVE BACK OR FORWARD TO SHOW DIFFERENT GRAPHS
-        indexInWeek = weeksSingleFormat.indexOf(App.DATE);
+//        indexInWeek = weeksSingleFormat.indexOf(App.DATE);
         //TO START THE GRAPH DATE IS TODAY'S DATE
-        graphDate = weeksSingleFormat.get(indexInWeek);
-        todayDate.setText(graphDate);
+        graphDate = "Week of " + App.currentPeriod.get(0).get(0);
+        todayDate.setText("Week of " + graphDate);
+
 
         //CREATE A SINGLE ON CLICK LISTENER AND APPLY ALL CLICKABLE VIEWS TO IT
         //THIS WAY I DON'T HAVE TO CREATE SEPARATE ONES AND CLOG THE THIS METHOD
@@ -233,7 +236,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
                 values = new ArrayList<>();
                 for (int j = 0; j < UsageFragment.category.length; j++) {
                     String category = UsageFragment.category[j];
-                    long value = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(date, DatabaseHelper.USAGE_TIME, category)) / 60000;
+                    long value = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(App.currentPeriod.get(Week).get(i), DatabaseHelper.USAGE_TIME, category)) / 60000;
 
                     if (value == 0) {
                         //  values.add(new SubcolumnValue(value, Color.TRANSPARENT));
@@ -291,7 +294,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
                 for (int j = 0; j < 1; ++j) {
 
                     //WE DO NOT NEED TO CATCH ANY EXCEPTIONS HERE BECAUSE THE getSumTotalStat() METHOD WILL RETURN 0 IF NULL AND ALL DATA IS CLEAN WHEN INSERTED INTO THE GRAPH
-                    long value = Long.parseLong(App.localDatabase.getSumTotalStat(date, DatabaseHelper.USAGE_TIME)) / 60000;
+                    long value = Long.parseLong(App.localDatabase.getSumTotalStat(App.currentPeriod.get(Week).get(i), DatabaseHelper.USAGE_TIME)) / 60000;
 
 
                     //WE DIVIDE THE TOTAL TIME IN MILLI BY 60000 TO GET THE NUMBER OF MINUTES
@@ -346,7 +349,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
 
         //PASS THE LIST OF X-AXIS LABELS TO THE X-AXIS
         Axis axisX = new Axis(xAxisValues)
-                .setName("Hour of Day") //NAME OF X-AXIS
+                .setName("Days of the Week") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
                 .setTextColor(R.color.black)//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
@@ -411,18 +414,18 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
     private void showTodayGraph() {
         //WHEN SHOW TODAY IS PRESSED EVERYTHING HAS TO BE RESET
         //DATE IS SET TOO TODAY
-        graphDate = App.DATE;
+        Week = 0;
+        graphDate = App.currentPeriod.get(0).get(0);
         //DATE TITLE IS SET TO TODAY
-        todayDate.setText(graphDate);
+        todayDate.setText("Week of " + graphDate);
         //HIDE THE NEXT BUTTON, WE DO NOT SHOW FUTURE GRAPHS BECAUSE WE KNOW THEY ARE BLANK
         nextButton.setVisibility(View.GONE);
         //GRAPH IS SHOWING TODAY SO WE DO NOT SHOW THE SKIP TO TODAY BUTTON
-        showToday.setVisibility(View.GONE);
+        showToday.setVisibility(View.VISIBLE);
         //WE SHOW THE PREV BUTTON BECAUSE IT MAY HAVE BEEN SET TO GONE IF WE REACHED THE BEGINNING OF THE LIST
         prevButton.setVisibility(View.VISIBLE);
 
         //THIS IS THE INDEX OF TODAY
-        indexInWeek = weeksSingleFormat.indexOf(App.DATE);
 
         //CREATE THE GRAPH
         createUsageChart(graphDate, byCategory);
@@ -432,22 +435,25 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
         //IF THIS HAS BEEN CLICKED AT LEAST ONCE THEN IT MEANS WE ARE NO LONGER AT THE END AND CAN SHOW THE PREV BUTTON
         prevButton.setVisibility(View.VISIBLE);
         //GO FORWARD ONE DAY
-        indexInWeek++;
+        Week--;
 
         //MAX_NEXT IS THE END OOF THE LIST, PREVENTS OUT OF BOUNDS EXCEPTION
-        if (indexInWeek <= MAX_NEXT) {
+        if (Week >= 0) {
             //FIRST CHANGE THE GRAPH DATE TO THE DATE IN THE LIST
-            graphDate = weeksSingleFormat.get(indexInWeek);
-            //IF THIS DATE IS EQUAL TO TODAY'S DATE THEN WE HIDE THE BUTTONS
-            if (graphDate.equals(App.DATE)) {
+            graphDate = App.currentPeriod.get(Week).get(0);
+            if (Week == 0) {
                 nextButton.setVisibility(View.GONE);
-                showToday.setVisibility(View.GONE);
+            }
+            //IF THIS DATE IS EQUAL TO TODAY'S DATE THEN WE HIDE THE BUTTONS
+            if (!graphDate.equals(App.currentPeriod.get(0).get(0))) {
+                nextButton.setVisibility(View.VISIBLE);
+                showToday.setVisibility(View.VISIBLE);
             } else {
                 //ELSE WE SHOW THE BUTTON TOO SKIP TO TODAY'S DATE
-                showToday.setVisibility(View.VISIBLE);
+                showToday.setVisibility(View.GONE);
             }
             //SET THE DATE TEXT AND GENERATE THE GRAPH
-            todayDate.setText(graphDate);
+            todayDate.setText("Week of " + graphDate);
             createUsageChart(graphDate, byCategory);
         } else {
             //IF WE ARE AT THE END OOF THE LIST THEN WE HIDE THE NEXT BUTTON
@@ -461,23 +467,23 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
         //IF THIS HAS BEEN CLICKED AT LEAST ONCE THEN IT MEANS WE ARE NO LONGER AT THE BEGINNING AND CAN SHOW THE NEXT BUTTON
         nextButton.setVisibility(View.VISIBLE);
         //GO BACK ONE DAY
-        indexInWeek--;
+        Week++;
 
         //ONLY IF WE HAVE NOT PASSED THE BEGINNING OF THE LIST, THIS PREVENTS A NEGATIVE OUT OF BOUNDS EXCEPTION
-        if (indexInWeek >= 0) {
-            graphDate = weeksSingleFormat.get(indexInWeek);
-            if (indexInWeek == 0) {
+        if (Week <= 3) {
+            graphDate =App.currentPeriod.get(Week).get(0);
+            if (Week == 3) {
                 prevButton.setVisibility(View.GONE);
             }
             //AS LONG AS THE GRAPH DATE ISN'T SHOWING TODAY THEN WE SHOW THE SKIP TO TODAY BUTTON
-            if (!graphDate.equals(App.DATE)) {
-                showToday.setVisibility(View.VISIBLE);
+            if (graphDate.equals(App.currentPeriod.get(0).get(0))) {
+                showToday.setVisibility(View.GONE);
             } else {
                 //ELSE WE HIDE THE BUTTON
-                showToday.setVisibility(View.GONE);
+                showToday.setVisibility(View.VISIBLE);
             }
             //SET THE DATE TEXT AND GENERATE THE GRAPH
-            todayDate.setText(graphDate);
+            todayDate.setText("Week of " + graphDate);
             createUsageChart(graphDate, byCategory);
         } else {
             //IF WE HAVE EXCEEDED THE LIMIT THEN HIDE THE PREV BUTTON
@@ -494,15 +500,14 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
         public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
 
 
-            String hour = String.valueOf(columnIndex);
+            String day = String.valueOf(columnIndex);
 
-            usedList = localDatabase.appsUsed(graphDate, hour, DatabaseHelper.USAGE_TIME);
+            usedList = localDatabase.appsUsed(day, DatabaseHelper.USAGE_TIME);
 
 
             listAdapter = new UsageListViewAdapter(getContext(), usedList);
             listAdapter.setByCategory(byCategory);
-            listAdapter.setDay(graphDate);
-            listAdapter.setHour(hour);
+            listAdapter.setDay(day);
             listAdapter.setColumn(DatabaseHelper.USAGE_TIME);
             listView.setAdapter(listAdapter);
 
