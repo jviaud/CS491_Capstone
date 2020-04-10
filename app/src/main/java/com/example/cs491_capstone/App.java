@@ -37,6 +37,15 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class App extends Application {
+    public static final String CATEGORY_MAPS = "Maps";
+    public static final String CATEGORY_SOCIAL = "Social";
+    public static final String CATEGORY_VIDEO = "Movies & Video";
+    public static final String CATEGORY_AUDIO = "Audio";
+    public static final String CATEGORY_GAME = "Game";
+    public static final String CATEGORY_IMAGE = "Image";
+    public static final String CATEGORY_NEWS = "News";
+    public static final String CATEGORY_PRODUCTIVITY = "Productivity";
+    public static final String CATEGORY_OTHER = "Other";
 
     /**
      * notification channel for services, required in API 29+
@@ -139,6 +148,43 @@ public class App extends Application {
     public static boolean isTrackedApp(String packageName) {
 
         return (INCLUDED_APPS_LIST.contains(packageName));
+    }
+
+    public static String getHexForCategory(Context context, String category) {
+        String hex;
+        switch (category) {
+            case CATEGORY_MAPS:
+                hex = context.getResources().getString(0 + R.color.maps);
+                break;
+            case CATEGORY_SOCIAL:
+                hex = context.getResources().getString(0 + R.color.social);
+                break;
+            case CATEGORY_VIDEO:
+                hex = context.getResources().getString(0 + R.color.video);
+                break;
+            case CATEGORY_AUDIO:
+                hex = context.getResources().getString(0 + R.color.audio);
+                break;
+            case CATEGORY_GAME:
+                hex = context.getResources().getString(0 + R.color.game);
+                break;
+            case CATEGORY_IMAGE:
+                hex = context.getResources().getString(0 + R.color.image);
+                break;
+            case CATEGORY_NEWS:
+                hex = context.getResources().getString(0 + R.color.news);
+                break;
+            case CATEGORY_PRODUCTIVITY:
+                hex = context.getResources().getString(0 + R.color.productivity);
+                break;
+            case CATEGORY_OTHER:
+                hex = context.getResources().getString(0 + R.color.other);
+                break;
+            default:
+                hex = "#000000";
+        }
+
+        return hex;
     }
 
 

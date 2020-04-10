@@ -24,7 +24,6 @@ public class UsageFragment extends Fragment {
 
 
     public final static String[] category = new String[]{"Maps", "Social", "Movies & Video", "Audio", "Game", "Image", "News", "Productivity", "Other"};
-    public final static int[] categoryKey = new int[]{R.color.maps, R.color.social, R.color.video, R.color.audio, R.color.game, R.color.image, R.color.news, R.color.productivity, R.color.other,};
     public static ArrayList<String> weeksSingleFormat;
 
     private int indicatorWidth;

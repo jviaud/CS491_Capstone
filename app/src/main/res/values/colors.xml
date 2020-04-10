@@ -14,7 +14,7 @@
     <color name="video">#00FFCE</color>
     <color name="audio">#FFE400</color>
     <color name="game">#FF6800</color>
-    <color name="image">#2B2B2B</color>
+    <color name="image">#80E4AA</color>
     <color name="news">#930DE6</color>
     <color name="productivity">#43F602</color>
     <color name="other">#C0CFBB</color>
@@ -49,5 +49,5 @@
     <color name="intro_inactive_indicator">#CCCCCC</color>
     <!--    END COLORS FOR INTRO SCREEN-->
 
-    <color name="transparent">#FFDA92</color>
+    <color name="transparent">#26FFDA92</color>
 </resources>

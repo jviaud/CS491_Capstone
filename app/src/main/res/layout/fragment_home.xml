@@ -17,11 +17,13 @@
             android:id="@+id/header_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:elevation="30dp"
-            app:cardBackgroundColor="@android:color/transparent"
             android:maxWidth="200dp"
             android:maxHeight="200dp"
-            app:cardCornerRadius="6dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -30,7 +32,7 @@
                 android:id="@+id/header_card_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/cardbackground">
+                android:background="@drawable/gradient_2">
 
 
                 <TextView
@@ -324,7 +326,9 @@
                 android:id="@+id/graph_container"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="55dp"
                 android:elevation="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"

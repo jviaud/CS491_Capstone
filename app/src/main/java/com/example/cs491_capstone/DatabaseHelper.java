@@ -80,7 +80,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TABLE_NAME + " (" + ENTRY_ID + " TEXT PRIMARY KEY," + DATE + " TEXT," + HOUR_OF_DAY + " INTEGER," + PACKAGE_NAME + " TEXT, " + UNLOCKS_COUNT + " INTEGER," + NOTIFICATIONS_COUNT + " INTEGER, " + USAGE_TIME + " REAL, " + APP_CATEGORY + " TEXT)");
+        db.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ENTRY_ID + " TEXT PRIMARY KEY," + DATE + " TEXT," + HOUR_OF_DAY + " INTEGER," + PACKAGE_NAME + " TEXT, " + UNLOCKS_COUNT + " INTEGER," + NOTIFICATIONS_COUNT + " INTEGER, " + USAGE_TIME + " REAL, " + APP_CATEGORY + " TEXT)");
+
+
     }
 
     @Override
@@ -650,7 +652,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("SELECT " + PACKAGE_NAME + ",SUM(" + USAGE_TIME + ") FROM " + TABLE_NAME +
                 " GROUP BY " + DATE + "," + PACKAGE_NAME +
                 " HAVING " + DATE + " =\"" + date + "\"" +
-                " AND SUM(USAGE_TIME) > 0"+
+                " AND SUM(USAGE_TIME) > 0" +
                 " ORDER BY SUM(" + USAGE_TIME + ") DESC LIMIT 5", null);
 
         while (res.moveToNext()) {

@@ -25,8 +25,7 @@ public class GoalsFragment extends Fragment {
 
     public static String startDate = currentPeriod.get(0).get(0);
     public static String endDate = currentPeriod.get(0).get(6);
-
-
+    public static String highlight;
     private int indicatorWidth;
 
     @Nullable
@@ -39,6 +38,7 @@ public class GoalsFragment extends Fragment {
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        highlight = getResources().getString(0+R.color.highlight);
 
         final TabLayout tabLayout = view.findViewById(R.id.graph_choice);
         LockableViewPager viewPager = view.findViewById(R.id.graph_container);

@@ -52,6 +52,7 @@ import lecho.lib.hellocharts.view.PieChartView;
 import static com.example.cs491_capstone.App.goalDataBase;
 import static com.example.cs491_capstone.App.week;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.endDate;
+import static com.example.cs491_capstone.ui.goal.GoalsFragment.highlight;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.startDate;
 
 public class AppGoalFragment extends Fragment {
@@ -69,13 +70,8 @@ public class AppGoalFragment extends Fragment {
     private TextView graph_app;
     private float maxUsageValue, maxUnlockValue;
 
-    private long[][] usageStatusValues = new long[week.length][2];
-
-    private long[][] unlockStatusValues = new long[week.length][2];
 
     private GoalImageAdapter goalAdapter;
-
-    private RecyclerView goalsRecycler;
 
     @Nullable
     @Override
@@ -136,7 +132,7 @@ public class AppGoalFragment extends Fragment {
         appsRecycler.setAdapter(adapter);
         ///
 
-        goalsRecycler = view.findViewById(R.id.goals_list);
+        RecyclerView goalsRecycler = view.findViewById(R.id.goals_list);
 
         LinearLayoutManager layoutManagerWeek = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
 
@@ -424,8 +420,6 @@ public class AppGoalFragment extends Fragment {
                 long val = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(0).get(i), DatabaseHelper.USAGE_TIME, packageName)) / 60000;
                 //long val = 10L;
 
-                usageStatusValues[i][0] = val;
-
                 if (val == 0) {
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
@@ -466,8 +460,6 @@ public class AppGoalFragment extends Fragment {
 
                 long val = Long.parseLong(App.goalDataBase.get(App.currentPeriod.get(0).get(j), GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_USAGE)) / 60000;
 
-                usageStatusValues[i][1] = val;
-
                 PointValue pointValue;
                 if (val == 0) {
                     pointValue = new PointValue(j, 0);
@@ -496,7 +488,7 @@ public class AppGoalFragment extends Fragment {
             }
 
             Line line = new Line(values);
-            line.setColor(Color.CYAN);
+            line.setColor(Color.parseColor(highlight));
             line.setCubic(false);
             line.setHasLabelsOnlyForSelected(true);
             line.setHasLines(false);
@@ -518,8 +510,7 @@ public class AppGoalFragment extends Fragment {
             values = new ArrayList<>();
             for (int j = 0; j < 1; ++j) {
                 long val = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(0).get(i), DatabaseHelper.UNLOCKS_COUNT, packageName));
-                //long val = 10L;
-                unlockStatusValues[i][0] = val;
+
                 if (val == 0) {
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
@@ -552,7 +543,6 @@ public class AppGoalFragment extends Fragment {
                 long val = Long.parseLong(App.goalDataBase.get(App.currentPeriod.get(0).get(j), GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_UNLOCKS));
                 PointValue pointValue;
 
-                unlockStatusValues[i][1] = val;
                 if (val == 0) {
                     pointValue = new PointValue(j, 0);
                     pointValue.setLabel("n/a");
@@ -569,7 +559,7 @@ public class AppGoalFragment extends Fragment {
             }
 
             Line line = new Line(values);
-            line.setColor(Color.CYAN);
+            line.setColor(Color.parseColor(highlight));
             line.setCubic(false);
             line.setHasLabelsOnlyForSelected(true);
             line.setHasLines(false);
@@ -605,7 +595,7 @@ public class AppGoalFragment extends Fragment {
         }
 
 
-        SliceValue goal = new SliceValue(remaining, Color.CYAN);
+        SliceValue goal = new SliceValue(remaining, Color.parseColor(highlight));
         SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
@@ -618,7 +608,7 @@ public class AppGoalFragment extends Fragment {
 
         unlockPieData.setCenterText1(formatRemaining);
         unlockPieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
-        unlockPieData.setCenterText1Color(Color.CYAN);
+        unlockPieData.setCenterText1Color(Color.parseColor(highlight));
         unlockPieData.setCenterText1FontSize(20);
 
 
@@ -648,7 +638,7 @@ public class AppGoalFragment extends Fragment {
         }
 
 
-        SliceValue goal = new SliceValue(remaining, Color.CYAN);
+        SliceValue goal = new SliceValue(remaining, Color.parseColor(highlight));
         SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
@@ -661,7 +651,7 @@ public class AppGoalFragment extends Fragment {
 
         usagePieData.setCenterText1(formatRemaining);
         usagePieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
-        usagePieData.setCenterText1Color(Color.CYAN);
+        usagePieData.setCenterText1Color(Color.parseColor(highlight));
         usagePieData.setCenterText1FontSize(20);
 
         usagePie.setChartRotationEnabled(false);

@@ -43,8 +43,8 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 import static com.example.cs491_capstone.App.clock;
+import static com.example.cs491_capstone.App.getHexForCategory;
 import static com.example.cs491_capstone.App.localDatabase;
-import static com.example.cs491_capstone.ui.usage.UsageFragment.categoryKey;
 import static com.example.cs491_capstone.ui.usage.UsageFragment.weeksSingleFormat;
 
 public class DailyUsageGraph extends Fragment implements View.OnClickListener {
@@ -237,7 +237,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
 
                     if (value != 0) {
                         //THE SUB COLUMNS COLOR IS CHOSEN FROM A LIST OF COLORS SO IT WILL ALWAYS BE THE SAME COLOR
-                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, categoryKey[j]);
+                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.parseColor(getHexForCategory(getContext(), category)));
 
                         subcolumnValue.setLabel("");
                         values.add(subcolumnValue);
@@ -280,6 +280,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
                         lp.setMargins(15, 15, 15, 15);
                         key.setLayoutParams(lp);
                         key.setText(category + " " + formattedVal);
+                        key.setTextColor(Color.parseColor(getHexForCategory(getContext(), category)));
                         key.setTextSize(15);
                         keyContainer.addView(key);
                     }

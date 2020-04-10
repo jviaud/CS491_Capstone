@@ -46,6 +46,7 @@ import static com.example.cs491_capstone.App.currentPeriod;
 import static com.example.cs491_capstone.App.goalDataBase;
 import static com.example.cs491_capstone.App.week;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.endDate;
+import static com.example.cs491_capstone.ui.goal.GoalsFragment.highlight;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.startDate;
 
 public class PhoneGoalFragment extends Fragment {
@@ -58,8 +59,6 @@ public class PhoneGoalFragment extends Fragment {
     private ComboLineColumnChartData unlockComboData;
     private CardView usageCard, unlockCard;
     private float maxUsageValue, maxUnlockValue;
-    private long[][] usageStatusValues = new long[week.length][2];
-    private long[][] unlockStatusValues = new long[week.length][2];
     private GoalImageAdapter goalAdapter;
 
     @Nullable
@@ -160,7 +159,7 @@ public class PhoneGoalFragment extends Fragment {
             formatRemaining = String.format(Locale.ENGLISH, "%.1f%%", remaining);
         }
 
-        SliceValue goal = new SliceValue(remaining, Color.CYAN);
+        SliceValue goal = new SliceValue(remaining, Color.parseColor(highlight));
         SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
@@ -173,7 +172,7 @@ public class PhoneGoalFragment extends Fragment {
 
         unlockPieData.setCenterText1(formatRemaining);
         unlockPieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
-        unlockPieData.setCenterText1Color(Color.CYAN);
+        unlockPieData.setCenterText1Color(Color.parseColor(highlight));
         unlockPieData.setCenterText1FontSize(20);
 
 
@@ -206,7 +205,7 @@ public class PhoneGoalFragment extends Fragment {
             formatRemaining = String.format(Locale.ENGLISH, "%.1f%%", remaining);
         }
 
-        SliceValue goal = new SliceValue(remaining, Color.CYAN);
+        SliceValue goal = new SliceValue(remaining, Color.parseColor(highlight));
         SliceValue actual = new SliceValue(full, Color.LTGRAY);
 
         values.add(goal);
@@ -219,7 +218,7 @@ public class PhoneGoalFragment extends Fragment {
 
         usagePieData.setCenterText1(formatRemaining);
         usagePieData.setCenterText1Typeface(Typeface.DEFAULT_BOLD);
-        usagePieData.setCenterText1Color(Color.CYAN);
+        usagePieData.setCenterText1Color(Color.parseColor(highlight));
         usagePieData.setCenterText1FontSize(20);
 
         usagePie.setChartRotationEnabled(false);
@@ -357,8 +356,6 @@ public class PhoneGoalFragment extends Fragment {
             for (int j = 0; j < 1; j++) {
                 long value = Long.parseLong(App.localDatabase.getSumTotalStat(currentPeriod.get(0).get(i), DatabaseHelper.USAGE_TIME)) / 60000; //Math.random() * 50 + 5;
 
-                usageStatusValues[i][0] = value;
-
 
                 if (value == 0) {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
@@ -400,7 +397,6 @@ public class PhoneGoalFragment extends Fragment {
                 long value = Long.parseLong(goalDataBase.get(currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_USAGE)) / 60000; //Math.random() * 50 + 5;
                 PointValue pointValue;
 
-                usageStatusValues[i][1] = value;
                 if (value == 0) {
                     pointValue = new PointValue(i, 0);
                     pointValue.setLabel("n/a");
@@ -428,7 +424,7 @@ public class PhoneGoalFragment extends Fragment {
             }
 
             Line line = new Line(values).setHasLabelsOnlyForSelected(true);
-            line.setColor(Color.CYAN);
+            line.setColor(Color.parseColor(highlight));
             line.setHasLines(false);
             line.setHasPoints(true);
             lines.add(line);
@@ -449,13 +445,12 @@ public class PhoneGoalFragment extends Fragment {
             for (int j = 0; j < 1; j++) {
                 long value = Long.parseLong(App.localDatabase.getSumTotalStat(currentPeriod.get(0).get(i), DatabaseHelper.UNLOCKS_COUNT));
 
-                unlockStatusValues[i][0] = value;
 
                 if (value == 0) {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     break;
                 } else {
-                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.CYAN);
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.parseColor(highlight));
 
                     subcolumnValue.setLabel(String.valueOf(value));
 
@@ -483,8 +478,6 @@ public class PhoneGoalFragment extends Fragment {
                 long value = Long.parseLong(goalDataBase.get(currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_PHONE, GoalDataBaseHelper.GOAL_UNLOCKS)); //Math.random() * 50 + 5;
                 PointValue pointValue;
 
-                unlockStatusValues[i][1] = value;
-
 
                 if (value == 0) {
                     pointValue = new PointValue(i, 0);
@@ -504,7 +497,7 @@ public class PhoneGoalFragment extends Fragment {
             }
 
             Line line = new Line(values).setHasLabelsOnlyForSelected(true);
-            line.setColor(Color.CYAN);
+            line.setColor(Color.parseColor(highlight));
             line.setHasLines(false);
             line.setHasPoints(true);
             lines.add(line);

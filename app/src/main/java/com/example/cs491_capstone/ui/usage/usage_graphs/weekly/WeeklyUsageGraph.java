@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ import com.example.cs491_capstone.UserUsageInfo;
 import com.example.cs491_capstone.ui.detailed.DetailedAppActivity;
 import com.example.cs491_capstone.ui.usage.UsageFragment;
 import com.example.cs491_capstone.ui.usage.UsageListViewAdapter;
-import com.example.cs491_capstone.ui.usage.usage_graphs.daily.DailyUsageGraph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,11 +40,11 @@ import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
+import static com.example.cs491_capstone.App.getHexForCategory;
 import static com.example.cs491_capstone.App.localDatabase;
 import static com.example.cs491_capstone.App.week;
-import static com.example.cs491_capstone.ui.usage.UsageFragment.categoryKey;
 import static com.example.cs491_capstone.ui.usage.UsageFragment.weeksSingleFormat;
-import static com.example.cs491_capstone.ui.usage.UsageFragment.weeksSingleFormat;
+
 
 public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
     /**
@@ -242,7 +240,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
                         //  values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     } else {
                         //THE SUB COLUMNS COLOR IS CHOSEN FROM A LIST OF COLORS SO IT WILL ALWAYS BE THE SAME COLOR
-                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, categoryKey[j]);
+                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.parseColor(getHexForCategory(getContext(), category)));
 
                         subcolumnValue.setLabel("");
                         values.add(subcolumnValue);
@@ -283,7 +281,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
                 key.setLayoutParams(lp);
                 key.setText(category + " " + formattedVal);
                 key.setTextSize(15);
-//                key.setTextColor(categoryKey[j]);
+                key.setTextColor(Color.parseColor(getHexForCategory(getContext(), category)));
                 keyContainer.addView(key);
             }
 
