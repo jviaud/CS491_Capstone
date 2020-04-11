@@ -142,6 +142,8 @@
         <item name="android:popupMenuStyle">@style/MyApp.PopupMenu_Dark</item>
         <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme_Dark</item>
 
+        <item name="TabLayoutStyle">@style/MineCustomTabText_Dark</item>
+        <item name="TabLayoutText">@style/TabText</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
     </style>
 
@@ -165,6 +167,8 @@
         <item name="android:popupMenuStyle">@style/MyApp.PopupMenu_Light</item>
         <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme_Light</item>
 
+        <item name="TabLayoutStyle">@style/MineCustomTabText_Light</item>
+        <item name="TabLayoutText">@style/TabText</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
     </style>
     <!--    -->
