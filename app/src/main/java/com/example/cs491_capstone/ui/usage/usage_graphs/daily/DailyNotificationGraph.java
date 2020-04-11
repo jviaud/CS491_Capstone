@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
+import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.UserUsageInfo;
 import com.example.cs491_capstone.ui.detailed.DetailedAppActivity;
@@ -44,6 +45,7 @@ import lecho.lib.hellocharts.view.ColumnChartView;
 import static com.example.cs491_capstone.App.clock;
 import static com.example.cs491_capstone.App.getHexForCategory;
 import static com.example.cs491_capstone.App.localDatabase;
+import static com.example.cs491_capstone.App.notificationColColor;
 import static com.example.cs491_capstone.ui.usage.UsageFragment.weeksSingleFormat;
 
 public class DailyNotificationGraph extends Fragment implements View.OnClickListener {
@@ -171,7 +173,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
         //TOO AVOID IT WE JUST SET THE GRAPH BACK TO NORMAL
         //BOOLEAN IS SET BACK TO FALSE
 
-        todayDate.setText(App.dateFormatter(graphDate,"MM/dd/yyyy"));
+        todayDate.setText(App.dateFormatter(graphDate, "MM/dd/yyyy"));
         if (byCategory) {
             //BUTTON TEXT IS SET BACK TO DEFAULT
             changeGraph.setText(R.string.byCategory);
@@ -229,7 +231,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
                         values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     } else {
                         //THE SUB COLUMNS COLOR IS CHOSEN FROM A LIST OF COLORS SO IT WILL ALWAYS BE THE SAME COLOR
-                        SubcolumnValue subcolumnValue = new SubcolumnValue(value,  Color.parseColor(getHexForCategory(getContext(), category)));
+                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.parseColor(getHexForCategory(getContext(), category)));
 
                         subcolumnValue.setLabel("");
                         values.add(subcolumnValue);
@@ -290,7 +292,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
                         values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                         break;
                     } else {
-                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.RED);
+                        SubcolumnValue subcolumnValue = new SubcolumnValue(value,  Color.parseColor(notificationColColor));
                         values.add(subcolumnValue);
                     }
 
@@ -331,7 +333,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
         Axis axisX = new Axis(xAxisValues)
                 .setName("Hour of Day") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -339,7 +341,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 ;
 
 
@@ -396,7 +398,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
         //DATE IS SET TOO TODAY
         graphDate = App.DATE;
         //DATE TITLE IS SET TO TODAY
-        todayDate.setText(App.dateFormatter(graphDate,"MM/dd/yyyy"));
+        todayDate.setText(App.dateFormatter(graphDate, "MM/dd/yyyy"));
         //HIDE THE NEXT BUTTON, WE DO NOT SHOW FUTURE GRAPHS BECAUSE WE KNOW THEY ARE BLANK
         nextButton.setVisibility(View.GONE);
         //GRAPH IS SHOWING TODAY SO WE DO NOT SHOW THE SKIP TO TODAY BUTTON
@@ -430,7 +432,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
                 showToday.setVisibility(View.VISIBLE);
             }
             //SET THE DATE TEXT AND GENERATE THE GRAPH
-            todayDate.setText(App.dateFormatter(graphDate,"MM/dd/yyyy"));
+            todayDate.setText(App.dateFormatter(graphDate, "MM/dd/yyyy"));
             createUsageChart(graphDate, byCategory);
         } else {
             //IF WE ARE AT THE END OOF THE LIST THEN WE HIDE THE NEXT BUTTON
@@ -460,7 +462,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
                 showToday.setVisibility(View.GONE);
             }
             //SET THE DATE TEXT AND GENERATE THE GRAPH
-            todayDate.setText(App.dateFormatter(graphDate,"MM/dd/yyyy"));
+            todayDate.setText(App.dateFormatter(graphDate, "MM/dd/yyyy"));
             createUsageChart(graphDate, byCategory);
         } else {
             //IF WE HAVE EXCEEDED THE LIMIT THEN HIDE THE PREV BUTTON

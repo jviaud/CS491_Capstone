@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
+import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 import static com.example.cs491_capstone.App.clock;
+import static com.example.cs491_capstone.App.usageColColor;
 
 public class HomeUsageGraphFragment extends Fragment {
     private ColumnChartView barChart;
@@ -93,7 +95,7 @@ public class HomeUsageGraphFragment extends Fragment {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     break;
                 } else {
-                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.LTGRAY);
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(value,  Color.parseColor(usageColColor));
 
                     int hours = (int) (value / (60) % 24);
                     int minutes = (int) (value % 60);
@@ -134,7 +136,7 @@ public class HomeUsageGraphFragment extends Fragment {
         Axis axisX = new Axis(xAxisValues)
                 .setName("Hour of Day") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -142,7 +144,7 @@ public class HomeUsageGraphFragment extends Fragment {
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor(  Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 ;
 
 

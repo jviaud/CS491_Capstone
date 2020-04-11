@@ -29,7 +29,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/ic_menu"
-                android:tint="@color/textcolor"
+                android:tint="?attr/textcolor_special"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/hello_world"
-                android:textColor="@color/textcolor"
+                android:textColor="?attr/textcolor_special"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/hello_world"
-                android:textColor="@color/textcolor"
+                android:textColor="?attr/textcolor_special"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/id"
                 app:layout_constraintStart_toStartOf="@+id/id"
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/date_placeholder"
-                android:textColor="@color/textcolor"
+                android:textColor="?attr/textcolor_special"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +75,7 @@
                 android:id="@+id/imageContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/cardbackground_alt"
+                android:background="?attr/cardbackground_alt"
                 android:clickable="false"
                 app:layout_constraintTop_toBottomOf="@+id/date">
 
@@ -147,7 +147,7 @@
                 android:id="@+id/expandableLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/cardbackground_alt"
+                android:background="?attr/cardbackground_alt"
                 android:clickable="false"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -176,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:text="@string/usage_goal"
-                    android:textColor="@color/textcolor_secondary"
+                    android:textColor="?attr/textcolor_special"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/appName" />
 
@@ -198,7 +198,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:text="@string/unlock_goal"
-                    android:textColor="@color/textcolor_secondary"
+                    android:textColor="?attr/textcolor_special"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/appName" />
 
@@ -207,7 +207,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hello_world"
-                    android:textColor="@color/textcolor_tertiary"
+                    android:textColor="?attr/textcolor_special"
                     app:layout_constraintEnd_toEndOf="@+id/usage_label"
                     app:layout_constraintStart_toStartOf="@+id/usage_label"
                     app:layout_constraintTop_toBottomOf="@+id/usage_label" />
@@ -217,7 +217,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hello_world"
-                    android:textColor="@color/textcolor_tertiary"
+                    android:textColor="?attr/textcolor_special"
                     app:layout_constraintEnd_toEndOf="@+id/unlock_label"
                     app:layout_constraintStart_toStartOf="@+id/unlock_label"
                     app:layout_constraintTop_toBottomOf="@+id/unlock_label" />
@@ -229,7 +229,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/phone_goal"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor_special"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.GoalDataBaseHelper;
+import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui.goal.Goal;
 import com.example.cs491_capstone.ui.goal.adapter.GoalImageAdapter;
@@ -44,6 +45,7 @@ import lecho.lib.hellocharts.view.PieChartView;
 
 import static com.example.cs491_capstone.App.currentPeriod;
 import static com.example.cs491_capstone.App.goalDataBase;
+import static com.example.cs491_capstone.App.unlockColColor;
 import static com.example.cs491_capstone.App.week;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.endDate;
 import static com.example.cs491_capstone.ui.goal.GoalsFragment.highlight;
@@ -266,8 +268,8 @@ public class PhoneGoalFragment extends Fragment {
 
         axisX.setName("Day of Week");
         axisY.setName("Usage vs. Goal Value (minutes)");
-        axisY.setTextColor(Color.WHITE);
-        axisX.setTextColor(Color.WHITE);
+        axisY.setTextColor(Color.parseColor(MainActivity.textColor));
+        axisX.setTextColor(Color.parseColor(MainActivity.textColor));
 
 
         List<AxisValue> axisValues = new ArrayList<>(); //THE LIST OF X-AXIS VALUES
@@ -309,8 +311,8 @@ public class PhoneGoalFragment extends Fragment {
 
         axisX.setName("Day of Week");
         axisY.setName("Unlocks vs. Goal Value");
-        axisY.setTextColor(Color.WHITE);
-        axisX.setTextColor(Color.WHITE);
+        axisY.setTextColor(Color.parseColor(MainActivity.textColor));
+        axisX.setTextColor(Color.parseColor(MainActivity.textColor));
 
 
         List<AxisValue> axisValues = new ArrayList<>(); //THE LIST OF X-AXIS VALUES
@@ -361,7 +363,7 @@ public class PhoneGoalFragment extends Fragment {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     break;
                 } else {
-                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.LTGRAY);
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.parseColor(unlockColColor));
 
                     int hours = (int) (value / (60) % 24);
                     int minutes = (int) (value % 60);

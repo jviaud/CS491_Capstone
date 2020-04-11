@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
+import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 
 import java.util.ArrayList;
@@ -25,10 +26,10 @@ import lecho.lib.hellocharts.model.Column;
 import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.model.Viewport;
-import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 import static com.example.cs491_capstone.App.clock;
+import static com.example.cs491_capstone.App.notificationColColor;
 
 
 public class HomeNotificationGraphFragment extends Fragment {
@@ -93,7 +94,7 @@ public class HomeNotificationGraphFragment extends Fragment {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     break;
                 } else {
-                    values.add(new SubcolumnValue(value, ChartUtils.COLOR_RED));
+                    values.add(new SubcolumnValue(value, Color.parseColor(notificationColColor)));
                 }
 
 
@@ -123,7 +124,7 @@ public class HomeNotificationGraphFragment extends Fragment {
         Axis axisX = new Axis(xAxisValues)
                 .setName("Hour of Day") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -131,7 +132,7 @@ public class HomeNotificationGraphFragment extends Fragment {
         Axis axisY = new Axis()
                 .setName("Notifications Received")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 ;
 
         //SET AXIS TO GRAPH

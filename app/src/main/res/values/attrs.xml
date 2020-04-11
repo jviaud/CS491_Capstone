@@ -7,11 +7,24 @@
         <attr name="textcolor_alt" format="color" />
         <attr name="tintcolor" format="color" />
         <attr name="buttoncolor" format="color" />
-        <attr name="iconcolor" format="color"/>
-        <attr name="toolbarcolor" format="color"/>
-        <attr name="fabcolor" format="color"/>
-        <attr name="devidercolor" format="color"/>
-        <attr name="buttoncolor_transparent" format="color"/>
-        <attr name="launcher_background" format="color"/>
+        <attr name="iconcolor" format="color" />
+        <attr name="textcolor_secondary" format="color" />
+        <attr name="textcolor_tertiary" format="color" />
+        <attr name="toolbarcolor" format="color" />
+        <attr name="fabcolor" format="color" />
+        <attr name="devidercolor" format="color" />
+        <attr name="buttoncolor_transparent" format="color" />
+        <attr name="highlight" format="color" />
+        <attr name="launcher_background" format="color" />
+        <attr name="cardbackground_alt" format="color" />
+        <attr name="cardSpecial" format="color" />
+        <attr name="cardSpecial2" format="color" />
+        <attr name="textcolor_special" format="color" />
+
+
+        <attr name="TabLayoutStyle" format="reference" />
+        <attr name="TabLayoutText" format="reference" />
+
+
     </declare-styleable>
 </resources>

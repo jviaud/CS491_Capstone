@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:background="@color/backgroundcolor">
+        android:background="?attr/backgroundcolor">
 
 
         <TextView
@@ -18,7 +18,7 @@
             android:layout_marginStart="40dp"
             android:layout_marginTop="10dp"
             android:text="@string/hello_world"
-            android:textColor="@color/textcolor_secondary"
+            android:textColor="?attr/textcolor_secondary"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/app_icon"
             app:layout_constraintTop_toBottomOf="@+id/app_name" />
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:text="@string/hello_world"
-            android:textColor="@color/textcolor"
+            android:textColor="?attr/textcolor"
             android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/app_icon"
@@ -64,7 +64,7 @@
             android:layout_marginEnd="16dp"
             android:elevation="6dp"
             app:cardCornerRadius="8dp"
-            app:cardBackgroundColor="@color/cardbackground"
+            app:cardBackgroundColor="?attr/cardbackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/app_icon">
@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="TOODAY'S STATS"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor"
                     android:textSize="21sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/usage_val"
@@ -102,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="@string/hello_world"
-                    android:textColor="@color/textcolor_secondary"
+                    android:textColor="?attr/textcolor_secondary"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@+id/usage_label"
@@ -116,7 +116,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="16dp"
                     android:text="TIME"
-                    android:textColor="@color/textcolor_tertiary"
+                    android:textColor="?attr/textcolor_tertiary"
                     android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/notification_label"
@@ -139,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="@string/hello_world"
-                    android:textColor="@color/textcolor_secondary"
+                    android:textColor="?attr/textcolor_secondary"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@+id/notification_label"
@@ -151,7 +151,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="NOTIFICATIONS"
-                    android:textColor="@color/textcolor_tertiary"
+                    android:textColor="?attr/textcolor_tertiary"
                     app:layout_constraintBottom_toBottomOf="@+id/usage_label"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
@@ -171,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="@string/hello_world"
-                    android:textColor="@color/textcolor_secondary"
+                    android:textColor="?attr/textcolor_secondary"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@+id/textView12"
@@ -183,7 +183,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="UNLOCKS"
-                    android:textColor="@color/textcolor_tertiary"
+                    android:textColor="?attr/textcolor_tertiary"
                     app:layout_constraintBottom_toBottomOf="@+id/notification_label"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/notification_label" />
@@ -198,10 +198,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@color/cardbackground"
+            style="?attr/TabLayoutStyle"
             android:elevation="6dp"
-            style="@style/MineCustomTabText"
-            app:tabTextAppearance="@style/TabText"
+            android:background="?attr/cardbackground"
+            app:tabTextAppearance="?attr/TabLayoutText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/icon_container" />

@@ -46,7 +46,6 @@ public class App extends Application {
     public static final String CATEGORY_NEWS = "News";
     public static final String CATEGORY_PRODUCTIVITY = "Productivity";
     public static final String CATEGORY_OTHER = "Other";
-
     /**
      * notification channel for services, required in API 29+
      */
@@ -65,6 +64,9 @@ public class App extends Application {
     public final static String[] clock = new String[]{"12AM", "1AM", "2AM", "3AM", "4AM", "5AM", "6AM", "7AM",
             "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM", "6PM", "7PM",
             "8PM", "9PM", "10PM", "11PM"};
+    public static String usageColColor = "";
+    public static String unlockColColor = "";
+    public static String notificationColColor = "";
     /**
      * string containing the package name of this app
      */
@@ -186,7 +188,6 @@ public class App extends Application {
 
         return hex;
     }
-
 
     /**
      * @param packageName the package name of the app too check
@@ -420,6 +421,15 @@ public class App extends Application {
 
 
         //TODO IF THE APP IS TERMINATED WE NEED TO BE ABLE TOO SAVE THE LIST OF APPS THAT SHOULD BE TRACKED, FOR NOW WE CAN IGNORE THIS FOR PRESENTATION PURPOSES
+
+        usageColColor = getResources().getString(0 + R.color.usage_bar);
+        unlockColColor = getResources().getString(0 + R.color.unlock_bar);
+        notificationColColor = getResources().getString(0 + R.color.notification_bar);
+
+
+
+
+
 
         ALL_APPS_LIST = new ArrayList<>();
         getInstalledApps(getApplicationContext());

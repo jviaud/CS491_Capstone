@@ -10,10 +10,11 @@
         android:id="@+id/graph_choice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/MineCustomTabText"
+        style="?attr/TabLayoutStyle"
+        app:tabTextAppearance="?attr/TabLayoutText"
         android:elevation="6dp"
         android:layout_marginTop="16dp"
-        app:tabTextAppearance="@style/TabText"/>
+        />
 
     <com.example.cs491_capstone.ui_helpers.LockableViewPager
         android:id="@+id/graph_container"

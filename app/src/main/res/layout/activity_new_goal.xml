@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundcolor">
+    android:background="?attr/backgroundcolor">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/date"
-            android:textColor="@color/textcolor"
+            android:textColor="?attr/textcolor"
             android:textSize="28sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
 
             android:layout_marginTop="8dp"
             android:text="@string/date_placeholder"
-            android:textColor="@color/textcolor"
+            android:textColor="?attr/textcolor"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/chip_date"
@@ -63,7 +63,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Type"
-            android:textColor="@color/textcolor"
+            android:textColor="?attr/textcolor"
             android:textSize="28sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +133,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/cardbackground">
+                android:background="?attr/cardbackground">
 
                 <ImageView
                     android:id="@+id/app_icon"
@@ -152,7 +152,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor"
                     android:textSize="24sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -170,7 +170,7 @@
             android:layout_marginTop="16dp"
             android:text="Stats"
 
-            android:textColor="@color/textcolor"
+            android:textColor="?attr/textcolor"
             android:textSize="28sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -224,7 +224,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/cardbackground">
+                android:background="?attr/cardbackground">
 
                 <TextView
                     android:id="@+id/textView7"
@@ -233,7 +233,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:text="Usage Goal"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/hour"
@@ -246,7 +246,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Hours"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor"
                     app:layout_constraintEnd_toStartOf="@+id/textView5"
                     app:layout_constraintStart_toStartOf="@+id/hour"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -260,7 +260,7 @@
                     android:ems="5"
                     android:inputType="number"
                     android:maxLength="2"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/textView5"
                     app:layout_constraintTop_toBottomOf="@+id/textView9" />
@@ -270,7 +270,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=":"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor"
                     android:textSize="28sp"
                     app:layout_constraintBottom_toBottomOf="@+id/hour"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -282,7 +282,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Minutes"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor"
                     app:layout_constraintEnd_toEndOf="@+id/minutes"
                     app:layout_constraintStart_toEndOf="@+id/textView5"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -295,7 +295,7 @@
                     android:ems="5"
                     android:inputType="number"
                     android:maxLength="10"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor"
                     app:layout_constraintBottom_toBottomOf="@+id/hour"
                     app:layout_constraintStart_toEndOf="@+id/textView5"
                     app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -334,7 +334,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/cardbackground">
+                android:background="?attr/cardbackground">
 
                 <TextView
                     android:id="@+id/textView8"
@@ -345,7 +345,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
                     android:text="Unlocks Goal"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -363,7 +363,7 @@
                     android:layout_marginBottom="16dp"
                     android:ems="5"
                     android:inputType="number"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor"
                     app:layout_constraintBottom_toBottomOf="@+id/textView8"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textView8" />
@@ -411,14 +411,16 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/highlight"
+            android:backgroundTint="?attr/highlight"
             android:enabled="false"
             android:text="@string/done"
-            android:textColor="@color/textcolor_alt"
+            android:textColor="?attr/textcolor_alt"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/error_message" />
+            app:layout_constraintTop_toBottomOf="@+id/error_message"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

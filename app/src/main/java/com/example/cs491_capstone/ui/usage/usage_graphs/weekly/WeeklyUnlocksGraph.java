@@ -20,13 +20,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
+import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.UserUsageInfo;
 import com.example.cs491_capstone.ui.detailed.DetailedAppActivity;
 import com.example.cs491_capstone.ui.usage.UsageFragment;
-import com.example.cs491_capstone.ui.usage.UsageListViewAdapter;
 import com.example.cs491_capstone.ui.usage.UsageListViewWeekly;
-import com.example.cs491_capstone.ui.usage.usage_graphs.daily.DailyUnlocksGraph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +42,7 @@ import lecho.lib.hellocharts.view.ColumnChartView;
 
 import static com.example.cs491_capstone.App.getHexForCategory;
 import static com.example.cs491_capstone.App.localDatabase;
+import static com.example.cs491_capstone.App.unlockColColor;
 import static com.example.cs491_capstone.App.week;
 
 
@@ -291,7 +291,7 @@ public class WeeklyUnlocksGraph extends Fragment implements View.OnClickListener
                         values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                         break;
                     } else {
-                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.CYAN);
+                        SubcolumnValue subcolumnValue = new SubcolumnValue(value,  Color.parseColor(unlockColColor));
                         values.add(subcolumnValue);
                     }
 
@@ -332,7 +332,7 @@ public class WeeklyUnlocksGraph extends Fragment implements View.OnClickListener
         Axis axisX = new Axis(xAxisValues)
                 .setName("Days of the Week") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -340,7 +340,7 @@ public class WeeklyUnlocksGraph extends Fragment implements View.OnClickListener
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 ;
 
 

@@ -22,7 +22,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme_Light"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="o">
         <activity android:name=".MainActivity">
@@ -37,7 +37,7 @@
         <activity
             android:name=".ui.detailed.DetailedAppActivity"
             android:parentActivityName="com.example.cs491_capstone.ui.goal.GoalsFragment"
-            android:theme="@style/GoalTheme">
+            android:theme="@style/GoalTheme_Light">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.cs491_capstone.ui.goal.GoalsFragment" />
@@ -55,7 +55,7 @@
             android:name=".ui.goal.activities.NewGoal"
             android:label="New Goal"
             android:parentActivityName="com.example.cs491_capstone.MainActivity"
-            android:theme="@style/GoalTheme">
+            android:theme="@style/GoalTheme_Light">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.cs491_capstone.MainActivity" />
@@ -65,7 +65,7 @@
             android:name=".ui.goal.activities.EditGoal"
             android:label="Edit Goal"
             android:parentActivityName="com.example.cs491_capstone.MainActivity"
-            android:theme="@style/GoalTheme">
+            android:theme="@style/GoalTheme_Light">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.cs491_capstone.MainActivity" />
@@ -75,7 +75,7 @@
             android:name=".ui.goal.activities.ShowAllRelatedGoals"
             android:label="Goals"
             android:parentActivityName="com.example.cs491_capstone.MainActivity"
-            android:theme="@style/GoalTheme">
+            android:theme="@style/GoalTheme_Light">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.cs491_capstone.MainActivity" />

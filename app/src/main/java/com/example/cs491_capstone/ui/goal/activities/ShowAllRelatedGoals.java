@@ -2,6 +2,7 @@ package com.example.cs491_capstone.ui.goal.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -21,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,6 +43,13 @@ public class ShowAllRelatedGoals extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean darkMode = pref.getBoolean("dark_mode", true);
+        if (darkMode) {
+            getTheme().applyStyle(R.style.GoalTheme_Dark, true);
+        } else {
+            getTheme().applyStyle(R.style.GoalTheme_Light, true);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.related_goal_layout);
 

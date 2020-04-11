@@ -12,6 +12,13 @@
             android:key="exclusion_list"
             android:title="Applications"
             app:summary="Specify which applications to track" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="dark_mode"
+            android:summary="Enable Dark Mode"
+            android:title="Dark Mode"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
 

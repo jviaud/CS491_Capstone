@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
+import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui.detailed.DetailedAppActivity;
 
@@ -32,6 +33,7 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 import static com.example.cs491_capstone.App.clock;
+import static com.example.cs491_capstone.App.usageColColor;
 import static com.example.cs491_capstone.App.week;
 
 public class DetailedUsageGraphFragment extends Fragment implements View.OnClickListener {
@@ -129,7 +131,7 @@ public class DetailedUsageGraphFragment extends Fragment implements View.OnClick
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
                 } else {
-                    SubcolumnValue subcolumnValue = new SubcolumnValue(val, Color.LTGRAY);
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(val,  Color.parseColor(usageColColor));
 
                     int hours = (int) (val / (60) % 24);
                     int minutes = (int) (val % 60);
@@ -161,7 +163,7 @@ public class DetailedUsageGraphFragment extends Fragment implements View.OnClick
         Axis axisX = new Axis(axisValues)
                 .setName("Day of Week") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -169,7 +171,7 @@ public class DetailedUsageGraphFragment extends Fragment implements View.OnClick
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(3)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -233,7 +235,7 @@ public class DetailedUsageGraphFragment extends Fragment implements View.OnClick
         Axis axisX = new Axis(axisValues)
                 .setName("Hour of Day") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -241,7 +243,7 @@ public class DetailedUsageGraphFragment extends Fragment implements View.OnClick
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(3)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -299,7 +301,7 @@ public class DetailedUsageGraphFragment extends Fragment implements View.OnClick
                 }
 
                 if (value == 0) {
-                    subcolumnValue.setColor(Color.WHITE);
+                    subcolumnValue.setColor( Color.parseColor(usageColColor));
                 }
 
                 if (maxValue < value) {

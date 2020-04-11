@@ -2,13 +2,16 @@ package com.example.cs491_capstone;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -31,6 +34,7 @@ import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
 public class MainActivity extends AppCompatActivity {
     SharedPreferences prefs = null;
     FloatingActionButton fab;
+    public static String textColor="";
     /**
      * Broadcaster receiver that listens when new apps are installed to the system
      */
@@ -71,8 +75,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean darkMode = pref.getBoolean("dark_mode", true);
+        if (darkMode) {
+            getTheme().applyStyle(R.style.AppTheme_Dark, true);
+        } else {
+            getTheme().applyStyle(R.style.AppTheme_Light, true);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getTheme();
+        theme.resolveAttribute(R.attr.textcolor, typedValue, true);
+        @ColorInt int color = typedValue.data;
+
+        textColor = String.format("#%06X", (0xFFFFFF & color));  //Color.parseColor(color);
+
 
         //STATUS BAR COLOR
         Window window = getWindow();
@@ -81,6 +100,10 @@ public class MainActivity extends AppCompatActivity {
         //
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+
+
+
 
         //CREATE BOTTOM NAVIGATION
         BottomNavigationView bottomNaV = findViewById(R.id.bottom_navigation);

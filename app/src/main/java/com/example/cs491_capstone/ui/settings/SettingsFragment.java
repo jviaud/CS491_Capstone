@@ -38,6 +38,7 @@ import androidx.preference.SwitchPreference;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.InstalledAppInfo;
+import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui.intro.IntroManager;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
@@ -123,7 +124,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        getContext().getTheme().applyStyle(R.style.SettingsFragmentStyle, true);
         setPreferencesFromResource(R.xml.settings, rootKey);
         // fragment.getRootView().setBackgroundColor(Color.WHITE);
 
@@ -131,6 +131,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         //Initialise the size of the database
         dbSize = localDatabase.getRowCount();
+
 
         if (App.HOUR.equals("0")) {
             //TODO CLEAR ALL APP AND PHONE LIMITS AT START OF DAY
@@ -152,11 +153,24 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         appLimitListAdapter = new AppLimitListAdapter(getContext(), ALL_APPS_LIST);
         appLimitListAdapter2 = new AppLimitListAdapter2(getContext(), FLAGGED_APPS);
 
+
         /*
         It would be better too implement the Onclick listener so it isn't so cluttered here but I can't get the click events to trigger the listeners that way
         So I unfortunately have to put all the click listeners here
          */
-        Preference appList = findPreference(("exclusion_list"));
+        Preference darkMode = findPreference("dark_mode");
+        darkMode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+                return true;
+            }
+        });
+
+
+        Preference appList = findPreference("exclusion_list");
         appList.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -482,7 +496,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.getView().setBackgroundColor(getResources().getColor(R.color.backgroundcolor, null));
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean darkMode = preferences.getBoolean("dark_mode", true);
+
+        if (darkMode) {
+            getContext().getTheme().applyStyle(R.style.SettingsFragmentStyle_Dark, true);
+            this.getView().setBackgroundColor(getResources().getColor(R.color.backgroundcolor, null));
+        } else {
+            getContext().getTheme().applyStyle(R.style.SettingsFragmentStyle_Light, true);
+            this.getView().setBackgroundColor(getResources().getColor(R.color.backgroundcolor_light, null));
+        }
+
+
     }
 
     /**
@@ -1039,7 +1065,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                     //TODO STORE TIME LEFT IN A HASHMAP ALONG WITH installedAppInfoList.get(position)
                                     // KEY IS installedAppInfoList.get(position), TIME IS VALUE
                                     long time = 0;
-                                    time = (hour.getValue() * 3600000l)  + (minutes.getValue() * 60000);
+                                    time = (hour.getValue() * 3600000l) + (minutes.getValue() * 60000);
 
                                     appsAndTimes.put(installedAppInfoList.get(position).getPackageName(), time);
                                     installedAppInfoList.get(position).setTimeLimitMilliseconds(time);

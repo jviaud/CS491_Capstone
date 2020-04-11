@@ -141,7 +141,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onResume() {
-        getContext().getTheme().applyStyle(R.style.AppTheme, true);
+       // getContext().getTheme().applyStyle(R.style.AppTheme_Dark, true);
         super.onResume();
         parentalControls = preferences.getBoolean("parental_controls", false);
 

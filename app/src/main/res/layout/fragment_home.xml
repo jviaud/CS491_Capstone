@@ -4,7 +4,7 @@
     android:id="@+id/nest_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundcolor">
+    android:background="?attr/backgroundcolor">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,7 +42,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/date"
-                    android:textColor="@color/textcolor_tertiary"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -54,7 +54,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="4dp"
                     android:text="@string/date_placeholder"
-                    android:textColor="@color/textcolor_secondary"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -67,7 +67,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/total_usage"
-                    android:textColor="@color/textcolor_tertiary"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/date_actual" />
@@ -78,7 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/increase"
-                    android:textColor="@color/textcolor_tertiary"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="@+id/percent_delta"
                     app:layout_constraintTop_toBottomOf="@+id/date_actual" />
@@ -90,7 +90,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="2dp"
                     android:text="@string/_00_00_00"
-                    android:textColor="@color/textcolor_secondary"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/usage_title" />
@@ -104,7 +104,7 @@
                     android:paddingLeft="1.5dp"
                     android:paddingRight="1.5dp"
                     android:text="@string/x"
-                    android:textColor="@color/textcolor_secondary"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="20sp"
                     app:layout_constraintStart_toEndOf="@+id/total_usage"
                     app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -139,7 +139,7 @@
                     android:layout_marginStart="35dp"
                     android:layout_marginTop="15dp"
                     android:text="@string/_00"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="55sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -153,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:text="@string/time_sep"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="55sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/timer_hours"
@@ -166,7 +166,7 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="15dp"
                     android:text="@string/hours"
-                    android:textColor="@color/textcolor_tertiary"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="10sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/timer_hours"
@@ -179,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:text="@string/_00"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="55sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/textView10"
@@ -191,7 +191,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:text="@string/time_sep"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="55sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/timer_minutes"
@@ -203,7 +203,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="@string/minutes"
-                    android:textColor="@color/textcolor_tertiary"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="10sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView11"
                     app:layout_constraintEnd_toEndOf="@+id/timer_minutes"
@@ -216,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:text="@string/_00"
-                    android:textColor="@color/textcolor"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="55sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/textView13"
@@ -228,7 +228,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="@string/seconds"
-                    android:textColor="@color/textcolor_tertiary"
+                    android:textColor="?attr/textcolor_special"
                     android:textSize="10sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView14"
                     app:layout_constraintEnd_toEndOf="@+id/timer_seconds"
@@ -256,7 +256,7 @@
                 android:layout_marginEnd="16dp"
                 android:elevation="6dp"
                 app:cardCornerRadius="8dp"
-                app:cardBackgroundColor="@color/cardbackground"
+                app:cardBackgroundColor="@android:color/transparent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -264,7 +264,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/cardbackground">
+                    android:background="?attr/cardbackground">
 
                     <TextView
                         android:id="@+id/textView18"
@@ -273,7 +273,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="10dp"
                         android:text="@string/most_used"
-                        android:textColor="@color/textcolor"
+                        android:textColor="?attr/textcolor"
                         android:textSize="15sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -315,12 +315,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                style="@style/MineCustomTabText"
+                style="?attr/TabLayoutStyle"
                 app:layout_constraintTop_toBottomOf="@+id/list_card_container"
                 android:elevation="6dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:tabTextAppearance="@style/TabText" />
+                app:tabTextAppearance="?attr/TabLayoutText" />
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/graph_container"
@@ -330,7 +330,6 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="55dp"
-                android:elevation="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

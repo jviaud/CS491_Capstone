@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.preference.PreferenceManager;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.GoalDataBaseHelper;
@@ -68,6 +70,13 @@ public class NewGoal extends AppCompatActivity implements View.OnClickListener, 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean darkMode = pref.getBoolean("dark_mode", true);
+        if (darkMode) {
+            getTheme().applyStyle(R.style.GoalTheme_Dark, true);
+        } else {
+            getTheme().applyStyle(R.style.GoalTheme_Light, true);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_goal);
 

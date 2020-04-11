@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
+import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui.detailed.DetailedAppActivity;
 
@@ -31,6 +32,7 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 import static com.example.cs491_capstone.App.clock;
+import static com.example.cs491_capstone.App.unlockColColor;
 import static com.example.cs491_capstone.App.week;
 
 public class DetailedUnlocksGraphFragment extends Fragment implements View.OnClickListener {
@@ -222,7 +224,7 @@ public class DetailedUnlocksGraphFragment extends Fragment implements View.OnCli
                     values.add(new SubcolumnValue(val, Color.TRANSPARENT));
                     break;
                 } else {
-                    values.add(new SubcolumnValue(val, Color.CYAN));
+                    values.add(new SubcolumnValue(val,  Color.parseColor(unlockColColor)));
                 }
 
 
@@ -242,7 +244,7 @@ public class DetailedUnlocksGraphFragment extends Fragment implements View.OnCli
         Axis axisX = new Axis(axisValues)
                 .setName("Day of Week") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -250,7 +252,7 @@ public class DetailedUnlocksGraphFragment extends Fragment implements View.OnCli
         Axis axisY = new Axis()
                 .setName("Unlocks")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(3)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -374,7 +376,7 @@ public class DetailedUnlocksGraphFragment extends Fragment implements View.OnCli
         Axis axisX = new Axis(axisValues)
                 .setName("Hour of Day") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -382,7 +384,7 @@ public class DetailedUnlocksGraphFragment extends Fragment implements View.OnCli
         Axis axisY = new Axis()
                 .setName("Unlocks")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor(Color.WHITE)//MAKES TEXT COLOR BLACK
+                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(3)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 

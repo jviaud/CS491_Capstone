@@ -1,5 +1,6 @@
 package com.example.cs491_capstone.ui.goal;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.cs491_capstone.R;
@@ -36,6 +38,13 @@ public class GoalsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean darkMode = pref.getBoolean("dark_mode", true);
+        if (darkMode) {
+            getContext().getTheme().applyStyle(R.style.AppTheme_Dark, true);
+        } else {
+            getContext().getTheme().applyStyle(R.style.AppTheme_Light, true);
+        }
         super.onViewCreated(view, savedInstanceState);
 
         highlight = getResources().getString(0+R.color.highlight);
