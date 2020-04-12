@@ -448,15 +448,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
-        //CLICK LISTENER FOR DATA SWITCH
-        SwitchPreference dataSwitch = findPreference("toggle_data");
-        dataSwitch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                dataDisabled = (boolean) newValue;
-                return true;
-            }
-        });
 
         //CLICK LISTENER FOR EXPORTING TOO CSV OPTION
         Preference exportCSV = findPreference("export_csv");
