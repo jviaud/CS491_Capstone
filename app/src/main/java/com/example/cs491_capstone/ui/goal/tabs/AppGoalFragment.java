@@ -353,7 +353,11 @@ public class AppGoalFragment extends Fragment {
             chart.setViewportCalculationEnabled(false);
         } else {
             Viewport v = new Viewport(chart.getMaximumViewport());
-            v.top = ((maxUsageValue + 4) / 5) * 5; //NEXT MULTIPLE OF 5;
+            //NEXT MULTIPLE OF 10
+            if (maxUsageValue % 10 != 0) {
+                maxUsageValue = maxUsageValue + (10 - maxUsageValue % 10);
+            }
+            v.top = maxUsageValue;
             chart.setMaximumViewport(v);
             chart.setCurrentViewport(v);
             chart.setViewportCalculationEnabled(false);

@@ -120,7 +120,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      */
     private List<InstalledAppInfo> COPY_OF_LIST;
     private List<InstalledAppInfo> FLAGGED_APPS;
-    private HashMap<String, Long> appsAndTimes = new HashMap<String, Long>();
+    public static HashMap<String, Long> appsAndTimes = new HashMap<>();
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -327,13 +327,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                 appLimitListAdapter2 = new AppLimitListAdapter2(getContext(), FLAGGED_APPS);
                                 LayoutInflater inflater = requireActivity().getLayoutInflater();
                                 View view = inflater.inflate(R.layout.dialog_apps_limit, null);
-//                appLimitListAdapter2 = new InstalledAppsListAdapter(getContext(), COPY_OF_LIST);
                                 final ListView listView = view.findViewById(R.id.dialog_list2);
                                 listView.setAdapter(appLimitListAdapter2);
 
                                 saveMap(appsAndTimes);
 
-                                Set<String> flaggedAppsSet = new HashSet<String>();
+                                Set<String> flaggedAppsSet = new HashSet<>();
 
                                 for (InstalledAppInfo i : FLAGGED_APPS) {
                                     flaggedAppsSet.add(i.getPackageName());
@@ -432,7 +431,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     JSONObject jsonObject = new JSONObject(inputMap);
                     String jsonString = jsonObject.toString();
                     SharedPreferences.Editor editor = pSharedPref.edit();
-                    editor.remove("app_limit").commit();
+                    editor.remove("app_limit").apply();
                     editor.putString("app_limit", jsonString);
                     editor.commit();
                 }
@@ -444,7 +443,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         wifiSwitch.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                wifiDisabled = (boolean) newValue;
+                wifiDisabled = !(boolean) newValue;
                 return true;
             }
         });

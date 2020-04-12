@@ -9,23 +9,18 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.ui_helpers.LockableViewPager;
 import com.example.cs491_capstone.ui_helpers.ZoomOutPageTransformer;
-import com.novoda.spritz.Spritz;
-import com.novoda.spritz.SpritzStep;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 
 public class IntroManager extends AppCompatActivity {
     public static LockableViewPager pager;
-    private Spritz spritz;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,37 +44,16 @@ public class IntroManager extends AppCompatActivity {
         pager.setPageTransformer(true, new ZoomOutPageTransformer() {
         });
 
-
-        LottieAnimationView animationView = findViewById(R.id.animation_view);
-        spritz = Spritz
-                .with(animationView)
-                .withSteps(
-                        new SpritzStep.Builder()
-                                .withAutoPlayDuration(4000, TimeUnit.MILLISECONDS)
-                                .withSwipeDuration(500, TimeUnit.MILLISECONDS)
-                                .build(),
-                        new SpritzStep.Builder()
-                                .withAutoPlayDuration(4000, TimeUnit.MILLISECONDS)
-                                .withSwipeDuration(500, TimeUnit.MILLISECONDS)
-                                .build(),
-                        new SpritzStep.Builder()
-                                .withAutoPlayDuration(2000, TimeUnit.MILLISECONDS)
-                                .build()
-                )
-                .build();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        spritz.attachTo(pager);
-        spritz.startPendingAnimations();
+
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
-        spritz.detachFrom(pager);
         super.onStop();
     }
 

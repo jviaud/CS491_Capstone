@@ -43,7 +43,6 @@ dependencies {
     //
     //ANIMATION
     implementation 'com.airbnb.android:lottie:3.4.0' // LOTTIE
-    implementation 'com.novoda:spritz:1.0.0' //SPRITZ
     //
     //CHARTS
     implementation 'com.github.lecho:hellocharts-android:v1.5.8'//HELLO CHARTS

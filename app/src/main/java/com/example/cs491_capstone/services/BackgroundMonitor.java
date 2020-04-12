@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteConstraintException;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -40,7 +41,7 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
 import static com.example.cs491_capstone.App.INCLUDED_APPS_LIST;
 import static com.example.cs491_capstone.App.isTrackedApp;
-import static com.example.cs491_capstone.ui.settings.SettingsFragment.dataDisabled;
+import static com.example.cs491_capstone.ui.settings.SettingsFragment.appsAndTimes;
 import static com.example.cs491_capstone.ui.settings.SettingsFragment.parentalControls;
 import static com.example.cs491_capstone.ui.settings.SettingsFragment.wifiDisabled;
 
@@ -92,6 +93,9 @@ public class BackgroundMonitor extends Service {
 
 
         //CREATE A TASK THAT OCCURS EVERY 1 SECOND AND RUNS IN A POOL OF 5 DESIGNATED BACKGROUND THREADS
+        final WifiManager wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+
         ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(4);
         scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
             public void run() {
@@ -112,24 +116,19 @@ public class BackgroundMonitor extends Service {
 
                     //CHECK IF PARENTAL CONTROLS IS TURNED ON
                     if (parentalControls) {
-
-                        if (timeLeft == 0) {
+                        Log.i("LIMIT", "PARENTAL ON");
+                        if (timeLeft <= 0 && timeLeft != -1) {
+                            Log.i("LIMIT", "NO TIME LEFT");
                             checkLimit();
                         }
-
-                        if (minuteTimer == 0) {
-
-                        }
-
-                        if (wifiDisabled) {
-
-                        }
-                        if (dataDisabled) {
-
-                        }
                     }
-                }
 
+
+                }
+                if (wifiDisabled) {
+                    wifiManager.setWifiEnabled(false);
+                    Log.i("LIMIT", "NO WIFI");
+                }
 
                 checkLock();
             }//END RUN
@@ -275,8 +274,11 @@ public class BackgroundMonitor extends Service {
                     Intent dialogIntent = new Intent(getApplicationContext(), BlockerActivity.class);
                     dialogIntent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(dialogIntent);
-
+                    Log.i("LIMIT", "CHECK LIMIT UNDER 29");
                     //TODO AD FUNCTIONALITY TO CHECK TIMER FOR SPECIFIC APPS, WILL PROBABLY USE HASH MAP OF APP AND THEIR RESPECTIVE TIME
+                }
+                if (appsAndTimes.containsKey(appInUse)) {
+
                 }
             }
 

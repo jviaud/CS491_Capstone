@@ -10,7 +10,7 @@
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="300dp"
         android:layout_gravity="top"
         android:layout_marginTop="10dp"
         android:scaleType="centerCrop"
@@ -18,9 +18,9 @@
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:lottie_autoPlay="false"
-        app:lottie_loop="false"
-        app:lottie_rawRes="@raw/drink" />
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/intro_1" />
 
 
     <view

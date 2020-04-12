@@ -361,7 +361,11 @@ public class WeeklyUnlocksGraph extends Fragment implements View.OnClickListener
             barChart.setViewportCalculationEnabled(false);
         } else {
             Viewport v = new Viewport(barChart.getMaximumViewport());
-            v.top = ((maxValue + 4) / 5) * 5; //NEXT MULTIPLE OF 5;
+            //NEXT MULTIPLE OF 10
+            if (maxValue % 10 != 0) {
+                maxValue = maxValue + (10 - maxValue % 10);
+            }
+            v.top = maxValue;
             barChart.setMaximumViewport(v);
             barChart.setCurrentViewport(v);
             barChart.setViewportCalculationEnabled(false);

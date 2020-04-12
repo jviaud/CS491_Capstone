@@ -72,14 +72,6 @@
             app:iconSpaceReserved="false"
             app:summary="Toggle WiFi ON/OFF" />
 
-        <SwitchPreference
-            android:dependency="parental_controls"
-            android:key="toggle_data"
-            android:title="Data"
-            app:defaultValue="true"
-            app:iconSpaceReserved="false"
-            app:summary="Toggle Data ON/OFF" />
-
 
     </PreferenceCategory>
 

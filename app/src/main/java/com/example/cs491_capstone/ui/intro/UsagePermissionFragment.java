@@ -48,7 +48,7 @@ public class UsagePermissionFragment extends Fragment {
 
         TextView descriptionView = view.findViewById(R.id.description);
         String descriptionText = "Usage Stats Manager allows our app to poll the system for apps that are being used." +
-                "When polled our app will be able to see what apps were used in a specific time frame. " +
+                "\nWhen polled our app will be able to see what apps were used in a specific time frame. " +
                 "No other information is collected ";
         descriptionView.setText(descriptionText);
 

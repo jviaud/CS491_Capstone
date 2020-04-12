@@ -275,7 +275,11 @@ public class DetailedNotificationGraphFragment extends Fragment implements View.
             barChartTop.setViewportCalculationEnabled(false);
         } else {
             Viewport v = new Viewport(barChartTop.getMaximumViewport());
-            v.top = ((maxValue + 4) / 5) * 5; //NEXT MULTIPLE OF 5;
+            //NEXT MULTIPLE OF 10
+            if (maxValue % 10 != 0) {
+                maxValue = maxValue + (10 - maxValue % 10);
+            }
+            v.top = maxValue;
             barChartTop.setMaximumViewport(v);
             barChartTop.setCurrentViewport(v);
             barChartTop.setViewportCalculationEnabled(false);

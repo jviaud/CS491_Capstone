@@ -49,8 +49,8 @@ public class NotificationPermissionFragment extends Fragment {
 
         TextView descriptionView = view.findViewById(R.id.description);
         String descriptionText = "Notification Listener allows our app to collect data about notifications. " +
-                "Each time a notification is received our app will be able to see what app sent the notification(s)." +
-                "This app does NOT collect the contents of the notification.";
+                "\nEach time a notification is received our app will be able to see what app sent the notification(s)." +
+                "\nThis app does NOT collect the contents of the notification.";
         descriptionView.setText(descriptionText);
 
 

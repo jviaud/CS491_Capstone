@@ -27,8 +27,8 @@
 
         <item name="devidercolor">@color/devidercolor_light</item>
         <item name="launcher_background">#23DBDC</item>
-        <item name="android:ambientShadowAlpha">.4</item>
-        <item name="android:spotShadowAlpha">.4</item>
+        <item name="android:ambientShadowAlpha">.7</item>
+        <item name="android:spotShadowAlpha">.7</item>
         <item name="android:popupMenuStyle">@style/MyApp.PopupMenu_Dark</item>
         <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme_Dark</item>
         <item name="android:textColorPrimary">@color/textcolor</item>
@@ -106,16 +106,17 @@
     <style name="SettingsFragmentStyle_Light" parent="PreferenceFragment">
         <item name="android:textColor">@color/textcolor_light</item>
         <item name="android:textColorSecondary">@color/textcolor_secondary_light</item>
-        <item name="colorAccent">@color/highlight</item>
+        <item name="colorAccent">@color/highlight_light</item>
 
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
     </style>
 
+    
 
     <style name="SettingsFragmentStyle_Dark" parent="PreferenceFragment">
         <item name="android:textColor">@color/textcolor</item>
         <item name="android:textColorSecondary">@color/textcolor_secondary</item>
-        <item name="colorAccent">@color/highlight_light</item>
+        <item name="colorAccent">@color/highlight</item>
 
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
     </style>
