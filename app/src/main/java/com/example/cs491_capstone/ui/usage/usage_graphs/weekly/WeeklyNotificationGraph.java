@@ -333,7 +333,7 @@ public class WeeklyNotificationGraph extends Fragment implements View.OnClickLis
 
 
         Axis axisY = new Axis()
-                .setName("Time Used (minutes)")//NAME OF Y-AXIS
+                .setName("Notifications Received")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
                 .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 ;
