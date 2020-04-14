@@ -347,7 +347,7 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
 
 
         Axis axisY = new Axis()
-                .setName("Time Used (minutes)")//NAME OF Y-AXIS
+                .setName("Unlocks")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
                 .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 ;
