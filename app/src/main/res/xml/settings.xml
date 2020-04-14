@@ -93,5 +93,12 @@
             app:summary="Start activity to request special permissions.
             \nUseful if data is not being collected or graphs are missing" />
 
+
+        <Preference
+            android:key="import_csv"
+            android:title="Import Data"
+            app:iconSpaceReserved="false" />
+
+
     </PreferenceCategory>
 </PreferenceScreen>

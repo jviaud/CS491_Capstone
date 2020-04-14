@@ -483,7 +483,23 @@ public class WeeklyNotificationGraph extends Fragment implements View.OnClickLis
             usedList = localDatabase.appsUsed(App.currentPeriod.get(Week).get(columnIndex), DatabaseHelper.NOTIFICATIONS_COUNT);
 
 
-            listAdapter = new UsageListViewWeekly(getContext(), usedList);
+            if (byCategory) {
+                List<UserUsageInfo> noRepeat = new ArrayList<>();
+                for (UserUsageInfo info:usedList) {
+                    boolean isFound = false;
+                    for(UserUsageInfo unique :noRepeat){
+                        if (unique.getCategory().equals(info.getCategory()) || (unique.equals(info))) {
+                            isFound = true;
+                            break;
+                        }
+                    }
+                    if (!isFound) noRepeat.add(info);
+                }
+                listAdapter = new UsageListViewWeekly(getContext(), noRepeat);
+            } else {
+                listAdapter = new UsageListViewWeekly(getContext(), usedList);
+            }
+
             listAdapter.setByCategory(byCategory);
             listAdapter.setDay(App.currentPeriod.get(Week).get(columnIndex));
             listAdapter.setColumn(DatabaseHelper.NOTIFICATIONS_COUNT);

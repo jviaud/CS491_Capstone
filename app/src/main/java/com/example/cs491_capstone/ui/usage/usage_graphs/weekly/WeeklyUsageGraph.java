@@ -303,7 +303,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
                         values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                         break;
                     } else {
-                        SubcolumnValue subcolumnValue = new SubcolumnValue(value,  Color.parseColor(usageColColor));
+                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.parseColor(usageColColor));
                         int hours = (int) (value / (60) % 24);
                         int minutes = (int) (value % 60);
                         if (hours == 0) {
@@ -351,7 +351,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
         Axis axisX = new Axis(xAxisValues)
                 .setName("Days of the Week") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor( Color.parseColor(textColor))//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.parseColor(textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -359,7 +359,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor( Color.parseColor(textColor))//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.parseColor(textColor))//MAKES TEXT COLOR BLACK
                 ;
 
 
@@ -475,7 +475,7 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
 
         //ONLY IF WE HAVE NOT PASSED THE BEGINNING OF THE LIST, THIS PREVENTS A NEGATIVE OUT OF BOUNDS EXCEPTION
         if (Week <= 3) {
-            graphDate =App.currentPeriod.get(Week).get(0);
+            graphDate = App.currentPeriod.get(Week).get(0);
             if (Week == 3) {
                 prevButton.setVisibility(View.GONE);
             }
@@ -504,11 +504,25 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
         public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
 
 
-
             usedList = localDatabase.appsUsed(App.currentPeriod.get(Week).get(columnIndex), DatabaseHelper.USAGE_TIME);
 
+            if (byCategory) {
+                List<UserUsageInfo> noRepeat = new ArrayList<>();
+                for (UserUsageInfo info : usedList) {
+                    boolean isFound = false;
+                    for (UserUsageInfo unique : noRepeat) {
+                        if (unique.getCategory().equals(info.getCategory()) || (unique.equals(info))) {
+                            isFound = true;
+                            break;
+                        }
+                    }
+                    if (!isFound) noRepeat.add(info);
+                }
+                listAdapter = new UsageListViewWeekly(getContext(), noRepeat);
+            } else {
+                listAdapter = new UsageListViewWeekly(getContext(), usedList);
+            }
 
-            listAdapter = new UsageListViewWeekly(getContext(), usedList);
             listAdapter.setByCategory(byCategory);
             listAdapter.setDay(App.currentPeriod.get(Week).get(columnIndex));
             listAdapter.setColumn(DatabaseHelper.USAGE_TIME);

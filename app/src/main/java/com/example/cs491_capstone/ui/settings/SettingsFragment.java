@@ -101,6 +101,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      * Keeps track if there has been any changes to the Apps being tracked
      */
     public static boolean trackedAppsChanged = false;
+    public static HashMap<String, Long> appsAndTimes = new HashMap<>();
     /**
      * Represents the size of the database, used when downloading/uploading the database to show progress
      */
@@ -120,7 +121,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
      */
     private List<InstalledAppInfo> COPY_OF_LIST;
     private List<InstalledAppInfo> FLAGGED_APPS;
-    public static HashMap<String, Long> appsAndTimes = new HashMap<>();
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -459,14 +459,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
         //CLICK LISTENER FOR IMPORTING FROM CSV OPTION
-//        Preference importCSV = findPreference("import_csv");
-//        importCSV.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-//            @Override
-//            public boolean onPreferenceClick(Preference preference) {
-//                getCSV();
-//                return true;
-//            }
-//        });
+        Preference importCSV = findPreference("import_csv");
+        importCSV.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                getCSV();
+                return true;
+            }
+        });
         ///
 
         Preference permissionsActivity = findPreference("permissions");
@@ -726,7 +726,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 while ((nextLine = reader.readNext()) != null) {
                     //CREATE NEW LIST FOR ROWS
                     rowData = new ArrayList<>();
-
+                    // Log.i("DATA", "NEW LINE" );
                     for (String s : nextLine) {
                         //IF WE ARE READING THE FIRST LINE
                         //THIS MEANS THAT THE IMPORTED CSV MUST HAVE HEADERS AND THEY MUST BE IN THE FOLLOWING ORDER
@@ -738,33 +738,44 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                     && (!nextLine[4].equals("UNLOCKS_COUNT"))
                                     && (!nextLine[5].equals("NOTIFICATIONS_COUNT"))
                                     && (!nextLine[6].equals("USAGE_TIME"))
-                                    && (!nextLine[6].equals("CATEGORY"))) {
+                                    && (!nextLine[7].equals("CATEGORY"))) {
                                 //WE PURPOSELY THROW AN EXCEPTION IF THE HEADERS ARE NOT IN THIS ORDER
                                 throw exception;
                             }
 
+
                         } else {
                             //ROW HEADERS DON'T NEED TO BE ADDED TO THE DATABASE SO WE ONLY ADD ROWS AFTER ROW 0
+                            // Log.i("DATA", "" + s);
+                            //localDatabase.insert(nextLine[0], nextLine[1], nextLine[2], nextLine[3], nextLine[4], nextLine[5], nextLine[6], nextLine[7]);
                             rowData.add(s);
-                            csvData.add(rowData);
-
                         }
+                        Log.i("DATA", "NEW COL|" + rowData);
                     }
+
+                    if (!rowData.isEmpty()) {
+                        csvData.add(rowData);
+                        Log.i("DATA", "NEW LINE | " + csvData);
+                    }
+
                     //UPDATE PROGRESS BASED ON POSITION IN THE LOOP
                     notification.setProgress(dbSize, header++, false);
                     notificationManagerCompat.notify(3, notification.build());
                 }//END WHILE LOOP
 
-                //NOW THAT WE ARE OUTSIDE THE LOOP WE CAN CHANGE THE NOTIFICATION TO SHW WE ARE DONE READING AND ARE NOW UPLOADING
+
+//                //NOW THAT WE ARE OUTSIDE THE LOOP WE CAN CHANGE THE NOTIFICATION TO SHW WE ARE DONE READING AND ARE NOW UPLOADING
                 notification
                         .setContentText("Uploading to Database")
                         .setProgress(dbSize, 0, false);
                 notificationManagerCompat.notify(3, notification.build());
-
-                //WE DO THE SAME THING THAT WE DID WITH THE WHILE LOOP, WITH THE FOR LOOP, THIS TIME WE ARE ACTUALLY READING DATA IN
+//
+//                //WE DO THE SAME THING THAT WE DID WITH THE WHILE LOOP, WITH THE FOR LOOP, THIS TIME WE ARE ACTUALLY READING DATA IN
                 int index = 0;
                 for (List<String> row : csvData) {
-                    localDatabase.insert(row.get(0), row.get(1), row.get(2), row.get(3), row.get(4), row.get(5), row.get(6));
+
+                    Log.i("DATA", "LINE" + row);
+                    localDatabase.insert(row.get(1), row.get(2), row.get(3), row.get(4), row.get(5), row.get(6), row.get(7));
 
                     notification.setProgress(dbSize, index++, false);
                     notificationManagerCompat.notify(3, notification.build());

@@ -63,7 +63,7 @@
         <item name="android:textColorHint">@color/textcolor_secondary_light</item>
 
         <item name="cardSpecial">@color/cardbackground</item>
-        <item name="cardSpecial2">#58318A</item>
+        <item name="cardSpecial2">@color/cardbackground</item>
 
         <item name="devidercolor">@color/devidercolor_light</item>
         <item name="launcher_background">#23DBDC</item>

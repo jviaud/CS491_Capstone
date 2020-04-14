@@ -141,7 +141,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param usage         the total time the app has been used on a specific date during 1 hour intervals
      * @throws SQLException Not a valid Query
      */
-    public void insert(String id, String date, String hour, String packageName, String unlocks, String notifications, String usage) throws SQLException {
+    public void insert(String date, String hour, String packageName, String unlocks, String notifications, String usage, String category) throws SQLException {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -149,13 +149,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         contentValues.put(DATE, date);
         contentValues.put(HOUR_OF_DAY, hour);
-        //packageName + "-" + date + "-" + hour
-        contentValues.put(ENTRY_ID, id);
+        contentValues.put(ENTRY_ID, packageName + "-" + date + "-" + hour);
 
         contentValues.put(PACKAGE_NAME, packageName);
         contentValues.put(UNLOCKS_COUNT, unlocks);
         contentValues.put(NOTIFICATIONS_COUNT, notifications);
         contentValues.put(USAGE_TIME, usage);
+        contentValues.put(APP_CATEGORY, category);
 
         db.insertOrThrow(TABLE_NAME, null, contentValues);
     }

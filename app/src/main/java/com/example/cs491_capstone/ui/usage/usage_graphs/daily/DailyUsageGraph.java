@@ -307,7 +307,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
                         values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                         break;
                     } else {
-                        SubcolumnValue subcolumnValue = new SubcolumnValue(value,  Color.parseColor(usageColColor));
+                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.parseColor(usageColColor));
                         int hours = (int) (value / (60) % 24);
                         int minutes = (int) (value % 60);
                         if (hours == 0) {
@@ -355,7 +355,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         Axis axisX = new Axis(xAxisValues)
                 .setName("Hour of Day") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -363,7 +363,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         Axis axisY = new Axis()
                 .setName("Time Used (minutes)")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 ;
 
 
@@ -508,9 +508,24 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
             String hour = String.valueOf(columnIndex);
 
             usedList = localDatabase.appsUsed(graphDate, hour, DatabaseHelper.USAGE_TIME);
+            if (byCategory) {
+                List<UserUsageInfo> noRepeat = new ArrayList<>();
+                for (UserUsageInfo info:usedList) {
+                    boolean isFound = false;
+                    for(UserUsageInfo unique :noRepeat){
+                        if (unique.getCategory().equals(info.getCategory()) || (unique.equals(info))) {
+                            isFound = true;
+                            break;
+                        }
+                    }
+                    if (!isFound) noRepeat.add(info);
+                }
+                listAdapter = new UsageListViewAdapter(getContext(), noRepeat);
+            } else {
+                listAdapter = new UsageListViewAdapter(getContext(), usedList);
+            }
 
 
-            listAdapter = new UsageListViewAdapter(getContext(), usedList);
             listAdapter.setByCategory(byCategory);
             listAdapter.setDay(graphDate);
             listAdapter.setHour(hour);

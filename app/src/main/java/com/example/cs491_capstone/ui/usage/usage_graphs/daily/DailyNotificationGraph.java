@@ -485,9 +485,23 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
 
             String hour = String.valueOf(columnIndex);
             usedList = localDatabase.appsUsed(graphDate, hour, DatabaseHelper.NOTIFICATIONS_COUNT);
+            if (byCategory) {
+                List<UserUsageInfo> noRepeat = new ArrayList<>();
+                for (UserUsageInfo info:usedList) {
+                    boolean isFound = false;
+                    for(UserUsageInfo unique :noRepeat){
+                        if (unique.getCategory().equals(info.getCategory()) || (unique.equals(info))) {
+                            isFound = true;
+                            break;
+                        }
+                    }
+                    if (!isFound) noRepeat.add(info);
+                }
+                listAdapter = new UsageListViewAdapter(getContext(), noRepeat);
+            } else {
+                listAdapter = new UsageListViewAdapter(getContext(), usedList);
+            }
 
-
-            listAdapter = new UsageListViewAdapter(getContext(), usedList);
             listAdapter.setByCategory(byCategory);
             listAdapter.setDay(graphDate);
             listAdapter.setHour(hour);
