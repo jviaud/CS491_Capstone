@@ -746,8 +746,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                         } else {
                             //ROW HEADERS DON'T NEED TO BE ADDED TO THE DATABASE SO WE ONLY ADD ROWS AFTER ROW 0
-                            // Log.i("DATA", "" + s);
-                            //localDatabase.insert(nextLine[0], nextLine[1], nextLine[2], nextLine[3], nextLine[4], nextLine[5], nextLine[6], nextLine[7]);
                             rowData.add(s);
                         }
                         Log.i("DATA", "NEW COL|" + rowData);
@@ -773,7 +771,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 //                //WE DO THE SAME THING THAT WE DID WITH THE WHILE LOOP, WITH THE FOR LOOP, THIS TIME WE ARE ACTUALLY READING DATA IN
                 int index = 0;
                 for (List<String> row : csvData) {
-
                     Log.i("DATA", "LINE" + row);
                     localDatabase.insert(row.get(1), row.get(2), row.get(3), row.get(4), row.get(5), row.get(6), row.get(7));
 

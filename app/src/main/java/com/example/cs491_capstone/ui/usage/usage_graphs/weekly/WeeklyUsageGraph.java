@@ -413,6 +413,9 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
             listTitle.setText(R.string.listApps);
         }
         createUsageChart(graphDate, byCategory);
+        listAdapter = new UsageListViewWeekly(getContext(), new ArrayList<UserUsageInfo>());
+        listView.setAdapter(listAdapter);
+        App.setListViewHeightBasedOnChildren(listView);
     }
 
     private void showTodayGraph() {

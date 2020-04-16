@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class UsageFragment extends Fragment {
 
 
-    public final static String[] category = new String[]{"Maps", "Social", "Movies & Video", "Audio", "Game", "Image", "News", "Productivity", "Other"};
+    public final static String[] category = new String[]{"Maps & Navigation", "Social & Communication", "Movies & Video", "Music & Audio", "Game", "Image", "News & Magazines", "Productivity", "Other"};
     public static ArrayList<String> weeksSingleFormat;
 
     private int indicatorWidth;

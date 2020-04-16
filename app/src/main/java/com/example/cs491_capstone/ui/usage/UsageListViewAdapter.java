@@ -109,25 +109,25 @@ public class UsageListViewAdapter extends BaseAdapter {
 
 
             switch (category) {
-                case "Game":
+                case App.CATEGORY_GAME:
                     listHolder.icon.setImageResource(R.drawable.category_game);
                     break;
-                case "Audio":
+                case App.CATEGORY_AUDIO:
                     listHolder.icon.setImageResource(R.drawable.category_audio);
                     break;
-                case "Movies & Video":
+                case App.CATEGORY_VIDEO:
                     listHolder.icon.setImageResource(R.drawable.categoroy_video);
                     break;
-                case "Image":
+                case App.CATEGORY_IMAGE:
                     listHolder.icon.setImageResource(R.drawable.category_image);
                     break;
-                case "Social":
+                case App.CATEGORY_SOCIAL:
                     listHolder.icon.setImageResource(R.drawable.categoory_social);
                     break;
-                case "News":
+                case App.CATEGORY_NEWS:
                     listHolder.icon.setImageResource(R.drawable.category_news);
                     break;
-                case "Maps":
+                case App.CATEGORY_MAPS:
                     listHolder.icon.setImageResource(R.drawable.categoory_maps);
                     break;
                 case "Productivity":

@@ -388,7 +388,9 @@ public class WeeklyNotificationGraph extends Fragment implements View.OnClickLis
             changeGraph.setText(R.string.byCategory);
             listTitle.setText(R.string.listApps);
         }
-        createUsageChart(graphDate, byCategory);
+        listAdapter = new UsageListViewWeekly(getContext(), new ArrayList<UserUsageInfo>());
+        listView.setAdapter(listAdapter);
+        App.setListViewHeightBasedOnChildren(listView);
     }
 
     private void showTodayGraph() {

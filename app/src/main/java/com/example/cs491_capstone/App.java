@@ -37,13 +37,13 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class App extends Application {
-    public static final String CATEGORY_MAPS = "Maps";
-    public static final String CATEGORY_SOCIAL = "Social";
+    public static final String CATEGORY_MAPS = "Maps & Navigation";
+    public static final String CATEGORY_SOCIAL = "Social & Communication";
     public static final String CATEGORY_VIDEO = "Movies & Video";
-    public static final String CATEGORY_AUDIO = "Audio";
+    public static final String CATEGORY_AUDIO = "Music & Audio";
     public static final String CATEGORY_GAME = "Game";
     public static final String CATEGORY_IMAGE = "Image";
-    public static final String CATEGORY_NEWS = "News";
+    public static final String CATEGORY_NEWS = "News & Magazines";
     public static final String CATEGORY_PRODUCTIVITY = "Productivity";
     public static final String CATEGORY_OTHER = "Other";
     /**
@@ -418,6 +418,9 @@ public class App extends Application {
             editor.apply();
         }
         INCLUDED_APPS_LIST = prefs.getStringSet("exclusion_list", null);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("dark_mode",false);
+        editor.apply();
 
 
         //TODO IF THE APP IS TERMINATED WE NEED TO BE ABLE TOO SAVE THE LIST OF APPS THAT SHOULD BE TRACKED, FOR NOW WE CAN IGNORE THIS FOR PRESENTATION PURPOSES
