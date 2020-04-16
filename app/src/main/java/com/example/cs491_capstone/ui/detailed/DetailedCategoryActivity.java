@@ -2,8 +2,6 @@ package com.example.cs491_capstone.ui.detailed;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -20,17 +18,17 @@ import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.UserUsageInfo;
-import com.example.cs491_capstone.ui.detailed.detailed_app_graphs.DetailedNotificationGraphFragment;
-import com.example.cs491_capstone.ui.detailed.detailed_app_graphs.DetailedUnlocksGraphFragment;
-import com.example.cs491_capstone.ui.detailed.detailed_app_graphs.DetailedUsageGraphFragment;
+import com.example.cs491_capstone.ui.detailed.detailed_category_graphs.DetailedNotificationGraphCategoryFragment;
+import com.example.cs491_capstone.ui.detailed.detailed_category_graphs.DetailedUnlocksGraphCategoryFragment;
+import com.example.cs491_capstone.ui.detailed.detailed_category_graphs.DetailedUsageGraphCategoryFragment;
 import com.example.cs491_capstone.ui_helpers.ViewPageAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import static com.example.cs491_capstone.App.DATE;
 
-public class DetailedAppActivity extends AppCompatActivity {
+public class DetailedCategoryActivity extends AppCompatActivity {
 
-    public static String packageName;
+    public static String categoryName;
     private TextView usage_val;
     private TextView notification_val;
     private TextView unlocks_val;
@@ -59,25 +57,43 @@ public class DetailedAppActivity extends AppCompatActivity {
 
         //INITIALISE THE APP OBJECT
         Intent intent = getIntent();
-        UserUsageInfo appInfo = intent.getParcelableExtra("APP");
+        UserUsageInfo appInfo = intent.getParcelableExtra("CATEGORY");
 
         //SET APP INFO TEXT VIEWS
-        appName.setText(appInfo.getSimpleName());
+        appName.setText(appInfo.getCategory());
 
-        packageName = appInfo.getPackageName();
+        categoryName = App.getAppCategoryName(appInfo.getPackageName(), this);
 
-
-        //SET ICON & CATEGORY
-        try {
-            Drawable mIcon = getPackageManager().getApplicationIcon(packageName);
-
-            appCategory.setText(App.getAppCategoryName(packageName, this));
-
-            appIcon.setImageDrawable(mIcon);
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+        switch (appInfo.getCategory()) {
+            case App.CATEGORY_GAME:
+                appIcon.setImageResource(R.drawable.category_game);
+                break;
+            case App.CATEGORY_AUDIO:
+                appIcon.setImageResource(R.drawable.category_audio);
+                break;
+            case App.CATEGORY_VIDEO:
+                appIcon.setImageResource(R.drawable.categoroy_video);
+                break;
+            case App.CATEGORY_IMAGE:
+                appIcon.setImageResource(R.drawable.category_image);
+                break;
+            case App.CATEGORY_SOCIAL:
+                appIcon.setImageResource(R.drawable.categoory_social);
+                break;
+            case App.CATEGORY_NEWS:
+                appIcon.setImageResource(R.drawable.category_news);
+                break;
+            case App.CATEGORY_MAPS:
+                appIcon.setImageResource(R.drawable.categoory_maps);
+                break;
+            case App.CATEGORY_PRODUCTIVITY:
+                appIcon.setImageResource(R.drawable.category_productivity);
+                break;
+            default:
+                appIcon.setImageResource(R.drawable.category_other);
         }
+
+        appCategory.setText(" ");
 
 
         setBanner();
@@ -90,9 +106,9 @@ public class DetailedAppActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        adapter.addFragment(new DetailedUsageGraphFragment(), "Usage");
-        adapter.addFragment(new DetailedNotificationGraphFragment(), "Notifications");
-        adapter.addFragment(new DetailedUnlocksGraphFragment(), "Unlocks");
+        adapter.addFragment(new DetailedUsageGraphCategoryFragment(), "Usage");
+        adapter.addFragment(new DetailedNotificationGraphCategoryFragment(), "Notifications");
+        adapter.addFragment(new DetailedUnlocksGraphCategoryFragment(), "Unlocks");
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -115,7 +131,7 @@ public class DetailedAppActivity extends AppCompatActivity {
 
     private void setBanner() {
 
-        long usageTime = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(DATE, DatabaseHelper.USAGE_TIME, packageName)) / 60000;
+        long usageTime = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(DATE, DatabaseHelper.USAGE_TIME, categoryName)) / 60000;
         String usage = "";
         if (usageTime < 60) {
             usage = usageTime + " min(s)";
@@ -125,9 +141,8 @@ public class DetailedAppActivity extends AppCompatActivity {
         }
         usage_val.setText(usage);
 
-        notification_val.setText(App.localDatabase.getSumTotalStatByPackage(DATE, DatabaseHelper.NOTIFICATIONS_COUNT, packageName));
-        unlocks_val.setText(App.localDatabase.getSumTotalStatByPackage(DATE, DatabaseHelper.UNLOCKS_COUNT, packageName));
+        notification_val.setText(App.localDatabase.getSumTotalStatByCategory(DATE, DatabaseHelper.NOTIFICATIONS_COUNT, categoryName));
+        unlocks_val.setText(App.localDatabase.getSumTotalStatByCategory(DATE, DatabaseHelper.UNLOCKS_COUNT, categoryName));
     }
-
 
 }

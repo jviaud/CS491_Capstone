@@ -13,15 +13,15 @@
     <color name="notification_bar">#03DAC5</color>
     <color name="unlock_bar">#3700B3</color>
 
-    <color name="maps">#ED0909</color>
-    <color name="social">#0030E3</color>
-    <color name="video">#00FFCE</color>
-    <color name="audio">#FFE400</color>
-    <color name="game">#FF6800</color>
-    <color name="image">#80E4AA</color>
-    <color name="news">#930DE6</color>
-    <color name="productivity">#43F602</color>
-    <color name="other">#C0CFBB</color>
+    <color name="maps">#FD2424</color>
+    <color name="social">#2954FB</color>
+    <color name="video">#1EBDF6</color>
+    <color name="audio">#1EF3B0</color>
+    <color name="game">#F752FB</color>
+    <color name="image">#F67722</color>
+    <color name="news">#AE36F8</color>
+    <color name="productivity">#FFDF28</color>
+    <color name="other">#D25AFF23</color>
 
     <!--DARK MODE COLORS-->
     <color name="cardbackground_alt">#475259</color>

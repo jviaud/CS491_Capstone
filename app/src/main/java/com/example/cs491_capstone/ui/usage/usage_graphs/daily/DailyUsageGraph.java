@@ -26,6 +26,7 @@ import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
 import com.example.cs491_capstone.UserUsageInfo;
 import com.example.cs491_capstone.ui.detailed.DetailedAppActivity;
+import com.example.cs491_capstone.ui.detailed.DetailedCategoryActivity;
 import com.example.cs491_capstone.ui.usage.UsageFragment;
 import com.example.cs491_capstone.ui.usage.UsageListViewAdapter;
 
@@ -513,9 +514,9 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
             usedList = localDatabase.appsUsed(graphDate, hour, DatabaseHelper.USAGE_TIME);
             if (byCategory) {
                 List<UserUsageInfo> noRepeat = new ArrayList<>();
-                for (UserUsageInfo info:usedList) {
+                for (UserUsageInfo info : usedList) {
                     boolean isFound = false;
-                    for(UserUsageInfo unique :noRepeat){
+                    for (UserUsageInfo unique : noRepeat) {
                         if (unique.getCategory().equals(info.getCategory()) || (unique.equals(info))) {
                             isFound = true;
                             break;
@@ -535,16 +536,28 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
             listAdapter.setColumn(DatabaseHelper.USAGE_TIME);
             listView.setAdapter(listAdapter);
 
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    UserUsageInfo item = (UserUsageInfo) parent.getItemAtPosition(position);
+            if (byCategory) {
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        UserUsageInfo item = (UserUsageInfo) parent.getItemAtPosition(position);
+                        Intent intent = new Intent(getContext(), DetailedCategoryActivity.class);
+                        intent.putExtra("CATEGORY", item);
+                        startActivity(intent);
+                    }
+                });
+            } else {
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        UserUsageInfo item = (UserUsageInfo) parent.getItemAtPosition(position);
+                        Intent intent = new Intent(getContext(), DetailedAppActivity.class);
+                        intent.putExtra("APP", item);
+                        startActivity(intent);
+                    }
+                });
+            }
 
-                    Intent intent = new Intent(getContext(), DetailedAppActivity.class);
-                    intent.putExtra("APP", item);
-                    startActivity(intent);
-                }
-            });
 
             App.setListViewHeightBasedOnChildren(listView);
         }

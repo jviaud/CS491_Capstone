@@ -130,7 +130,7 @@ public class UsageListViewAdapter extends BaseAdapter {
                 case App.CATEGORY_MAPS:
                     listHolder.icon.setImageResource(R.drawable.categoory_maps);
                     break;
-                case "Productivity":
+                case App.CATEGORY_PRODUCTIVITY:
                     listHolder.icon.setImageResource(R.drawable.category_productivity);
                     break;
                 default:

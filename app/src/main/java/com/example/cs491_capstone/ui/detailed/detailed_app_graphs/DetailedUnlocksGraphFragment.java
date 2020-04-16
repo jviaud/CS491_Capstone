@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.detailed.detailed_graphs;
+package com.example.cs491_capstone.ui.detailed.detailed_app_graphs;
 
 import android.graphics.Color;
 import android.os.Bundle;

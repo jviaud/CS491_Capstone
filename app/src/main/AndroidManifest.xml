@@ -43,6 +43,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.cs491_capstone.ui.goal.GoalsFragment" />
         </activity>
+
+
+        <activity
+            android:name=".ui.detailed.DetailedCategoryActivity"
+            android:parentActivityName="com.example.cs491_capstone.ui.goal.GoalsFragment"
+            android:theme="@style/GoalTheme_Light">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.cs491_capstone.ui.goal.GoalsFragment" />
+        </activity>
+
+
         <activity android:name=".ui.intro.IntroManager" />
         <activity android:name=".ui.splash.SplashScreen">
             <intent-filter>

@@ -95,7 +95,7 @@
                 <lecho.lib.hellocharts.view.ColumnChartView
                     android:id="@+id/daily_chart"
                     android:layout_width="wrap_content"
-                    android:layout_height="250dp"
+                    android:layout_height="325dp"
                     android:layout_margin="8dp"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="32dp"

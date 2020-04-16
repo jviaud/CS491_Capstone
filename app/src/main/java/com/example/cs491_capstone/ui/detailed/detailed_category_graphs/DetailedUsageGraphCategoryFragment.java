@@ -1,4 +1,4 @@
-package com.example.cs491_capstone.ui.detailed.detailed_graphs;
+package com.example.cs491_capstone.ui.detailed.detailed_category_graphs;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,7 +16,6 @@ import com.example.cs491_capstone.App;
 import com.example.cs491_capstone.DatabaseHelper;
 import com.example.cs491_capstone.MainActivity;
 import com.example.cs491_capstone.R;
-import com.example.cs491_capstone.ui.detailed.DetailedAppActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +34,9 @@ import lecho.lib.hellocharts.view.ColumnChartView;
 import static com.example.cs491_capstone.App.clock;
 import static com.example.cs491_capstone.App.usageColColor;
 import static com.example.cs491_capstone.App.week;
+import static com.example.cs491_capstone.ui.detailed.DetailedCategoryActivity.categoryName;
 
-public class DetailedUsageGraphFragment extends Fragment implements View.OnClickListener {
+public class DetailedUsageGraphCategoryFragment extends Fragment implements View.OnClickListener {
     private ColumnChartView barChartTop;
     private ColumnChartView barChartBottom;
 
@@ -124,7 +124,7 @@ public class DetailedUsageGraphFragment extends Fragment implements View.OnClick
 
             values = new ArrayList<>();//CREATE NEW LIST OF VALUES
             for (int j = 0; j < numSubcolumns; j++) {
-                long val = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(indexInPeriod).get(i), DatabaseHelper.USAGE_TIME, DetailedAppActivity.packageName)) / 60000;
+                long val = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(App.currentPeriod.get(indexInPeriod).get(i), DatabaseHelper.USAGE_TIME, categoryName)) / 60000;
 
 
                 if (val == 0) {
@@ -289,7 +289,7 @@ public class DetailedUsageGraphFragment extends Fragment implements View.OnClick
                 //THIS WILL ALSO CORRESPOND TO THE DAY OF THE WEEK INSIDE THE LIST OF DAYS OF THE CURRENT WEEK THAT WE GENERATED IN THE App CLASS
                 //NOW WE CAN QUERY THE TABLE USING A SPECIFIC DAY AT A SPECIFIC HOUR USING THE VALUES OF i and columnIndex
                 //AND WE DIVIDE BY 60000 TO GET THE NUMBER OF MINUTES
-                long value = Long.parseLong(App.localDatabase.getSumTotalStatByPackage(App.currentPeriod.get(indexInPeriod).get(columnIndex), String.valueOf(i), DatabaseHelper.USAGE_TIME, DetailedAppActivity.packageName)) / 60000;
+                long value = Long.parseLong(App.localDatabase.getSumTotalStatByCategory(App.currentPeriod.get(indexInPeriod).get(columnIndex), String.valueOf(i), DatabaseHelper.USAGE_TIME,categoryName)) / 60000;
 
 
                 subcolumnValue.setTarget(value);

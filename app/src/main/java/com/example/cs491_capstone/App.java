@@ -414,13 +414,11 @@ public class App extends Application {
                     "com.google.android.apps.wallpaper", "com.google.android.youtube"};
             Collections.addAll(INCLUDED_APPS_LIST, apps);
             SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("dark_mode",false);
             editor.putStringSet("exclusion_list", INCLUDED_APPS_LIST);
             editor.apply();
         }
         INCLUDED_APPS_LIST = prefs.getStringSet("exclusion_list", null);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("dark_mode",false);
-        editor.apply();
 
 
         //TODO IF THE APP IS TERMINATED WE NEED TO BE ABLE TOO SAVE THE LIST OF APPS THAT SHOULD BE TRACKED, FOR NOW WE CAN IGNORE THIS FOR PRESENTATION PURPOSES

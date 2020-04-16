@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -265,11 +267,11 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
             }
             ArrayList<String> categories = localDatabase.categoryUsed(date, DatabaseHelper.USAGE_TIME);
 
-            for (String category : categories) {
+            for (final String category : categories) {
                 long val = Long.parseLong(localDatabase.getSumTotalStatByCategory(date, DatabaseHelper.USAGE_TIME, category)) / 60000;
                 int hours = (int) (val / (60) % 24);
                 int minutes = (int) (val % 60);
-                String formattedVal;
+                final String formattedVal;
                 if (hours == 0) {
                     formattedVal = String.format(Locale.ENGLISH, "%d%s", minutes, "m");
                 } else {
@@ -277,14 +279,21 @@ public class WeeklyUsageGraph extends Fragment implements View.OnClickListener {
                 }
 
 
-                TextView key = new TextView(getContext());
-                GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-                lp.setMargins(15, 15, 15, 15);
-                key.setLayoutParams(lp);
-                key.setText(category + " " + formattedVal);
-                key.setTextSize(15);
-                key.setTextColor(Color.parseColor(getHexForCategory(getContext(), category)));
-                keyContainer.addView(key);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Log.d("UI thread", "I am the UI thread");
+
+                        TextView key = new TextView(getContext());
+                        GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+                        lp.setMargins(15, 15, 15, 15);
+                        key.setLayoutParams(lp);
+                        key.setText(category + " " + formattedVal);
+                        key.setTextColor(Color.parseColor(getHexForCategory(getContext(), category)));
+                        key.setTextSize(15);
+                        keyContainer.addView(key);
+                    }
+                });
             }
 
         } else {

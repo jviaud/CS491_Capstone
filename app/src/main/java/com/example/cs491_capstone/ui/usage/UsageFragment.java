@@ -33,7 +33,7 @@ import static com.example.cs491_capstone.App.CATEGORY_VIDEO;
 public class UsageFragment extends Fragment {
 
 
-    public final static String[] category = new String[]{CATEGORY_MAPS, CATEGORY_SOCIAL, CATEGORY_VIDEO, CATEGORY_AUDIO, CATEGORY_GAME, CATEGORY_IMAGE, CATEGORY_NEWS, CATEGORY_PRODUCTIVITY, CATEGORY_OTHER};
+    public final static String[] category = new String[]{CATEGORY_MAPS,CATEGORY_OTHER , CATEGORY_VIDEO, CATEGORY_AUDIO, CATEGORY_GAME, CATEGORY_IMAGE, CATEGORY_NEWS, CATEGORY_PRODUCTIVITY, CATEGORY_SOCIAL};
     public static ArrayList<String> weeksSingleFormat;
 
     private int indicatorWidth;
