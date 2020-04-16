@@ -42,7 +42,7 @@ public class App extends Application {
     public static final String CATEGORY_VIDEO = "Movies & Video";
     public static final String CATEGORY_AUDIO = "Music & Audio";
     public static final String CATEGORY_GAME = "Game";
-    public static final String CATEGORY_IMAGE = "Image";
+    public static final String CATEGORY_IMAGE = "Photos & Image";
     public static final String CATEGORY_NEWS = "News & Magazines";
     public static final String CATEGORY_PRODUCTIVITY = "Productivity";
     public static final String CATEGORY_OTHER = "Other";

@@ -20,10 +20,20 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
+import static com.example.cs491_capstone.App.CATEGORY_AUDIO;
+import static com.example.cs491_capstone.App.CATEGORY_GAME;
+import static com.example.cs491_capstone.App.CATEGORY_IMAGE;
+import static com.example.cs491_capstone.App.CATEGORY_MAPS;
+import static com.example.cs491_capstone.App.CATEGORY_NEWS;
+import static com.example.cs491_capstone.App.CATEGORY_OTHER;
+import static com.example.cs491_capstone.App.CATEGORY_PRODUCTIVITY;
+import static com.example.cs491_capstone.App.CATEGORY_SOCIAL;
+import static com.example.cs491_capstone.App.CATEGORY_VIDEO;
+
 public class UsageFragment extends Fragment {
 
 
-    public final static String[] category = new String[]{"Maps & Navigation", "Social & Communication", "Movies & Video", "Music & Audio", "Game", "Image", "News & Magazines", "Productivity", "Other"};
+    public final static String[] category = new String[]{CATEGORY_MAPS, CATEGORY_SOCIAL, CATEGORY_VIDEO, CATEGORY_AUDIO, CATEGORY_GAME, CATEGORY_IMAGE, CATEGORY_NEWS, CATEGORY_PRODUCTIVITY, CATEGORY_OTHER};
     public static ArrayList<String> weeksSingleFormat;
 
     private int indicatorWidth;
