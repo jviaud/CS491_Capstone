@@ -197,6 +197,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
     private void createUsageChart(String date, boolean byCategory) {
 
         keyContainer.removeAllViewsInLayout();
+        keyContainer.setVisibility(View.GONE);
 
         //STYLING FOR GRAPHS
         barChart.setZoomEnabled(false);
@@ -221,6 +222,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
         //CHOOSE WHAT KIND OF GRAPH WE ARE CREATING BASED ON IF THE CATEGORY BUTTON WAS CLICKED
         if (byCategory) {
             //
+            keyContainer.setVisibility(View.VISIBLE);
             for (int i = 0; i < numColumns; i++) {
                 values = new ArrayList<>();
                 for (int j = 0; j < UsageFragment.category.length; j++) {
@@ -268,7 +270,7 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
                         GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
                         lp.setMargins(15, 15, 15, 15);
                         key.setLayoutParams(lp);
-                        key.setText(category + " " + val);
+                        key.setText(category + "\n" + val);
                         key.setTextColor(Color.parseColor(getHexForCategory(getContext(), category)));
                         key.setTextSize(15);
                         keyContainer.addView(key);

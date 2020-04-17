@@ -45,7 +45,11 @@ public class App extends Application {
     public static final String CATEGORY_IMAGE = "Photos & Image";
     public static final String CATEGORY_NEWS = "News & Magazines";
     public static final String CATEGORY_PRODUCTIVITY = "Productivity";
+    public static final String CATEGORY_TOOLS = "Tools & Information";
     public static final String CATEGORY_OTHER = "Other";
+    public static final String CATEGORY_MEDIA = "Media";
+
+
     /**
      * notification channel for services, required in API 29+
      */
@@ -155,26 +159,17 @@ public class App extends Application {
     public static String getHexForCategory(Context context, String category) {
         String hex;
         switch (category) {
-            case CATEGORY_MAPS:
-                hex = context.getResources().getString(0 + R.color.maps);
+            case CATEGORY_TOOLS:
+                hex = context.getResources().getString(0 + R.color.tools);
                 break;
             case CATEGORY_SOCIAL:
                 hex = context.getResources().getString(0 + R.color.social);
                 break;
-            case CATEGORY_VIDEO:
-                hex = context.getResources().getString(0 + R.color.video);
-                break;
-            case CATEGORY_AUDIO:
-                hex = context.getResources().getString(0 + R.color.audio);
+            case CATEGORY_MEDIA:
+                hex = context.getResources().getString(0 + R.color.media);
                 break;
             case CATEGORY_GAME:
                 hex = context.getResources().getString(0 + R.color.game);
-                break;
-            case CATEGORY_IMAGE:
-                hex = context.getResources().getString(0 + R.color.image);
-                break;
-            case CATEGORY_NEWS:
-                hex = context.getResources().getString(0 + R.color.news);
                 break;
             case CATEGORY_PRODUCTIVITY:
                 hex = context.getResources().getString(0 + R.color.productivity);
@@ -349,27 +344,40 @@ public class App extends Application {
      * @return a string representing the category, return undefined if package is not found or if category is not set
      */
     public static String getAppCategoryName(String packageName, Context context) {
+        String category = "null";
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             try {
                 //WE USE PACKAGE MANAGER TO GET APPLICATION INFO
                 //FROM APPLICATION INFO WE CAN GET A GLOBAL int REPRESENTING THE APP'S CATEGORY
                 int categoryVal;
 
+
                 categoryVal = context.getPackageManager().getApplicationInfo(packageName, 0).category;
 
                 //THE INT WILL BE -1 IF THE APP'S CATEGORY HAS NOT BEEN DEFINED IN ITS MANIFEST
                 if (categoryVal == -1) {
-                    return "Other";
+                    category = "Other";
                 } else {
                     //ONCE WE HAVE THE CORRECT CATEGORY AWE MUST CONVERT IT TO A STRING BECAUSE IT IS RETURNED AS A CHARACTER ARRAY
                     //WE MUST ALSO REMOVE THE UNDERSCORE
-                    return ApplicationInfo.getCategoryTitle(context, categoryVal).toString().replace("_", " ");
+                    category = ApplicationInfo.getCategoryTitle(context, categoryVal).toString().replace("_", " ");
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
         }
-        return "Other";
+        switch (category) {
+            case CATEGORY_MAPS:
+            case CATEGORY_NEWS:
+                category = "Tools";
+                break;
+            case CATEGORY_VIDEO:
+            case CATEGORY_AUDIO:
+            case CATEGORY_IMAGE:
+                category = "Media";
+                break;
+        }
+        return category;
     }
 
     /**
@@ -414,7 +422,7 @@ public class App extends Application {
                     "com.google.android.apps.wallpaper", "com.google.android.youtube"};
             Collections.addAll(INCLUDED_APPS_LIST, apps);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("dark_mode",false);
+            editor.putBoolean("dark_mode", false);
             editor.putStringSet("exclusion_list", INCLUDED_APPS_LIST);
             editor.apply();
         }
@@ -426,10 +434,6 @@ public class App extends Application {
         usageColColor = getResources().getString(0 + R.color.usage_bar);
         unlockColColor = getResources().getString(0 + R.color.unlock_bar);
         notificationColColor = getResources().getString(0 + R.color.notification_bar);
-
-
-
-
 
 
         ALL_APPS_LIST = new ArrayList<>();

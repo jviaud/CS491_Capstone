@@ -198,6 +198,7 @@ public class WeeklyNotificationGraph extends Fragment implements View.OnClickLis
     private void createUsageChart(String date, boolean byCategory) {
 
         keyContainer.removeAllViewsInLayout();
+        keyContainer.setVisibility(View.GONE);
 
         //STYLING FOR GRAPHS
         barChart.setZoomEnabled(false);
@@ -222,6 +223,7 @@ public class WeeklyNotificationGraph extends Fragment implements View.OnClickLis
         //CHOOSE WHAT KIND OF GRAPH WE ARE CREATING BASED ON IF THE CATEGORY BUTTON WAS CLICKED
         if (byCategory) {
             //
+            keyContainer.setVisibility(View.VISIBLE);
             for (int i = 0; i < numColumns; i++) {
                 values = new ArrayList<>();
                 for (int j = 0; j < UsageFragment.category.length; j++) {
@@ -264,7 +266,7 @@ public class WeeklyNotificationGraph extends Fragment implements View.OnClickLis
                 GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
                 lp.setMargins(15, 15, 15, 15);
                 key.setLayoutParams(lp);
-                key.setText(category + " " + val);
+                key.setText(category + "\n" + val);
                 key.setTextSize(15);
                 key.setTextColor(Color.parseColor(getHexForCategory(getContext(), category)));
                 keyContainer.addView(key);

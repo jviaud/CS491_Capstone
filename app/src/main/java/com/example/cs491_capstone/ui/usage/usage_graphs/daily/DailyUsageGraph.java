@@ -206,8 +206,8 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
 
     @SuppressLint("SetTextI18n")
     private void createUsageChart(String date, boolean byCategory) {
-
         keyContainer.removeAllViewsInLayout();
+        keyContainer.setVisibility(View.GONE);
 
         //STYLING FOR GRAPHS
         barChart.setZoomEnabled(false);
@@ -232,6 +232,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
         //CHOOSE WHAT KIND OF GRAPH WE ARE CREATING BASED ON IF THE CATEGORY BUTTON WAS CLICKED
         if (byCategory) {
             //
+            keyContainer.setVisibility(View.VISIBLE);
             for (int i = 0; i < numColumns; i++) {
                 values = new ArrayList<>();
                 for (int j = 0; j < UsageFragment.category.length; j++) {
@@ -282,7 +283,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
                         GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
                         lp.setMargins(15, 15, 15, 15);
                         key.setLayoutParams(lp);
-                        key.setText(category + " " + formattedVal);
+                        key.setText(category + "\n" + formattedVal);
                         key.setTextColor(Color.parseColor(getHexForCategory(getContext(), category)));
                         key.setTextSize(15);
                         keyContainer.addView(key);
@@ -418,6 +419,7 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
             listTitle.setText(R.string.listApps);
         }
         createUsageChart(graphDate, byCategory);
+
         listAdapter = new UsageListViewAdapter(getContext(), new ArrayList<UserUsageInfo>());
         listView.setAdapter(listAdapter);
         App.setListViewHeightBasedOnChildren(listView);

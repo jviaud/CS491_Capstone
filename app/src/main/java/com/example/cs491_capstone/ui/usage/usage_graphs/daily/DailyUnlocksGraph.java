@@ -203,6 +203,7 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
     private void createUsageChart(String date, boolean byCategory) {
 
         keyContainer.removeAllViewsInLayout();
+        keyContainer.setVisibility(View.GONE);
 
         //STYLING FOR GRAPHS
         barChart.setZoomEnabled(false);
@@ -227,6 +228,7 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
         //CHOOSE WHAT KIND OF GRAPH WE ARE CREATING BASED ON IF THE CATEGORY BUTTON WAS CLICKED
         if (byCategory) {
             //
+            keyContainer.setVisibility(View.VISIBLE);
             for (int i = 0; i < numColumns; i++) {
                 values = new ArrayList<>();
                 for (int j = 0; j < UsageFragment.category.length; j++) {
@@ -275,7 +277,7 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
                         lp.setMargins(15, 15, 15, 15);
                         key.setLayoutParams(lp);
                         key.setTextColor(Color.parseColor(getHexForCategory(getContext(), category)));
-                        key.setText(category + " " + val);
+                        key.setText(category + "\n" + val);
                         key.setTextSize(15);
                         keyContainer.addView(key);
                     }
