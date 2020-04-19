@@ -44,9 +44,9 @@
     <!--    LIGHT-->
     <style name="AppTheme_Light" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowNoTitle">true</item>
-        <item name="colorPrimary">@color/intro_inactive_indicator</item>
-        <item name="colorPrimaryDark">@color/textcolor_secondary</item>
-        <item name="colorAccent">@color/intro_active_indicator</item>
+        <item name="colorPrimary">@color/toolbarcolor</item>
+        <item name="colorPrimaryDark">@color/unlock_bar</item>
+        <item name="colorAccent">@color/launcher_background</item>
 
         <item name="backgroundcolor">@color/backgroundcolor_light</item>
         <item name="cardbackground">@color/cardbackground_light</item>
@@ -60,7 +60,7 @@
 
         <item name="highlight">@color/highlight_light</item>
         <item name="fabcolor">@color/fabcolor_light</item>
-        <item name="android:textColorHint">@color/textcolor_secondary_light</item>
+        <item name="android:textColorHint">@color/toolbarcolor</item>
 
         <item name="cardSpecial">@color/cardbackground</item>
         <item name="cardSpecial2">@color/cardbackground</item>

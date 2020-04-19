@@ -267,6 +267,7 @@ public class PhoneGoalFragment extends Fragment {
         Axis axisY = new Axis().setHasLines(true);
 
         axisX.setName("Day of Week");
+        axisX.setMaxLabelChars(3);
         axisY.setName("Usage vs. Goal Value (minutes)");
         axisY.setTextColor(Color.parseColor(MainActivity.textColor));
         axisX.setTextColor(Color.parseColor(MainActivity.textColor));
@@ -311,6 +312,7 @@ public class PhoneGoalFragment extends Fragment {
 
     private void labelUnlockAxis() {
         Axis axisX = new Axis();
+        axisX.setMaxLabelChars(3);
         Axis axisY = new Axis().setHasLines(true);
 
         axisX.setName("Day of Week");
@@ -421,9 +423,9 @@ public class PhoneGoalFragment extends Fragment {
 
                 }
 
-                if (maxUsageValue < value) {
-                    maxUsageValue = value;
-                }
+//                if (maxUsageValue < value) {
+//                    maxUsageValue = value;
+//                }
 
                 values.add(pointValue);
 
@@ -456,7 +458,7 @@ public class PhoneGoalFragment extends Fragment {
                     values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                     break;
                 } else {
-                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.parseColor(highlight));
+                    SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.parseColor(unlockColColor));
 
                     subcolumnValue.setLabel(String.valueOf(value));
 
@@ -494,9 +496,11 @@ public class PhoneGoalFragment extends Fragment {
                     pointValue.setLabel(String.valueOf(value));
 
                 }
-                if (maxUnlockValue < value) {
-                    maxUnlockValue = value;
-                }
+
+
+//                if (maxUnlockValue < value) {
+//                    maxUnlockValue = value;
+//                }
 
                 values.add(pointValue);
 

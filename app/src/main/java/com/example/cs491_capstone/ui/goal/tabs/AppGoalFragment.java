@@ -255,7 +255,7 @@ public class AppGoalFragment extends Fragment {
                 unlockComboData = new ComboLineColumnChartData(generateUnlockColumnData(packageName), generateUnlockLineData(packageName));
                 labelUnlockAxis();
                 unlockComboChart.setComboLineColumnChartData(unlockComboData);
-                setUnlockViewPortWidth(unlockComboChart);
+                setUnlockViewPortWidth(unlockComboChart);//
 
 
             }
@@ -325,6 +325,7 @@ public class AppGoalFragment extends Fragment {
 
     private void labelUsageAxis() {
         Axis axisX = new Axis();
+        axisX.setMaxLabelChars(3);
         Axis axisY = new Axis().setHasLines(true);
 
         axisX.setName("Day of Week");
@@ -372,6 +373,7 @@ public class AppGoalFragment extends Fragment {
 
     private void labelUnlockAxis() {
         Axis axisX = new Axis();
+        axisX.setMaxLabelChars(3);
         Axis axisY = new Axis().setHasLines(true);
 
         axisX.setName("Day of Week");
@@ -450,7 +452,7 @@ public class AppGoalFragment extends Fragment {
                 }
             }
 
-            columns.add(new Column(values));
+            columns.add(new Column(values).setHasLabelsOnlyForSelected(true));
         }
 
 
@@ -460,18 +462,18 @@ public class AppGoalFragment extends Fragment {
     private LineChartData generateUsageLineData(String packageName) {
 
         List<Line> lines = new ArrayList<>();
-        for (int i = 0; i < 1; ++i) {
+        for (int i = 0; i < week.length; ++i) {
             List<PointValue> values = new ArrayList<>();
-            for (int j = 0; j < week.length; ++j) {
+            for (int j = 0; j < 1; ++j) {
 
-                long val = Long.parseLong(App.goalDataBase.get(App.currentPeriod.get(0).get(j), GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_USAGE)) / 60000;
+                long val = Long.parseLong(App.goalDataBase.get(App.currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_USAGE)) / 60000;
 
                 PointValue pointValue;
                 if (val == 0) {
-                    pointValue = new PointValue(j, 0);
+                    pointValue = new PointValue(i, 0);
                     pointValue.setLabel("n/a");
                 } else {
-                    pointValue = new PointValue(j, val);
+                    pointValue = new PointValue(i, val);
 
                     int hours = (int) (val / (60) % 24);
                     int minutes = (int) (val % 60);
@@ -487,9 +489,9 @@ public class AppGoalFragment extends Fragment {
                 }
                 values.add(pointValue);
 
-                if (maxUsageValue < val) {
-                    maxUsageValue = val;
-                }
+//                if (maxUsageValue < val) {
+//                    maxUsageValue = val;
+//                }
 
             }
 
@@ -524,42 +526,39 @@ public class AppGoalFragment extends Fragment {
                     values.add(new SubcolumnValue(val, Color.parseColor(unlockColColor)));
                 }
 
-                if (maxUsageValue < val) {
-                    maxUsageValue = val;
+                if (maxUnlockValue < val) {
+                    maxUnlockValue = val;
                 }
             }
 
-            columns.add(new Column(values));
+            columns.add(new Column(values).setHasLabelsOnlyForSelected(true));
         }
 
 
-        ColumnChartData columnChartData = new ColumnChartData(columns);
-
-
-        return columnChartData;
+        return new ColumnChartData(columns);
     }
 
     private LineChartData generateUnlockLineData(String packageName) {
 
         List<Line> lines = new ArrayList<>();
-        for (int i = 0; i < 1; ++i) {
+        for (int i = 0; i < week.length; ++i) {
             List<PointValue> values = new ArrayList<>();
-            for (int j = 0; j < week.length; ++j) {
+            for (int j = 0; j < 1; ++j) {
 
-                long val = Long.parseLong(App.goalDataBase.get(App.currentPeriod.get(0).get(j), GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_UNLOCKS));
+                long val = Long.parseLong(App.goalDataBase.get(App.currentPeriod.get(0).get(i), GoalDataBaseHelper.GOAL_APP, packageName, GoalDataBaseHelper.GOAL_UNLOCKS));
                 PointValue pointValue;
 
                 if (val == 0) {
-                    pointValue = new PointValue(j, 0);
+                    pointValue = new PointValue(i, 0);
                     pointValue.setLabel("n/a");
                 } else {
-                    pointValue = new PointValue(j, val);
+                    pointValue = new PointValue(i, val);
 
                 }
 
-                if (maxUsageValue < val) {
-                    maxUsageValue = val;
-                }
+//                if (maxUnlockValue < val) {
+//                    maxUnlockValue = val;
+//                }
                 values.add(pointValue);
 
             }
