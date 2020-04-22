@@ -195,9 +195,12 @@ public class DailyNotificationGraph extends Fragment implements View.OnClickList
 
     @SuppressLint("SetTextI18n")
     private void createUsageChart(String date, boolean byCategory) {
-
-        keyContainer.removeAllViewsInLayout();
-        keyContainer.setVisibility(View.GONE);
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                keyContainer.removeAllViewsInLayout();
+                keyContainer.setVisibility(View.GONE);
+            }
+        });
 
         //STYLING FOR GRAPHS
         barChart.setZoomEnabled(false);

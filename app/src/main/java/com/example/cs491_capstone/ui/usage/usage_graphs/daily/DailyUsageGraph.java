@@ -206,8 +206,13 @@ public class DailyUsageGraph extends Fragment implements View.OnClickListener {
 
     @SuppressLint("SetTextI18n")
     private void createUsageChart(String date, boolean byCategory) {
-        keyContainer.removeAllViewsInLayout();
-        keyContainer.setVisibility(View.GONE);
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                keyContainer.removeAllViewsInLayout();
+                keyContainer.setVisibility(View.GONE);
+            }
+        });
+
 
         //STYLING FOR GRAPHS
         barChart.setZoomEnabled(false);

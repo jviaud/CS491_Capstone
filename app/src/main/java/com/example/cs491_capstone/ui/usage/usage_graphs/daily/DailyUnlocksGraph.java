@@ -202,8 +202,12 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
     @SuppressLint("SetTextI18n")
     private void createUsageChart(String date, boolean byCategory) {
 
-        keyContainer.removeAllViewsInLayout();
-        keyContainer.setVisibility(View.GONE);
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                keyContainer.removeAllViewsInLayout();
+                keyContainer.setVisibility(View.GONE);
+            }
+        });
 
         //STYLING FOR GRAPHS
         barChart.setZoomEnabled(false);
@@ -302,7 +306,7 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
                         values.add(new SubcolumnValue(value, Color.TRANSPARENT));
                         break;
                     } else {
-                        SubcolumnValue subcolumnValue = new SubcolumnValue(value,  Color.parseColor(unlockColColor));
+                        SubcolumnValue subcolumnValue = new SubcolumnValue(value, Color.parseColor(unlockColColor));
                         values.add(subcolumnValue);
                     }
 
@@ -343,7 +347,7 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
         Axis axisX = new Axis(xAxisValues)
                 .setName("Hour of Day") //NAME OF X-AXIS
                 .setHasTiltedLabels(true)  //MAKES THE LABELS TILTED SO WE CAN FIT MOORE LABELS ON THE X-AXIS
-                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 .setMaxLabelChars(4)//MAXIMUM NUMBER OF CHARACTER PER LABEL, THIS IS JUST FOR STYLING AND SPACING
                 ;
 
@@ -351,7 +355,7 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
         Axis axisY = new Axis()
                 .setName("Unlocks")//NAME OF Y-AXIS
                 .setHasLines(true)//HORIZONTAL LINES
-                .setTextColor( Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
+                .setTextColor(Color.parseColor(MainActivity.textColor))//MAKES TEXT COLOR BLACK
                 ;
 
 
@@ -501,9 +505,9 @@ public class DailyUnlocksGraph extends Fragment implements View.OnClickListener 
             usedList = localDatabase.appsUsed(graphDate, hour, DatabaseHelper.UNLOCKS_COUNT);
             if (byCategory) {
                 List<UserUsageInfo> noRepeat = new ArrayList<>();
-                for (UserUsageInfo info:usedList) {
+                for (UserUsageInfo info : usedList) {
                     boolean isFound = false;
-                    for(UserUsageInfo unique :noRepeat){
+                    for (UserUsageInfo unique : noRepeat) {
                         if (unique.getCategory().equals(info.getCategory()) || (unique.equals(info))) {
                             isFound = true;
                             break;

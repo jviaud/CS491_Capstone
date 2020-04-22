@@ -20,6 +20,7 @@
         <attr name="cardSpecial" format="color" />
         <attr name="cardSpecial2" format="color" />
         <attr name="textcolor_special" format="color" />
+        <attr name="textcolor_special2" format="color" />
 
 
         <attr name="TabLayoutStyle" format="reference" />

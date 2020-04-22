@@ -17,10 +17,10 @@
     <!--    GRAPH COLORS-->
     <color name="social">#5a6abf</color>
     <color name="game">#8d98f2</color>
-    <color name="productivity">#23408e</color>
-    <color name="other">#0277bd</color>
-    <color name="media">#58a5f0</color>
-    <color name="tools">#004c8c</color>
+    <color name="productivity">#628CFF</color>
+    <color name="other">#4caf50</color>
+    <color name="media">#80e27e</color>
+    <color name="tools">#01B62A</color>
 
     <!--    MEDIA audio video image-->
     <!--    TOOLS  maps & news-->

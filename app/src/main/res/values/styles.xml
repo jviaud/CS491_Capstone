@@ -14,6 +14,7 @@
 
         <item name="textcolor">@color/textcolor</item>
         <item name="textcolor_special">#FFFFFF</item>
+        <item name="textcolor_special2">#FFFFFF</item>
         <item name="textcolor_secondary">@color/textcolor_secondary</item>
         <item name="textcolor_tertiary">@color/textcolor_tertiary</item>
         <item name="textcolor_alt">@color/textcolor_alt</item>
@@ -54,6 +55,7 @@
 
         <item name="textcolor">@color/textcolor_light</item>
         <item name="textcolor_special">#FFFFFF</item>
+        <item name="textcolor_special2">#99000000</item>
         <item name="textcolor_secondary">@color/textcolor_secondary_light</item>
         <item name="textcolor_tertiary">@color/textcolor_tertiary_light</item>
         <item name="textcolor_alt">@color/textcolor_alt_light</item>
@@ -62,7 +64,7 @@
         <item name="fabcolor">@color/fabcolor_light</item>
         <item name="android:textColorHint">@color/toolbarcolor</item>
 
-        <item name="cardSpecial">@color/cardbackground</item>
+        <item name="cardSpecial">@color/devidercolor_light</item>
         <item name="cardSpecial2">@color/cardbackground</item>
 
         <item name="devidercolor">@color/devidercolor_light</item>

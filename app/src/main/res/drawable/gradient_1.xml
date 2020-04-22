@@ -8,8 +8,8 @@
 
     <gradient
         android:angle="-90"
-        android:endColor="#C1A460F8"
-        android:startColor="@color/highlight" />
+        android:endColor="?attr/cardbackground"
+        android:startColor="?attr/cardbackground" />
 
 
 </shape>
